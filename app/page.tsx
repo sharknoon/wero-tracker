@@ -1,5 +1,5 @@
-import { WeroTracker } from "@/components/wero-tracker"
-import { sampleWeroData } from "@/lib/sample-data"
+import { WeroTracker } from "@/components/wero-tracker";
+import { sampleWeroData } from "@/lib/sample-data";
 
 // In production, this would fetch from a GitHub raw URL
 // Example: https://raw.githubusercontent.com/your-org/wero-tracker-data/main/data.json
@@ -10,11 +10,11 @@ async function getWeroData() {
   //   next: { revalidate: 3600 } // Revalidate every hour
   // });
   // return res.json();
-  return sampleWeroData
+  return sampleWeroData;
 }
 
 export default async function Page() {
-  const data = await getWeroData()
+  const data = await getWeroData();
 
-  return <WeroTracker data={data} />
+  return <WeroTracker data={data} />;
 }

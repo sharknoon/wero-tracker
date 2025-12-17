@@ -1,4 +1,4 @@
-import type { WeroData } from "./types"
+import type { WeroData } from "./types";
 
 export const sampleWeroData: WeroData = {
   lastUpdated: "2024-12-15",
@@ -21,26 +21,42 @@ export const sampleWeroData: WeroData = {
           features: {
             p2p: {
               status: "supported",
-              sources: [{ label: "Official Announcement", url: "https://www.sparkasse.de/wero" }],
+              sources: [
+                {
+                  label: "Official Announcement",
+                  url: "https://www.sparkasse.de/wero",
+                },
+              ],
             },
             onlinePayments: {
               status: "supported",
-              sources: [{ label: "Feature Launch", url: "https://www.wero.eu/online" }],
+              sources: [
+                { label: "Feature Launch", url: "https://www.wero.eu/online" },
+              ],
             },
             localPayments: {
               status: "coming-soon",
               notes: "Expected Q1 2025",
-              sources: [{ label: "Roadmap", url: "https://www.wero.eu/roadmap" }],
+              sources: [
+                { label: "Roadmap", url: "https://www.wero.eu/roadmap" },
+              ],
             },
           },
           appAvailability: {
             weroApp: {
               status: "supported",
-              sources: [{ label: "App Store", url: "https://apps.apple.com/wero" }],
+              sources: [
+                { label: "App Store", url: "https://apps.apple.com/wero" },
+              ],
             },
             bankingApp: {
               status: "supported",
-              sources: [{ label: "Sparkasse App Update", url: "https://www.sparkasse.de/app" }],
+              sources: [
+                {
+                  label: "Sparkasse App Update",
+                  url: "https://www.sparkasse.de/app",
+                },
+              ],
             },
           },
           lastUpdated: "2024-12-10",
@@ -50,16 +66,22 @@ export const sampleWeroData: WeroData = {
           name: "Deutsche Bank",
           website: "https://www.deutsche-bank.de",
           overallStatus: "supported",
-          statusSources: [{ label: "Deutsche Bank Press", url: "https://www.db.com/press" }],
+          statusSources: [
+            { label: "Deutsche Bank Press", url: "https://www.db.com/press" },
+          ],
           features: {
             p2p: {
               status: "supported",
-              sources: [{ label: "DB Wero Launch", url: "https://www.db.com/wero" }],
+              sources: [
+                { label: "DB Wero Launch", url: "https://www.db.com/wero" },
+              ],
             },
             onlinePayments: {
               status: "announced",
               notes: "Coming January 2025",
-              sources: [{ label: "Announcement", url: "https://www.db.com/news/wero" }],
+              sources: [
+                { label: "Announcement", url: "https://www.db.com/news/wero" },
+              ],
             },
             localPayments: {
               status: "none",
@@ -81,12 +103,22 @@ export const sampleWeroData: WeroData = {
           name: "Commerzbank",
           website: "https://www.commerzbank.de",
           overallStatus: "announced",
-          statusSources: [{ label: "Commerzbank News", url: "https://www.commerzbank.de/news" }],
+          statusSources: [
+            {
+              label: "Commerzbank News",
+              url: "https://www.commerzbank.de/news",
+            },
+          ],
           features: {
             p2p: {
               status: "announced",
               notes: "Launch planned for Q1 2025",
-              sources: [{ label: "Press Release", url: "https://www.commerzbank.de/press" }],
+              sources: [
+                {
+                  label: "Press Release",
+                  url: "https://www.commerzbank.de/press",
+                },
+              ],
             },
             onlinePayments: {
               status: "none",
@@ -134,15 +166,27 @@ export const sampleWeroData: WeroData = {
           name: "BNP Paribas",
           website: "https://www.bnpparibas.com",
           overallStatus: "supported",
-          statusSources: [{ label: "BNP Wero", url: "https://www.bnpparibas.com/wero" }],
+          statusSources: [
+            { label: "BNP Wero", url: "https://www.bnpparibas.com/wero" },
+          ],
           features: {
             p2p: {
               status: "supported",
-              sources: [{ label: "Launch News", url: "https://www.bnpparibas.com/news" }],
+              sources: [
+                {
+                  label: "Launch News",
+                  url: "https://www.bnpparibas.com/news",
+                },
+              ],
             },
             onlinePayments: {
               status: "supported",
-              sources: [{ label: "E-commerce Integration", url: "https://www.bnpparibas.com/ecom" }],
+              sources: [
+                {
+                  label: "E-commerce Integration",
+                  url: "https://www.bnpparibas.com/ecom",
+                },
+              ],
             },
             localPayments: {
               status: "coming-soon",
@@ -176,7 +220,9 @@ export const sampleWeroData: WeroData = {
           name: "Société Générale",
           website: "https://www.societegenerale.fr",
           overallStatus: "announced",
-          statusSources: [{ label: "SG Press", url: "https://www.societegenerale.fr/press" }],
+          statusSources: [
+            { label: "SG Press", url: "https://www.societegenerale.fr/press" },
+          ],
           features: {
             p2p: { status: "announced", notes: "February 2025" },
             onlinePayments: { status: "none" },
@@ -239,7 +285,9 @@ export const sampleWeroData: WeroData = {
           name: "ING",
           website: "https://www.ing.nl",
           overallStatus: "announced",
-          statusSources: [{ label: "ING Wero Plans", url: "https://www.ing.nl/wero" }],
+          statusSources: [
+            { label: "ING Wero Plans", url: "https://www.ing.nl/wero" },
+          ],
           features: {
             p2p: { status: "announced", notes: "Q2 2025" },
             onlinePayments: { status: "none" },
@@ -309,4 +357,4 @@ export const sampleWeroData: WeroData = {
       ],
     },
   ],
-}
+};

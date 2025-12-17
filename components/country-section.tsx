@@ -1,21 +1,28 @@
-"use client"
+"use client";
 
-import type { Country } from "@/lib/types"
-import { BankCard } from "./bank-card"
-import { ChevronDown, ChevronRight } from "lucide-react"
-import { useState } from "react"
-import { cn } from "@/lib/utils"
+import type { Country } from "@/lib/types";
+import { BankCard } from "./bank-card";
+import { ChevronDown, ChevronRight } from "lucide-react";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface CountrySectionProps {
-  country: Country
-  defaultExpanded?: boolean
+  country: Country;
+  defaultExpanded?: boolean;
 }
 
-export function CountrySection({ country, defaultExpanded = true }: CountrySectionProps) {
-  const [isExpanded, setIsExpanded] = useState(defaultExpanded)
+export function CountrySection({
+  country,
+  defaultExpanded = true,
+}: CountrySectionProps) {
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
-  const supportedCount = country.banks.filter((b) => b.overallStatus === "supported").length
-  const announcedCount = country.banks.filter((b) => b.overallStatus === "announced").length
+  const supportedCount = country.banks.filter(
+    (b) => b.overallStatus === "supported",
+  ).length;
+  const announcedCount = country.banks.filter(
+    (b) => b.overallStatus === "announced",
+  ).length;
 
   return (
     <div className="space-y-4">
@@ -28,7 +35,8 @@ export function CountrySection({ country, defaultExpanded = true }: CountrySecti
           <div className="text-left">
             <h2 className="font-semibold text-foreground">{country.name}</h2>
             <p className="text-xs text-muted-foreground">
-              {country.banks.length} banks • {supportedCount} supported • {announcedCount} announced
+              {country.banks.length} banks • {supportedCount} supported •{" "}
+              {announcedCount} announced
             </p>
           </div>
         </div>
@@ -49,5 +57,5 @@ export function CountrySection({ country, defaultExpanded = true }: CountrySecti
         ))}
       </div>
     </div>
-  )
+  );
 }

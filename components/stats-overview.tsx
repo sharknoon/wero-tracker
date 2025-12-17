@@ -1,22 +1,26 @@
-import type { WeroData } from "@/lib/types"
-import { Card, CardContent } from "@/components/ui/card"
-import { Building2, CheckCircle, Clock, Globe } from "lucide-react"
+import type { WeroData } from "@/lib/types";
+import { Card, CardContent } from "@/components/ui/card";
+import { Building2, CheckCircle, Clock, Globe } from "lucide-react";
 
 interface StatsOverviewProps {
-  data: WeroData
+  data: WeroData;
 }
 
 export function StatsOverview({ data }: StatsOverviewProps) {
-  const totalBanks = data.countries.reduce((acc, c) => acc + c.banks.length, 0)
+  const totalBanks = data.countries.reduce((acc, c) => acc + c.banks.length, 0);
   const supportedBanks = data.countries.reduce(
-    (acc, c) => acc + c.banks.filter((b) => b.overallStatus === "supported").length,
+    (acc, c) =>
+      acc + c.banks.filter((b) => b.overallStatus === "supported").length,
     0,
-  )
+  );
   const announcedBanks = data.countries.reduce(
-    (acc, c) => acc + c.banks.filter((b) => b.overallStatus === "announced").length,
+    (acc, c) =>
+      acc + c.banks.filter((b) => b.overallStatus === "announced").length,
     0,
-  )
-  const countriesWithSupport = data.countries.filter((c) => c.banks.some((b) => b.overallStatus === "supported")).length
+  );
+  const countriesWithSupport = data.countries.filter((c) =>
+    c.banks.some((b) => b.overallStatus === "supported"),
+  ).length;
 
   const stats = [
     {
@@ -47,7 +51,7 @@ export function StatsOverview({ data }: StatsOverviewProps) {
       icon: Clock,
       color: "text-status-announced",
     },
-  ]
+  ];
 
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -56,9 +60,15 @@ export function StatsOverview({ data }: StatsOverviewProps) {
           <CardContent className="p-4">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-wider">{stat.label}</p>
-                <p className={`text-3xl font-bold ${stat.color}`}>{stat.value}</p>
-                <p className="text-xs text-muted-foreground mt-1">{stat.subtext}</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider">
+                  {stat.label}
+                </p>
+                <p className={`text-3xl font-bold ${stat.color}`}>
+                  {stat.value}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {stat.subtext}
+                </p>
               </div>
               <stat.icon className={`${stat.color} opacity-50`} size={24} />
             </div>
@@ -66,5 +76,5 @@ export function StatsOverview({ data }: StatsOverviewProps) {
         </Card>
       ))}
     </div>
-  )
+  );
 }

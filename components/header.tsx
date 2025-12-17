@@ -1,10 +1,15 @@
-import { Github, ExternalLink, Info } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Github, ExternalLink, Info } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface HeaderProps {
-  dataSource: string
-  lastUpdated: string
+  dataSource: string;
+  lastUpdated: string;
 }
 
 export function Header({ dataSource, lastUpdated }: HeaderProps) {
@@ -17,8 +22,12 @@ export function Header({ dataSource, lastUpdated }: HeaderProps) {
               W
             </div>
             <div>
-              <h1 className="text-xl font-bold text-foreground">Wero Tracker</h1>
-              <p className="text-xs text-muted-foreground">European Payment Adoption Progress</p>
+              <h1 className="text-xl font-bold text-foreground">
+                Wero Tracker
+              </h1>
+              <p className="text-xs text-muted-foreground">
+                European Payment Adoption Progress
+              </p>
             </div>
           </div>
 
@@ -37,7 +46,12 @@ export function Header({ dataSource, lastUpdated }: HeaderProps) {
               </Tooltip>
             </TooltipProvider>
 
-            <Button variant="outline" size="sm" className="gap-2 bg-secondary border-border" asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 bg-secondary border-border"
+              asChild
+            >
               <a href={dataSource} target="_blank" rel="noopener noreferrer">
                 <Github size={16} />
                 <span className="hidden sm:inline">Contribute</span>
@@ -48,5 +62,5 @@ export function Header({ dataSource, lastUpdated }: HeaderProps) {
         </div>
       </div>
     </header>
-  )
+  );
 }

@@ -1,11 +1,11 @@
-import type { Bank } from "@/lib/types"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { StatusBadge, StatusDot } from "./status-badge"
-import { ExternalLink, Smartphone, Building2 } from "lucide-react"
-import { cn } from "@/lib/utils"
+import type { Bank } from "@/lib/types";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { StatusBadge, StatusDot } from "./status-badge";
+import { ExternalLink, Smartphone, Building2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface BankCardProps {
-  bank: Bank
+  bank: Bank;
 }
 
 export function BankCard({ bank }: BankCardProps) {
@@ -19,7 +19,9 @@ export function BankCard({ bank }: BankCardProps) {
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h3 className="font-semibold text-foreground truncate">{bank.name}</h3>
+                <h3 className="font-semibold text-foreground truncate">
+                  {bank.name}
+                </h3>
                 {bank.website && (
                   <a
                     href={bank.website}
@@ -31,43 +33,75 @@ export function BankCard({ bank }: BankCardProps) {
                   </a>
                 )}
               </div>
-              <p className="text-xs text-muted-foreground">Updated {new Date(bank.lastUpdated).toLocaleDateString()}</p>
+              <p className="text-xs text-muted-foreground">
+                Updated {new Date(bank.lastUpdated).toLocaleDateString()}
+              </p>
             </div>
           </div>
-          <StatusBadge status={bank.overallStatus} sources={bank.statusSources} showLabel />
+          <StatusBadge
+            status={bank.overallStatus}
+            sources={bank.statusSources}
+            showLabel
+          />
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Features Grid */}
         <div className="space-y-2">
-          <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Payment Features</h4>
+          <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            Payment Features
+          </h4>
           <div className="grid grid-cols-3 gap-2">
             <FeatureItem label="P2P" feature={bank.features.p2p} />
-            <FeatureItem label="Online" feature={bank.features.onlinePayments} />
+            <FeatureItem
+              label="Online"
+              feature={bank.features.onlinePayments}
+            />
             <FeatureItem label="Local" feature={bank.features.localPayments} />
           </div>
         </div>
 
         {/* App Availability */}
         <div className="space-y-2">
-          <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">App Availability</h4>
+          <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            App Availability
+          </h4>
           <div className="flex gap-3">
-            <AppBadge icon={Smartphone} label="Wero App" feature={bank.appAvailability.weroApp} />
-            <AppBadge icon={Building2} label="Bank App" feature={bank.appAvailability.bankingApp} />
+            <AppBadge
+              icon={Smartphone}
+              label="Wero App"
+              feature={bank.appAvailability.weroApp}
+            />
+            <AppBadge
+              icon={Building2}
+              label="Bank App"
+              feature={bank.appAvailability.bankingApp}
+            />
           </div>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
-function FeatureItem({ label, feature }: { label: string; feature: Bank["features"]["p2p"] }) {
+function FeatureItem({
+  label,
+  feature,
+}: {
+  label: string;
+  feature: Bank["features"]["p2p"];
+}) {
   return (
     <div className="flex flex-col items-center gap-1.5 rounded-lg bg-secondary/50 p-2">
       <span className="text-xs text-muted-foreground">{label}</span>
-      <StatusBadge status={feature.status} sources={feature.sources} notes={feature.notes} size="sm" />
+      <StatusBadge
+        status={feature.status}
+        sources={feature.sources}
+        notes={feature.notes}
+        size="sm"
+      />
     </div>
-  )
+  );
 }
 
 function AppBadge({
@@ -75,22 +109,24 @@ function AppBadge({
   label,
   feature,
 }: {
-  icon: typeof Smartphone
-  label: string
-  feature: Bank["appAvailability"]["weroApp"]
+  icon: typeof Smartphone;
+  label: string;
+  feature: Bank["appAvailability"]["weroApp"];
 }) {
-  const isAvailable = feature.status === "supported"
+  const isAvailable = feature.status === "supported";
 
   return (
     <div
       className={cn(
         "flex items-center gap-2 rounded-lg px-3 py-2 text-sm flex-1",
-        isAvailable ? "bg-status-supported/10 text-status-supported" : "bg-secondary/50 text-muted-foreground",
+        isAvailable
+          ? "bg-status-supported/10 text-status-supported"
+          : "bg-secondary/50 text-muted-foreground",
       )}
     >
       <Icon size={16} />
       <span className="text-xs">{label}</span>
       <StatusDot status={feature.status} />
     </div>
-  )
+  );
 }

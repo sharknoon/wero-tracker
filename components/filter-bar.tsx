@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import type { SupportStatus } from "@/lib/types"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Search, Filter } from "lucide-react"
+import type { SupportStatus } from "@/lib/types";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Search, Filter } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,16 +11,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 interface FilterBarProps {
-  searchQuery: string
-  onSearchChange: (query: string) => void
-  selectedStatuses: SupportStatus[]
-  onStatusChange: (statuses: SupportStatus[]) => void
-  selectedCountries: string[]
-  onCountryChange: (countries: string[]) => void
-  availableCountries: { code: string; name: string; flag: string }[]
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+  selectedStatuses: SupportStatus[];
+  onStatusChange: (statuses: SupportStatus[]) => void;
+  selectedCountries: string[];
+  onCountryChange: (countries: string[]) => void;
+  availableCountries: { code: string; name: string; flag: string }[];
 }
 
 export function FilterBar({
@@ -37,23 +37,23 @@ export function FilterBar({
     { value: "announced", label: "Announced" },
     { value: "coming-soon", label: "Coming Soon" },
     { value: "none", label: "Not Available" },
-  ]
+  ];
 
   const toggleStatus = (status: SupportStatus) => {
     if (selectedStatuses.includes(status)) {
-      onStatusChange(selectedStatuses.filter((s) => s !== status))
+      onStatusChange(selectedStatuses.filter((s) => s !== status));
     } else {
-      onStatusChange([...selectedStatuses, status])
+      onStatusChange([...selectedStatuses, status]);
     }
-  }
+  };
 
   const toggleCountry = (code: string) => {
     if (selectedCountries.includes(code)) {
-      onCountryChange(selectedCountries.filter((c) => c !== code))
+      onCountryChange(selectedCountries.filter((c) => c !== code));
     } else {
-      onCountryChange([...selectedCountries, code])
+      onCountryChange([...selectedCountries, code]);
     }
-  }
+  };
 
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -70,7 +70,10 @@ export function FilterBar({
       <div className="flex gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="gap-2 bg-secondary border-border">
+            <Button
+              variant="outline"
+              className="gap-2 bg-secondary border-border"
+            >
               <Filter size={16} />
               Status
               {selectedStatuses.length > 0 && (
@@ -97,7 +100,10 @@ export function FilterBar({
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="gap-2 bg-secondary border-border">
+            <Button
+              variant="outline"
+              className="gap-2 bg-secondary border-border"
+            >
               Countries
               {selectedCountries.length > 0 && (
                 <span className="ml-1 rounded-full bg-primary px-1.5 text-xs text-primary-foreground">
@@ -123,5 +129,5 @@ export function FilterBar({
         </DropdownMenu>
       </div>
     </div>
-  )
+  );
 }
