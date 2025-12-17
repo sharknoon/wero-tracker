@@ -1,6 +1,6 @@
 import type { WeroData } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
-import { Building2, CheckCircle, Clock, Globe } from "lucide-react";
+import { CircleCheck, Clock, Flag, Landmark } from "lucide-react";
 
 interface StatsOverviewProps {
   data: WeroData;
@@ -13,41 +13,43 @@ export function StatsOverview({ data }: StatsOverviewProps) {
       acc + c.banks.filter((b) => b.overallStatus === "supported").length,
     0,
   );
-  const announcedBanks = data.countries.reduce(
-    (acc, c) =>
-      acc + c.banks.filter((b) => b.overallStatus === "announced").length,
-    0,
+  const announcedBanks = data.countries.flatMap((c) =>
+    c.banks.filter((b) => b.overallStatus === "announced"),
   );
-  const countriesWithSupport = data.countries.filter((c) =>
-    c.banks.some((b) => b.overallStatus === "supported"),
-  ).length;
 
   const stats = [
     {
       label: "Countries",
       value: data.countries.length,
-      subtext: `${countriesWithSupport} with active support`,
-      icon: Globe,
+      subtext: `of ${data.countries.length} countries`,
+      icon: Flag,
       color: "text-primary",
     },
     {
       label: "Total Banks",
       value: totalBanks,
       subtext: "Tracked institutions",
-      icon: Building2,
-      color: "text-accent",
+      icon: Landmark,
+      color: "text-primary",
     },
     {
       label: "Supported",
       value: supportedBanks,
       subtext: `${Math.round((supportedBanks / totalBanks) * 100)}% of tracked banks`,
-      icon: CheckCircle,
+      icon: CircleCheck,
       color: "text-status-supported",
     },
     {
       label: "Announced",
-      value: announcedBanks,
-      subtext: "Coming soon",
+      value: announcedBanks.length,
+      subtext:
+        announcedBanks
+          .map((b) => b.name)
+          .slice(0, 2)
+          .join(", ") +
+        (announcedBanks.length > 2
+          ? `, and ${announcedBanks.length - 2} more`
+          : ""),
       icon: Clock,
       color: "text-status-announced",
     },
@@ -56,7 +58,7 @@ export function StatsOverview({ data }: StatsOverviewProps) {
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
       {stats.map((stat) => (
-        <Card key={stat.label} className="bg-card border-border">
+        <Card key={stat.label} className="p-0">
           <CardContent className="p-4">
             <div className="flex items-start justify-between">
               <div>
@@ -70,7 +72,7 @@ export function StatsOverview({ data }: StatsOverviewProps) {
                   {stat.subtext}
                 </p>
               </div>
-              <stat.icon className={`${stat.color} opacity-50`} size={24} />
+              <stat.icon className={`${stat.color}`} size={24} />
             </div>
           </CardContent>
         </Card>

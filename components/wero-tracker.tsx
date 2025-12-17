@@ -7,6 +7,7 @@ import { StatsOverview } from "./stats-overview";
 import { FilterBar } from "./filter-bar";
 import { Legend } from "./legend";
 import { CountrySection } from "./country-section";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface WeroTrackerProps {
   data: WeroData;
@@ -57,11 +58,10 @@ export function WeroTracker({ data }: WeroTrackerProps) {
   const availableCountries = data.countries.map((c) => ({
     code: c.code,
     name: c.name,
-    flag: c.flag,
   }));
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <Header dataSource={data.dataSource} lastUpdated={data.lastUpdated} />
 
       <main className="container mx-auto px-4 py-8 space-y-8">
@@ -82,11 +82,13 @@ export function WeroTracker({ data }: WeroTrackerProps) {
 
         <div className="space-y-6">
           {filteredData.countries.length === 0 ? (
-            <div className="rounded-lg border border-border bg-card p-12 text-center">
-              <p className="text-muted-foreground">
-                No banks found matching your filters.
-              </p>
-            </div>
+            <Card>
+              <CardContent className="p-4">
+                <p className="text-center text-muted-foreground">
+                  No banks found matching your filters.
+                </p>
+              </CardContent>
+            </Card>
           ) : (
             filteredData.countries.map((country, index) => (
               <CountrySection
@@ -108,7 +110,7 @@ export function WeroTracker({ data }: WeroTrackerProps) {
             </p>
             <div className="flex gap-4 text-xs text-muted-foreground">
               <a
-                href="https://www.wero.eu"
+                href="https://wero-wallet.eu"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-primary transition-colors"

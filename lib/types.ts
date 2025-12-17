@@ -1,4 +1,4 @@
-export type SupportStatus = "supported" | "announced" | "coming-soon" | "none";
+export type SupportStatus = "supported" | "announced" | "none";
 
 export interface SourceLink {
   label: string;
@@ -35,7 +35,6 @@ export interface Bank {
 export interface Country {
   code: string;
   name: string;
-  flag: string;
   banks: Bank[];
 }
 

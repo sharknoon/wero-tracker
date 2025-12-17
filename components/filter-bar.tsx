@@ -3,7 +3,7 @@
 import type { SupportStatus } from "@/lib/types";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Filter } from "lucide-react";
+import { Search, Filter, CircleCheck, Clock, CircleX } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +12,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { CountryFlag } from "./country-flag";
 
 interface FilterBarProps {
   searchQuery: string;
@@ -20,7 +26,7 @@ interface FilterBarProps {
   onStatusChange: (statuses: SupportStatus[]) => void;
   selectedCountries: string[];
   onCountryChange: (countries: string[]) => void;
-  availableCountries: { code: string; name: string; flag: string }[];
+  availableCountries: { code: string; name: string }[];
 }
 
 export function FilterBar({
@@ -32,11 +38,30 @@ export function FilterBar({
   onCountryChange,
   availableCountries,
 }: FilterBarProps) {
-  const statuses: { value: SupportStatus; label: string }[] = [
-    { value: "supported", label: "Supported" },
-    { value: "announced", label: "Announced" },
-    { value: "coming-soon", label: "Coming Soon" },
-    { value: "none", label: "Not Available" },
+  const statuses: {
+    icon: React.ElementType;
+    iconColor: string;
+    value: SupportStatus;
+    label: string;
+  }[] = [
+    {
+      icon: CircleCheck,
+      iconColor: "text-status-supported",
+      value: "supported",
+      label: "Supported",
+    },
+    {
+      icon: Clock,
+      iconColor: "text-status-announced",
+      value: "announced",
+      label: "Announced",
+    },
+    {
+      icon: CircleX,
+      iconColor: "text-status-none",
+      value: "none",
+      label: "Not Available",
+    },
   ];
 
   const toggleStatus = (status: SupportStatus) => {
@@ -57,77 +82,57 @@ export function FilterBar({
 
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-      <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
+      <InputGroup>
+        <InputGroupInput
           placeholder="Search banks..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-9 bg-secondary border-border"
         />
-      </div>
+        <InputGroupAddon>
+          <Search />
+        </InputGroupAddon>
+      </InputGroup>
 
-      <div className="flex gap-2">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className="gap-2 bg-secondary border-border"
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline">
+            <Filter size={16} />
+            Filter
+            {selectedStatuses.length + selectedCountries.length > 0 && (
+              <span className="ml-1 rounded-full bg-primary px-1.5 text-xs text-primary-foreground">
+                {selectedStatuses.length + selectedCountries.length}
+              </span>
+            )}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="bg-card border-border">
+          <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          {statuses.map((status) => (
+            <DropdownMenuCheckboxItem
+              key={status.value}
+              checked={selectedStatuses.includes(status.value)}
+              onCheckedChange={() => toggleStatus(status.value)}
             >
-              <Filter size={16} />
-              Status
-              {selectedStatuses.length > 0 && (
-                <span className="ml-1 rounded-full bg-primary px-1.5 text-xs text-primary-foreground">
-                  {selectedStatuses.length}
-                </span>
-              )}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-card border-border">
-            <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {statuses.map((status) => (
-              <DropdownMenuCheckboxItem
-                key={status.value}
-                checked={selectedStatuses.includes(status.value)}
-                onCheckedChange={() => toggleStatus(status.value)}
-              >
-                {status.label}
-              </DropdownMenuCheckboxItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className="gap-2 bg-secondary border-border"
+              <status.icon className={status.iconColor} size={16} />
+              {status.label}
+            </DropdownMenuCheckboxItem>
+          ))}
+          <DropdownMenuSeparator />
+          <DropdownMenuLabel>Filter by Country</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          {availableCountries.map((country) => (
+            <DropdownMenuCheckboxItem
+              key={country.code}
+              checked={selectedCountries.includes(country.code)}
+              onCheckedChange={() => toggleCountry(country.code)}
             >
-              Countries
-              {selectedCountries.length > 0 && (
-                <span className="ml-1 rounded-full bg-primary px-1.5 text-xs text-primary-foreground">
-                  {selectedCountries.length}
-                </span>
-              )}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-card border-border max-h-64 overflow-auto">
-            <DropdownMenuLabel>Filter by Country</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {availableCountries.map((country) => (
-              <DropdownMenuCheckboxItem
-                key={country.code}
-                checked={selectedCountries.includes(country.code)}
-                onCheckedChange={() => toggleCountry(country.code)}
-              >
-                <span className="mr-2">{country.flag}</span>
-                {country.name}
-              </DropdownMenuCheckboxItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+              <CountryFlag countryCode={country.code} size="sm" />
+              {country.name}
+            </DropdownMenuCheckboxItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

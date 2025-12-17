@@ -1,8 +1,9 @@
 import type { Bank } from "@/lib/types";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { StatusBadge, StatusDot } from "./status-badge";
-import { ExternalLink, Smartphone, Building2 } from "lucide-react";
+import { ExternalLink, Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ReactNode } from "react";
 
 interface BankCardProps {
   bank: Bank;
@@ -10,7 +11,7 @@ interface BankCardProps {
 
 export function BankCard({ bank }: BankCardProps) {
   return (
-    <Card className="bg-card border-border hover:border-primary/30 transition-colors">
+    <Card className="hover:border-primary/30 transition-colors">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
@@ -68,12 +69,12 @@ export function BankCard({ bank }: BankCardProps) {
           </h4>
           <div className="flex gap-3">
             <AppBadge
-              icon={Smartphone}
+              icon={<div className="font-bold">W</div>}
               label="Wero App"
               feature={bank.appAvailability.weroApp}
             />
             <AppBadge
-              icon={Building2}
+              icon={<Building2 size={16} />}
               label="Bank App"
               feature={bank.appAvailability.bankingApp}
             />
@@ -92,7 +93,7 @@ function FeatureItem({
   feature: Bank["features"]["p2p"];
 }) {
   return (
-    <div className="flex flex-col items-center gap-1.5 rounded-lg bg-secondary/50 p-2">
+    <div className="flex flex-col justify-between items-center gap-1.5 rounded-lg bg-secondary/50 p-2">
       <span className="text-xs text-muted-foreground">{label}</span>
       <StatusBadge
         status={feature.status}
@@ -105,26 +106,21 @@ function FeatureItem({
 }
 
 function AppBadge({
-  icon: Icon,
+  icon,
   label,
   feature,
 }: {
-  icon: typeof Smartphone;
+  icon: ReactNode;
   label: string;
   feature: Bank["appAvailability"]["weroApp"];
 }) {
-  const isAvailable = feature.status === "supported";
-
   return (
     <div
       className={cn(
-        "flex items-center gap-2 rounded-lg px-3 py-2 text-sm flex-1",
-        isAvailable
-          ? "bg-status-supported/10 text-status-supported"
-          : "bg-secondary/50 text-muted-foreground",
+        "flex items-center gap-2 rounded-lg px-3 py-2 text-sm flex-1 bg-secondary/50 text-muted-foreground",
       )}
     >
-      <Icon size={16} />
+      {icon}
       <span className="text-xs">{label}</span>
       <StatusDot status={feature.status} />
     </div>

@@ -1,6 +1,13 @@
 import { cn } from "@/lib/utils";
 import type { SupportStatus, SourceLink } from "@/lib/types";
-import { Check, Clock, Calendar, Minus, ExternalLink } from "lucide-react";
+import {
+  Check,
+  ExternalLink,
+  Info,
+  CircleCheck,
+  Clock,
+  CircleX,
+} from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -22,24 +29,19 @@ const statusConfig: Record<
 > = {
   supported: {
     label: "Supported",
-    icon: Check,
+    icon: CircleCheck,
     className:
       "bg-status-supported/20 text-status-supported border-status-supported/30",
   },
   announced: {
     label: "Announced",
-    icon: Calendar,
+    icon: Clock,
     className:
       "bg-status-announced/20 text-status-announced border-status-announced/30",
   },
-  "coming-soon": {
-    label: "Coming Soon",
-    icon: Clock,
-    className: "bg-status-coming/20 text-status-coming border-status-coming/30",
-  },
   none: {
     label: "Not Available",
-    icon: Minus,
+    icon: CircleX,
     className: "bg-status-none/20 text-status-none border-status-none/30",
   },
 };
@@ -55,9 +57,9 @@ export function StatusBadge({
   const Icon = config.icon;
 
   const sizeClasses = {
-    sm: "h-5 w-5 text-xs",
-    md: "h-6 w-6 text-sm",
-    lg: "h-8 w-8 text-base",
+    sm: "min-w-5 h-5 text-xs",
+    md: "min-w-6 h-6 text-sm",
+    lg: "min-w-8 h-8 text-base",
   };
 
   const iconSizes = {
@@ -89,19 +91,24 @@ export function StatusBadge({
         <TooltipTrigger asChild>
           <div className="cursor-help">{badge}</div>
         </TooltipTrigger>
-        <TooltipContent className="max-w-xs bg-card border-border">
+        <TooltipContent className="max-w-xs">
           <div className="space-y-2">
-            {notes && <p className="text-sm text-muted-foreground">{notes}</p>}
+            {notes && (
+              <p className="flex items-center gap-2 text-sm">
+                <Info size={14} />
+                {notes}
+              </p>
+            )}
             {sources && sources.length > 0 && (
               <div className="space-y-1">
-                <p className="text-xs font-medium text-foreground">Sources:</p>
+                <p className="text-xs font-medium">Sources:</p>
                 {sources.map((source, i) => (
                   <a
                     key={i}
                     href={source.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-xs text-primary hover:underline"
+                    className="flex items-center gap-1 text-xs hover:underline"
                   >
                     <ExternalLink size={10} />
                     {source.label}
@@ -120,13 +127,12 @@ export function StatusDot({ status }: { status: SupportStatus }) {
   const colorClasses: Record<SupportStatus, string> = {
     supported: "bg-status-supported",
     announced: "bg-status-announced",
-    "coming-soon": "bg-status-coming",
     none: "bg-status-none",
   };
 
   return (
     <span
-      className={cn("inline-block h-2 w-2 rounded-full", colorClasses[status])}
+      className={cn("inline-block size-2 rounded-full", colorClasses[status])}
     />
   );
 }

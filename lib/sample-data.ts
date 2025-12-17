@@ -7,7 +7,6 @@ export const sampleWeroData: WeroData = {
     {
       code: "DE",
       name: "Germany",
-      flag: "🇩🇪",
       banks: [
         {
           id: "sparkasse",
@@ -35,7 +34,7 @@ export const sampleWeroData: WeroData = {
               ],
             },
             localPayments: {
-              status: "coming-soon",
+              status: "announced",
               notes: "Expected Q1 2025",
               sources: [
                 { label: "Roadmap", url: "https://www.wero.eu/roadmap" },
@@ -159,7 +158,6 @@ export const sampleWeroData: WeroData = {
     {
       code: "FR",
       name: "France",
-      flag: "🇫🇷",
       banks: [
         {
           id: "bnp-paribas",
@@ -189,7 +187,7 @@ export const sampleWeroData: WeroData = {
               ],
             },
             localPayments: {
-              status: "coming-soon",
+              status: "announced",
               notes: "Pilot program active",
             },
           },
@@ -239,7 +237,6 @@ export const sampleWeroData: WeroData = {
     {
       code: "BE",
       name: "Belgium",
-      flag: "🇧🇪",
       banks: [
         {
           id: "kbc",
@@ -249,7 +246,7 @@ export const sampleWeroData: WeroData = {
           features: {
             p2p: { status: "supported" },
             onlinePayments: { status: "supported" },
-            localPayments: { status: "coming-soon" },
+            localPayments: { status: "announced" },
           },
           appAvailability: {
             weroApp: { status: "supported" },
@@ -278,7 +275,6 @@ export const sampleWeroData: WeroData = {
     {
       code: "NL",
       name: "Netherlands",
-      flag: "🇳🇱",
       banks: [
         {
           id: "ing-nl",
@@ -320,7 +316,6 @@ export const sampleWeroData: WeroData = {
     {
       code: "ES",
       name: "Spain",
-      flag: "🇪🇸",
       banks: [
         {
           id: "santander",
@@ -330,7 +325,7 @@ export const sampleWeroData: WeroData = {
           features: {
             p2p: { status: "supported" },
             onlinePayments: { status: "supported" },
-            localPayments: { status: "coming-soon" },
+            localPayments: { status: "announced" },
           },
           appAvailability: {
             weroApp: { status: "supported" },

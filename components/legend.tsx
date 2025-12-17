@@ -4,12 +4,11 @@ export function Legend() {
   const items = [
     { status: "supported" as const, label: "Supported" },
     { status: "announced" as const, label: "Announced" },
-    { status: "coming-soon" as const, label: "Coming Soon" },
     { status: "none" as const, label: "Not Available" },
   ];
 
   return (
-    <div className="flex flex-wrap gap-4 rounded-lg bg-secondary/50 px-4 py-3">
+    <div className="flex flex-wrap items-center gap-4 rounded-lg bg-card px-4 py-3">
       <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
         Legend:
       </span>
