@@ -1,11 +1,10 @@
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { StatusBadge, StatusDot } from "./status-badge";
 import { Check, ChevronDown, ExternalLink, Landmark } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Bank, Brand, SupportStatus, WeroData } from "@/lib/schema";
-import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
@@ -33,7 +32,10 @@ export function BrandCard({ brand, weroApp }: BrandCardProps) {
         <div className="flex items-start justify-between gap-3 overflow-hidden">
           <div className="flex items-center gap-3 min-w-0">
             <Avatar className="size-10 rounded-lg">
-              <AvatarImage src={brand.logoUrl} className="bg-white p-1" />
+              <AvatarImage
+                src={selectedBank.logoUrl ?? brand.logoUrl}
+                className="bg-white p-1"
+              />
               <AvatarFallback className="rounded-lg">
                 {brand.name.substring(0, 2).toUpperCase()}
               </AvatarFallback>
@@ -146,7 +148,7 @@ function BankSelectorComboBox({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button className="flex gap-1 items-center justify-between text-xs text-muted-foreground hover:text-foreground transition-colors">
+        <button className="flex gap-1 items-center justify-between text-sm text-muted-foreground hover:text-foreground transition-colors">
           {selectedBank
             ? banks.find((bank) => bank.id === selectedBank)?.name
             : "Select bank..."}
