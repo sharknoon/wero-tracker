@@ -11,13 +11,13 @@ import Image from "next/image";
 
 export interface HeaderProps {
   sourceRepositoryLink: string;
-  dataRepositoryLink: string;
+  contributionGuideLink: string;
   lastUpdated: Date;
 }
 
 export function Header({
   sourceRepositoryLink,
-  dataRepositoryLink,
+  contributionGuideLink,
   lastUpdated,
 }: HeaderProps) {
   return (
@@ -58,7 +58,7 @@ export function Header({
 
             <Button variant="outline" size="sm" className="gap-2" asChild>
               <a
-                href={dataRepositoryLink}
+                href={contributionGuideLink}
                 target="_blank"
                 rel="noopener noreferrer"
               >

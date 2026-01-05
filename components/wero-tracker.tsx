@@ -1,13 +1,22 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useSyncExternalStore } from "react";
 import { Header } from "./header";
 import { StatsOverview } from "./stats-overview";
 import { FilterBar } from "./filter-bar";
 import { Legend } from "./legend";
 import { CountrySection } from "./country-section";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { SupportStatus, WeroData } from "@/lib/schema";
+import { Plus, SearchX } from "lucide-react";
+import { Button } from "./ui/button";
 
 interface WeroTrackerProps {
   data: WeroData;
@@ -20,6 +29,10 @@ export function WeroTracker({ data }: WeroTrackerProps) {
   const lastUpdated = new Date();
   const sourceRepositoryLink = "https://github.com/sharknoon/wero-tracker";
   const dataRepositoryLink = "https://github.com/sharknoon/wero-tracker-data";
+  const contributionGuideLink =
+    "https://github.com/sharknoon/wero-tracker-data/blob/main/README.md";
+  const addBankLink =
+    "https://github.com/sharknoon/wero-tracker-data/blob/main/README.md";
 
   const filteredData = useMemo(() => {
     return {
@@ -65,26 +78,51 @@ export function WeroTracker({ data }: WeroTrackerProps) {
     }, new Set<string>()),
   ).sort();
 
+  // Get user's country from browser locale (using useSyncExternalStore to avoid hydration mismatch)
+  const userCountry = useSyncExternalStore(
+    () => () => {}, // No subscription needed for static value
+    () => {
+      // Client: extract country from browser locale
+      const locale = navigator.language || navigator.languages?.[0];
+      console.log("Locale detected:", locale);
+      if (locale) {
+        const parts = locale.split("-");
+        if (parts.length === 1 && parts[0].length === 2) {
+          return parts[0].toUpperCase();
+        } else if (parts.length > 1 && parts[1].length === 2) {
+          return parts[1].toUpperCase();
+        }
+      }
+      return null;
+    },
+    () => null, // Server: return null to avoid hydration mismatch
+  );
+
   const filteredCountries = useMemo(() => {
     const countryMap = new Map<string, typeof data.brands>();
 
     filteredData.brands.forEach((brand) => {
-      brand.countries.forEach((countryCode) => {
-        if (!countryMap.has(countryCode)) {
-          countryMap.set(countryCode, []);
-        }
-        countryMap.get(countryCode)!.push(brand);
-      });
+      brand.countries
+        .filter(
+          (code) =>
+            selectedCountries.length === 0 || selectedCountries.includes(code),
+        )
+        .forEach((countryCode) => {
+          if (!countryMap.has(countryCode)) {
+            countryMap.set(countryCode, []);
+          }
+          countryMap.get(countryCode)!.push(brand);
+        });
     });
 
     return countryMap;
-  }, [data, filteredData.brands]);
+  }, [data, filteredData.brands, selectedCountries]);
 
   return (
     <div className="min-h-screen">
       <Header
         sourceRepositoryLink={sourceRepositoryLink}
-        dataRepositoryLink={dataRepositoryLink}
+        contributionGuideLink={contributionGuideLink}
         lastUpdated={lastUpdated}
       />
 
@@ -106,22 +144,49 @@ export function WeroTracker({ data }: WeroTrackerProps) {
 
         <div className="space-y-6">
           {filteredData.brands.length === 0 ? (
-            <Card>
-              <CardContent className="p-4">
-                <p className="text-center text-muted-foreground">
-                  No banks found matching your filters.
-                </p>
-              </CardContent>
-            </Card>
+            <Empty className="border">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <SearchX />
+                </EmptyMedia>
+                <EmptyTitle>No banks found</EmptyTitle>
+                <EmptyDescription>
+                  No banks found matching your filters. You can help by adding
+                  missing banks via the data repository.
+                </EmptyDescription>
+              </EmptyHeader>
+              <EmptyContent>
+                <div className="flex gap-2">
+                  <Button asChild>
+                    <a
+                      href={addBankLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Plus />
+                      Add missing bank
+                    </a>
+                  </Button>
+                </div>
+              </EmptyContent>
+            </Empty>
           ) : (
-            [...filteredCountries].map(([code, brands]) => (
-              <CountrySection
-                key={code}
-                countryCode={code}
-                brands={brands}
-                weroApp={data.standaloneAppResource}
-              />
-            ))
+            [...filteredCountries]
+              .sort(([a], [b]) => {
+                if (userCountry) {
+                  if (a === userCountry) return -1;
+                  if (b === userCountry) return 1;
+                }
+                return a.localeCompare(b);
+              })
+              .map(([code, brands]) => (
+                <CountrySection
+                  key={code}
+                  countryCode={code}
+                  brands={brands}
+                  weroApp={data.standaloneAppResource}
+                />
+              ))
           )}
         </div>
 

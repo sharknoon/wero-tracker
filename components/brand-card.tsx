@@ -224,7 +224,7 @@ function AppBadge({
       rel="noopener noreferrer"
     >
       <Avatar className="size-8 rounded-lg">
-        <AvatarImage src={iconUrl} className="bg-white p-1 object-contain" />
+        <AvatarImage src={iconUrl} className="bg-white object-contain" />
         <AvatarFallback className="rounded-lg">
           {name.substring(0, 2).toUpperCase()}
         </AvatarFallback>

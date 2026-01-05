@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Flag, Landmark } from "lucide-react";
+import { CircleCheck, CircleX, Clock, Flag, Landmark } from "lucide-react";
 import { WeroData } from "@/lib/schema";
 
 interface StatsOverviewProps {
@@ -7,31 +7,57 @@ interface StatsOverviewProps {
 }
 
 export function StatsOverview({ data }: StatsOverviewProps) {
-  const supportedCountries = data.brands.reduce((acc, brand) => {
+  const supportedBrands = data.brands.filter(
+    (b) => b.weroSupport === "supported",
+  );
+  const announcedBrands = data.brands.filter(
+    (b) => b.weroSupport === "announced",
+  );
+
+  const supportedCountries = supportedBrands.reduce((acc, brand) => {
     brand.countries.forEach((country) => acc.add(country));
     return acc;
-  }, new Set<string>()).size;
-  const supportedBrands = data.brands.length;
-  const supportedBanks = data.brands.reduce(
-    (acc, c) => acc + c.banks.length,
-    0,
+  }, new Set<string>());
+  const announcedCountries = announcedBrands.reduce((acc, brand) => {
+    brand.countries.forEach((country) => acc.add(country));
+    return acc;
+  }, new Set<string>());
+  const additionallyAnnouncedCountries = Array.from(announcedCountries).filter(
+    (country) => !supportedCountries.has(country),
   );
+  const numberOfSupportedBrands = supportedBrands.length;
+  const numberOfAnnouncedBrands = announcedBrands.length;
   const euMemberCountries = 27;
 
   const stats = [
     {
       label: "Countries",
-      value: supportedCountries,
-      subtext: `of ${euMemberCountries} countries`,
+      value: supportedCountries.size,
+      subtext: `of ${euMemberCountries} countries (+${additionallyAnnouncedCountries.length} announced)`,
       icon: Flag,
       color: "text-primary",
     },
     {
-      label: "Supported Brands",
-      value: supportedBrands,
-      subtext: `by ${supportedBanks} banks`,
-      icon: Landmark,
-      color: "text-primary",
+      label: "Supported Banks",
+      value: numberOfSupportedBrands,
+      subtext: `${data.brands.length > 0 ? Math.round((numberOfSupportedBrands / data.brands.length) * 100) : 0}% of tracked banks (${data.brands.length} total)`,
+      icon: CircleCheck,
+      color: "text-status-supported",
+    },
+    {
+      label: "Announced Banks",
+      value: numberOfAnnouncedBrands,
+      subtext: "that have announced support, but not yet launched",
+      icon: Clock,
+      color: "text-status-announced",
+    },
+    {
+      label: "Unsupported Banks",
+      value:
+        data.brands.length - numberOfSupportedBrands - numberOfAnnouncedBrands,
+      subtext: `that have not announced support yet`,
+      icon: CircleX,
+      color: "text-status-unsupported",
     },
   ];
 
