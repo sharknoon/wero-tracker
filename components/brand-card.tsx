@@ -34,7 +34,7 @@ export function BrandCard({ brand, weroApp }: BrandCardProps) {
             <Avatar className="size-10 rounded-lg">
               <AvatarImage
                 src={selectedBank.logoUrl ?? brand.logoUrl}
-                className="bg-white p-1"
+                className="bg-white p-1 object-contain"
               />
               <AvatarFallback className="rounded-lg">
                 {brand.name.substring(0, 2).toUpperCase()}
@@ -109,7 +109,7 @@ export function BrandCard({ brand, weroApp }: BrandCardProps) {
                   key={app.id}
                   iconUrl={app.iconUrl}
                   name={app.name}
-                  status="supported"
+                  status={app.weroSupport}
                   link={app.universalLink}
                 />
               );
@@ -217,14 +217,14 @@ function AppBadge({
   return (
     <a
       className={cn(
-        "flex items-center gap-2 rounded-lg px-3 py-2 text-sm flex-1 bg-secondary/50 text-muted-foreground hover:border-primary/30 transition-colors",
+        "flex items-center gap-2 rounded-lg px-3 py-2 text-sm flex-1 bg-secondary/50 text-muted-foreground hover:bg-secondary transition-colors",
       )}
       href={link}
       target="_blank"
       rel="noopener noreferrer"
     >
       <Avatar className="size-8 rounded-lg">
-        <AvatarImage src={iconUrl} className="bg-white p-1" />
+        <AvatarImage src={iconUrl} className="bg-white p-1 object-contain" />
         <AvatarFallback className="rounded-lg">
           {name.substring(0, 2).toUpperCase()}
         </AvatarFallback>

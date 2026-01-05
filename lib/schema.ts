@@ -40,6 +40,7 @@ export const weroDataSchema = zod.strictObject({
           iconUrl: zod.url(),
           universalLink: zod.url(),
           supportsDesktop: zod.boolean(),
+          weroSupport: supportStatusSchema,
         }),
       ),
     }),
