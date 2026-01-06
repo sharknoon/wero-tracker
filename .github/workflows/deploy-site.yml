@@ -30,7 +30,7 @@ jobs:
       - uses: actions/configure-pages@v5
         with:
           static_site_generator: next
-      - run: npm ci
+      - run: npm ci -w website
       - run: npm run build
         working-directory: ./packages/website
         env:

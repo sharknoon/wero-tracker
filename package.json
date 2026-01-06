@@ -1,6 +1,5 @@
 {
   "workspaces": [
-    "packages/website",
-    "packages/data"
+    "packages/*"
   ]
 }
