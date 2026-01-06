@@ -1,0 +1,52 @@
+<svg aria-labelledby="lsgs-daf82--logo-lcrig0x9-title" class="lsgs-daf82--logo-small-svg lsgs-daf82--logo-svg"
+  data-name="Logo small RGB" focusable="false" height="100" id="lsgs-daf82--logo-lcrig0x9"
+  preserveaspectratio="xMinYMin meet" role="img" viewBox="0, 0, 116, 100" width="116" x="0"
+  xmlns="http://www.w3.org/2000/svg" y="0">
+  <title id="lsgs-daf82--logo-lcrig0x9-title">Commerzbank Logo</title>
+  <defs>
+    <radialGradient cx="71.521" cy="-0.119" data-name="Coba / RGB / Gradient" gradientUnits="userSpaceOnUse"
+      id="lsgs-daf82--logo-lcrig0x9-gradient" r="89.01">
+      <stop offset="0" stop-color="#FFEF19"></stop>
+      <stop offset="0.246" stop-color="#FFDF08"></stop>
+      <stop offset="0.44" stop-color="#FFD700"></stop>
+      <stop offset="0.588" stop-color="#FDD401"></stop>
+      <stop offset="0.713" stop-color="#F7C903"></stop>
+      <stop offset="0.829" stop-color="#ECB808"></stop>
+      <stop offset="0.9" stop-color="#E3A90B"></stop>
+      <stop offset="1" stop-color="#D98B07"></stop>
+    </radialGradient>
+    <radialGradient cx="7.446" cy="65.031" data-name="Coba / RGB / Gradient" gradientUnits="userSpaceOnUse"
+      id="lsgs-daf82--logo-lcrig0x9-gradient-2" r="88.459">
+      <stop offset="0" stop-color="#FFEF19"></stop>
+      <stop offset="0.246" stop-color="#FFDF08"></stop>
+      <stop offset="0.44" stop-color="#FFD700"></stop>
+      <stop offset="0.588" stop-color="#FDD401"></stop>
+      <stop offset="0.713" stop-color="#F7C903"></stop>
+      <stop offset="0.829" stop-color="#ECB808"></stop>
+      <stop offset="0.9" stop-color="#E3A90B"></stop>
+      <stop offset="1" stop-color="#D98B07"></stop>
+    </radialGradient>
+    <radialGradient cx="95.135" cy="88.224" data-name="Coba / RGB / Gradient" gradientUnits="userSpaceOnUse"
+      id="lsgs-daf82--logo-lcrig0x9-gradient-3" r="88.939">
+      <stop offset="0" stop-color="#FFEF19"></stop>
+      <stop offset="0.246" stop-color="#FFDF08"></stop>
+      <stop offset="0.44" stop-color="#FFD700"></stop>
+      <stop offset="0.588" stop-color="#FDD401"></stop>
+      <stop offset="0.713" stop-color="#F7C903"></stop>
+      <stop offset="0.829" stop-color="#ECB808"></stop>
+      <stop offset="0.9" stop-color="#E3A90B"></stop>
+      <stop offset="1" stop-color="#D98B07"></stop>
+    </radialGradient>
+  </defs>
+  <g id="Bildmarke">
+    <path
+      d="M73.974,0 L72.95,0 L70.799,0 L70.799,0 L31.259,0 C31.223,0 31.191,0.019 31.173,0.05 L0.513,53.157 C0.496,53.188 0.496,53.226 0.513,53.257 L22.308,91.012 C22.225,90.75 22.078,90.459 22.078,90.459 C21.619,89.604 21.277,88.94 21.094,88.522 C20.202,86.479 19.682,83.659 19.826,80.91 C20.187,73.671 23.806,66.531 25.734,63.187 C30.28,55.326 39.053,40.131 39.053,40.131 C39.053,40.131 47.826,24.931 52.358,17.071 C53.482,15.125 55.396,11.977 57.997,8.91 L58.08,9.004 C58.08,9.004 58.175,8.9 58.18,8.895 C60.048,6.694 62.272,4.533 64.805,2.895 C67.124,1.398 69.829,0.433 72.048,0.189 C72.781,0.107 73.956,0 73.956,0"
+      fill="url(#lsgs-daf82--logo-lcrig0x9-gradient)"></path>
+    <path
+      d="M111.023,60.911 C110.003,62.622 109.208,63.894 108.778,64.487 C107.462,66.281 105.271,68.148 102.824,69.402 C96.366,72.709 88.266,72.94 84.398,72.94 C75.319,72.94 57.997,72.94 57.997,72.94 C57.997,72.94 40.451,72.94 31.369,72.94 C27.508,72.94 19.625,72.709 13.177,69.402 C10.729,68.148 8.535,66.281 7.218,64.487 C6.784,63.894 6.225,63.152 6.225,63.152 L27.467,99.949 C27.485,99.98 27.518,100 27.554,100 L88.432,100 C88.468,100 88.5,99.98 88.518,99.949 L111.146,60.769 C111.146,60.769 111.099,60.781 111.023,60.911 z"
+      fill="url(#lsgs-daf82--logo-lcrig0x9-gradient-2)"></path>
+    <path
+      d="M84.733,-0 L73.787,-0 C73.787,-0 72.612,0.107 71.879,0.189 C69.66,0.433 66.955,1.398 64.635,2.895 C62.096,4.537 59.868,6.704 57.997,8.91 C60.597,11.977 62.516,15.124 63.63,17.071 C68.168,24.931 76.951,40.131 76.951,40.131 C76.951,40.131 85.717,55.326 90.258,63.187 C92.189,66.531 95.814,73.671 96.171,80.91 C96.295,83.405 95.882,85.957 95.14,87.935 L94.494,89.602 L115.486,53.254 C115.504,53.223 115.504,53.185 115.486,53.154 L84.82,0.05 C84.802,0.019 84.769,-0 84.733,-0 z"
+      fill="url(#lsgs-daf82--logo-lcrig0x9-gradient-3)"></path>
+  </g>
+</svg>

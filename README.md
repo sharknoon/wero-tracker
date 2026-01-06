@@ -1,4 +1,5 @@
 [![Deploy site](https://github.com/sharknoon/wero-tracker/actions/workflows/deploy.yml/badge.svg)](https://github.com/sharknoon/wero-tracker/actions/workflows/deploy.yml)
+[![Build single json file](https://github.com/sharknoon/wero-tracker-data/actions/workflows/build.yml/badge.svg)](https://github.com/sharknoon/wero-tracker-data/actions/workflows/build.yml)
 
 # Wero Adoption Tracker
 
@@ -24,5 +25,16 @@ Some banks decide to implement Wero using their own banking app. Others use the 
 
 ## Contribution
 
-If you want to help with gathering, updating, and fixing the data of the Wero Tracker, please visit the [Wero Tracker Data Repository](https://github.com/sharknoon/wero-tracker-data).  
-Every contribution is highly welcome — thanks in advance 😀
+This project heavily relies on up-to-date informations about the current state of the Wero Adoption of individual banks.
+
+You can help this project in several ways:
+
+- Report missing banks [via an GitHub Issue](https://github.com/sharknoon/wero-tracker-data/issues/new?template=add-missing-bank.md)
+- Report missing, false or oudated informations [via an GitHub Issue](#)
+- Improve the dashboard website by [forking it](https://github.com/sharknoon/wero-tracker/fork)
+
+Thank you very much in advance 😀
+
+## Legal
+
+All logos are trademarks of their respective companies. Used here for educational and informational purposes only.

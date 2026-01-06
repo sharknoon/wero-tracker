@@ -1,0 +1,35 @@
+name: Update data.json
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    working-directory: ./packages/wero-tracker-data
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm run update
+        env:
+          WERO_API_URL: ${{ vars.WTD_WERO_API_URL }}
+          GITHUB_ORG: ${{ github.repository_owner }}
+          GITHUB_REPO: ${{ github.event.repository.name }}
+          GITHUB_REF: ${{ github.ref }}
+          ASSET_PATH: packages/wero-tracker-data/assets
+      - name: Commit bundled data
+        run: |
+          git config --global user.name 'GitHub Actions Bot'
+          git config --global user.email 'sharknoon@users.noreply.github.com'
+          git diff --quiet && git diff --staged --quiet || (git commit -am "Automated data update" && git push)
