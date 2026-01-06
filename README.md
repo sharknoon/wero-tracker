@@ -1,5 +1,5 @@
-[![Deploy site](https://github.com/sharknoon/wero-tracker/actions/workflows/deploy.yml/badge.svg)](https://github.com/sharknoon/wero-tracker/actions/workflows/deploy.yml)
-[![Build single json file](https://github.com/sharknoon/wero-tracker-data/actions/workflows/build.yml/badge.svg)](https://github.com/sharknoon/wero-tracker-data/actions/workflows/build.yml)
+[![Deploy site](https://github.com/sharknoon/wero-tracker/actions/workflows/deploy-site.yml/badge.svg)](https://github.com/sharknoon/wero-tracker/actions/workflows/deploy-site.yml)
+[![Update data.json](https://github.com/sharknoon/wero-tracker/actions/workflows/update-data-json.yml/badge.svg)](https://github.com/sharknoon/wero-tracker/actions/workflows/update-data-json.yml)
 
 # Wero Adoption Tracker
 
@@ -31,7 +31,7 @@ You can help this project in several ways:
 
 - Report missing banks [via an GitHub Issue](https://github.com/sharknoon/wero-tracker-data/issues/new?template=add-missing-bank.md)
 - Report missing, false or oudated informations [via an GitHub Issue](#)
-- Improve the dashboard website by [forking it](https://github.com/sharknoon/wero-tracker/fork)
+- Improve the website or change data directly by [forking it](https://github.com/sharknoon/wero-tracker/fork)
 
 Thank you very much in advance 😀
 
