@@ -26,13 +26,17 @@ export function WeroTracker({ data }: WeroTrackerProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatuses, setSelectedStatuses] = useState<SupportStatus[]>([]);
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
+
+  // This site will be prerendered, so we can use a fixed date for "last updated"
   const lastUpdated = new Date();
-  const sourceRepositoryLink = "https://github.com/sharknoon/wero-tracker";
-  const dataRepositoryLink = "https://github.com/sharknoon/wero-tracker-data";
-  const contributionGuideLink =
-    "https://github.com/sharknoon/wero-tracker-data/blob/main/README.md";
-  const addBankLink =
-    "https://github.com/sharknoon/wero-tracker-data/blob/main/README.md";
+
+  const sourceRepository = process.env.NEXT_PUBLIC_WT_SOURCE_REPOSITORY ?? "#";
+  const dataRepository = process.env.NEXT_PUBLIC_WT_DATA_REPOSITORY ?? "#";
+  const contributionGuidelines =
+    process.env.NEXT_PUBLIC_WT_CONTRIBUTION_GUIDELINES ?? "#";
+  const newBankLink = process.env.NEXT_PUBLIC_WT_NEW_BANK_LINK ?? "#";
+  const officialWeroWebsite =
+    process.env.NEXT_PUBLIC_WT_OFFICIAL_WERO_WEBSITE ?? "#";
 
   const filteredData = useMemo(() => {
     return {
@@ -121,8 +125,8 @@ export function WeroTracker({ data }: WeroTrackerProps) {
   return (
     <div className="min-h-screen">
       <Header
-        sourceRepositoryLink={sourceRepositoryLink}
-        contributionGuideLink={contributionGuideLink}
+        sourceRepository={sourceRepository}
+        contributionGuidelines={contributionGuidelines}
         lastUpdated={lastUpdated}
       />
 
@@ -159,7 +163,7 @@ export function WeroTracker({ data }: WeroTrackerProps) {
                 <div className="flex gap-2">
                   <Button asChild>
                     <a
-                      href={addBankLink}
+                      href={newBankLink}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -200,7 +204,7 @@ export function WeroTracker({ data }: WeroTrackerProps) {
             </p>
             <div className="flex gap-4 text-xs text-muted-foreground">
               <a
-                href="https://wero-wallet.eu"
+                href={officialWeroWebsite}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-primary transition-colors"
@@ -209,7 +213,7 @@ export function WeroTracker({ data }: WeroTrackerProps) {
               </a>
               <span>•</span>
               <a
-                href={sourceRepositoryLink}
+                href={sourceRepository}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-primary transition-colors"
@@ -218,7 +222,7 @@ export function WeroTracker({ data }: WeroTrackerProps) {
               </a>
               <span>•</span>
               <a
-                href={dataRepositoryLink}
+                href={dataRepository}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-primary transition-colors"

@@ -10,14 +10,14 @@ import {
 import Image from "next/image";
 
 export interface HeaderProps {
-  sourceRepositoryLink: string;
-  contributionGuideLink: string;
+  sourceRepository: string;
+  contributionGuidelines: string;
   lastUpdated: Date;
 }
 
 export function Header({
-  sourceRepositoryLink,
-  contributionGuideLink,
+  sourceRepository,
+  contributionGuidelines,
   lastUpdated,
 }: HeaderProps) {
   return (
@@ -58,7 +58,7 @@ export function Header({
 
             <Button variant="outline" size="sm" className="gap-2" asChild>
               <a
-                href={contributionGuideLink}
+                href={contributionGuidelines}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -68,7 +68,7 @@ export function Header({
             </Button>
             <Button variant="ghost" size="sm" className="gap-2" asChild>
               <a
-                href={sourceRepositoryLink}
+                href={sourceRepository}
                 target="_blank"
                 rel="noopener noreferrer"
               >

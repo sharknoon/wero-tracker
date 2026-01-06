@@ -32,6 +32,13 @@ jobs:
           static_site_generator: next
       - run: npm ci
       - run: npm run build
+        env:
+          NEXT_PUBLIC_WT_SOURCE_REPOSITORY: ${{ github.server_url }}/${{ github.repository }}
+          NEXT_PUBLIC_WT_DATA_REPOSITORY: ${{ vars.WT_DATA_REPOSITORY }}
+          NEXT_PUBLIC_WT_CONTRIBUTION_GUIDELINES: ${{ vars.WT_CONTRIBUTION_GUIDELINES }}
+          NEXT_PUBLIC_WT_NEW_BANK_LINK: ${{ vars.WT_NEW_BANK_LINK }}
+          NEXT_PUBLIC_WT_OFFICIAL_WERO_WEBSITE: ${{ vars.WT_OFFICIAL_WERO_WEBSITE }}
+          NEXT_PUBLIC_WT_DATA_URL: ${{ vars.WT_DATA_URL }}
       - uses: actions/upload-pages-artifact@v4
         with:
           path: ./out
