@@ -131,7 +131,13 @@ export function StatusBadge({
   );
 }
 
-export function StatusDot({ status }: { status: SupportStatus }) {
+export function StatusDot({
+  status,
+  className,
+}: {
+  status: SupportStatus;
+  className?: string;
+}) {
   const colorClasses: Record<SupportStatus, string> = {
     supported: "bg-status-supported",
     announced: "bg-status-announced",
@@ -141,7 +147,11 @@ export function StatusDot({ status }: { status: SupportStatus }) {
 
   return (
     <span
-      className={cn("inline-block size-2 rounded-full", colorClasses[status])}
+      className={cn(
+        "inline-block size-2 rounded-full",
+        colorClasses[status],
+        className,
+      )}
     />
   );
 }

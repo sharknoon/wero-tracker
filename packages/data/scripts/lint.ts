@@ -2,8 +2,8 @@ import "dotenv/config";
 import fs from "node:fs/promises";
 import path from "node:path";
 import {
-  type WeroApp,
-  weroDataSchema,
+  type BankingApp,
+  dataSchema,
   type SupportStatus,
 } from "./common/schema.ts";
 import { exists, rootDir } from "./common/fs.ts";
@@ -77,9 +77,9 @@ if (!(await exists(path.join(rootDir, "data.json")))) {
 
 const fileContent = await fs.readFile(path.join(rootDir, "data.json"), "utf-8");
 const json = JSON.parse(fileContent);
-const data = weroDataSchema.parse(json);
+const data = dataSchema.parse(json);
 
-for (const brand of data.brands) {
+for (const brand of data.banks.brands) {
   // Check for missing websites
   for (const bank of brand.banks) {
     if (
@@ -103,7 +103,7 @@ for (const brand of data.brands) {
       )}) have any banking apps?`
     );
     if (confirmAddApps) {
-      const newApp: WeroApp = {
+      const newApp: BankingApp = {
         id: crypto.randomUUID(),
         name: "",
         iconUrl: "",
@@ -158,7 +158,7 @@ for (const brand of data.brands) {
   }
 }
 
-data.brands.sort((a, b) => a.name.localeCompare(b.name));
+data.banks.brands.sort((a, b) => a.name.localeCompare(b.name));
 
 await fs.writeFile(
   path.join(rootDir, "data.json"),
@@ -169,9 +169,9 @@ await fs.writeFile(
 // Check if there are unused assets
 const usedAssets = new Set<string>();
 usedAssets.add(
-  new URL(data.standaloneAppResource.iconUrl).pathname.split("/").pop()!
+  new URL(data.banks.standaloneAppResource.iconUrl).pathname.split("/").pop()!
 );
-for (const brand of data.brands) {
+for (const brand of data.banks.brands) {
   if (brand.logoUrl) {
     usedAssets.add(new URL(brand.logoUrl).pathname.split("/").pop()!);
   }

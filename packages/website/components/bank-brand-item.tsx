@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { StatusBadge, StatusDot } from "./status-badge";
 import { Check, ChevronDown, ExternalLink, Landmark } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Bank, Brand, SupportStatus, WeroData } from "@/lib/schema";
+import { Bank, BankBrand, SupportStatus, Data } from "@/lib/schema";
 import {
   Popover,
   PopoverContent,
@@ -19,16 +19,16 @@ import {
   CommandList,
 } from "@/components/ui/command";
 
-interface BrandCardProps {
-  brand: Brand;
-  weroApp: WeroData["standaloneAppResource"];
+interface BankBrandItemProps {
+  brand: BankBrand;
+  weroApp: Data["banks"]["standaloneAppResource"];
 }
 
-export function BrandCard({ brand, weroApp }: BrandCardProps) {
+export function BankBrandItem({ brand, weroApp }: BankBrandItemProps) {
   const [selectedBank, setSelectedBank] = useState<Bank>(brand.banks[0]);
   return (
-    <Card>
-      <CardHeader className="pb-3">
+    <Card className="bg-transparent py-4">
+      <CardHeader className="px-4 pb-3">
         <div className="flex items-start justify-between gap-3 overflow-hidden">
           <div className="flex items-center gap-3 min-w-0">
             <Avatar className="size-10 rounded-lg">
@@ -73,7 +73,7 @@ export function BrandCard({ brand, weroApp }: BrandCardProps) {
           <StatusBadge status={brand.weroSupport} sources={[]} showLabel />
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="px-4 space-y-4">
         {/* Features Grid */}
         <div className="space-y-2">
           <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -148,7 +148,7 @@ function BankSelectorComboBox({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button className="flex gap-1 items-center justify-between text-sm text-muted-foreground hover:text-foreground transition-colors">
+        <button className="flex gap-1 items-center justify-between text-sm text-muted-foreground hover:text-foreground transition-colors text-start">
           {selectedBank
             ? banks.find((bank) => bank.id === selectedBank)?.name
             : "Select bank..."}
@@ -223,14 +223,14 @@ function AppBadge({
       target="_blank"
       rel="noopener noreferrer"
     >
-      <Avatar className="size-8 rounded-lg">
+      <Avatar className="size-8 rounded-lg shrink-0">
         <AvatarImage src={iconUrl} className="bg-white object-contain" />
         <AvatarFallback className="rounded-lg">
           {name.substring(0, 2).toUpperCase()}
         </AvatarFallback>
       </Avatar>
-      <span className="text-xs">{name}</span>
-      <StatusDot status={status} />
+      <span className="text-xs truncate">{name}</span>
+      <StatusDot status={status} className="shrink-0" />
     </a>
   );
 }

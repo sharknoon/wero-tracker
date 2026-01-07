@@ -35,6 +35,7 @@ interface FilterBarProps {
   selectedCountries: string[];
   onCountryChange: (countries: string[]) => void;
   availableCountries: string[];
+  activeView: "banks" | "merchants";
 }
 
 export function FilterBar({
@@ -45,6 +46,7 @@ export function FilterBar({
   selectedCountries,
   onCountryChange,
   availableCountries,
+  activeView,
 }: FilterBarProps) {
   const statuses: {
     icon: React.ElementType;
@@ -98,7 +100,11 @@ export function FilterBar({
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
       <InputGroup>
         <InputGroupInput
-          placeholder="Search banks..."
+          placeholder={
+            activeView === "banks"
+              ? "Search banks..."
+              : "Search online shops..."
+          }
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
         />

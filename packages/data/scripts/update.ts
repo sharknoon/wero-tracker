@@ -2,7 +2,7 @@ import "dotenv/config";
 import fs from "node:fs/promises";
 import path from "node:path";
 import zod from "zod";
-import { type WeroData, weroDataSchema } from "./common/schema.ts";
+import { type Data, dataSchema } from "./common/schema.ts";
 import { exists, rootDir } from "./common/fs.ts";
 import { saveAsset } from "./common/assets.ts";
 import { error, success } from "./common/prompt.ts";
@@ -64,9 +64,12 @@ if (!result.success) {
 
 const weroData = result.data.data;
 
-export let existingData: WeroData = {
-  brands: [],
-  standaloneAppResource: { name: "", iconUrl: "", universalLink: "" },
+export let existingData: Data = {
+  banks: {
+    brands: [],
+    standaloneAppResource: { name: "", iconUrl: "", universalLink: "" },
+  },
+  merchants: { brands: [] },
 };
 if (await exists(path.join(rootDir, "data.json"))) {
   const fileContent = await fs.readFile(
@@ -74,20 +77,25 @@ if (await exists(path.join(rootDir, "data.json"))) {
     "utf-8"
   );
   const data = JSON.parse(fileContent);
-  existingData = weroDataSchema.parse(data);
+  existingData = dataSchema.parse(data);
 }
 
-const data: WeroData = {
-  brands: [],
-  standaloneAppResource: {
-    name: weroData.standaloneAppResource.name,
-    iconUrl: await saveAsset(weroData.standaloneAppResource.iconUrl),
-    universalLink: weroData.standaloneAppResource.universalLink,
+const data: Data = {
+  banks: {
+    brands: [],
+    standaloneAppResource: {
+      name: weroData.standaloneAppResource.name,
+      iconUrl: await saveAsset(weroData.standaloneAppResource.iconUrl),
+      universalLink: weroData.standaloneAppResource.universalLink,
+    },
   },
+  merchants: existingData.merchants,
 };
 
 for (const brand of weroData.brands) {
-  const existingBrandData = existingData.brands.find((b) => b.id === brand.id);
+  const existingBrandData = existingData.banks.brands.find(
+    (b) => b.id === brand.id
+  );
   const banks = [];
   for (const bank of brand.banks) {
     const existingBankData = existingBrandData?.banks.find(
@@ -100,16 +108,14 @@ for (const brand of weroData.brands) {
       website: existingBankData?.website ?? "https://example.com",
       bankContext: bank.bankContext,
       appIds:
-        bank.appIds.length === 0
-          ? (existingBankData?.appIds ?? [])
-          : bank.appIds,
+        bank.appIds.length === 0 ? existingBankData?.appIds ?? [] : bank.appIds,
       aliases: bank.aliases,
       countries: bank.countries,
       logoUrl: bank.logoUrl ? await saveAsset(bank.logoUrl) : undefined,
       // Could be "announced"
       standaloneAppSupport: bank.supportsStandaloneApp
         ? "supported"
-        : (existingBankData?.standaloneAppSupport ?? "unsupported"),
+        : existingBankData?.standaloneAppSupport ?? "unsupported",
       P2PPaymentsSupport: "supported" as const,
       eCommercePaymentsSupport:
         existingBankData?.eCommercePaymentsSupport ?? "unknown",
@@ -117,7 +123,7 @@ for (const brand of weroData.brands) {
     });
   }
 
-  data.brands.push({
+  data.banks.brands.push({
     id: brand.id,
     name: brand.name,
     aliases: brand.aliases,
@@ -127,7 +133,7 @@ for (const brand of weroData.brands) {
     banks,
     apps:
       brand.apps.length === 0
-        ? (existingBrandData?.apps ?? [])
+        ? existingBrandData?.apps ?? []
         : await Promise.all(
             brand.apps.map(async (app) => ({
               id: app.id,
@@ -143,14 +149,15 @@ for (const brand of weroData.brands) {
 
 const weroBrandIds = new Set(weroData.brands.map((b) => b.id));
 const additionalBrandIds =
-  existingData.brands.filter((b) => !weroBrandIds.has(b.id)).map((b) => b.id) ??
-  [];
+  existingData.banks.brands
+    .filter((b) => !weroBrandIds.has(b.id))
+    .map((b) => b.id) ?? [];
 for (const brandId of additionalBrandIds) {
-  const brand = existingData.brands.find((b) => b.id === brandId)!;
-  data.brands.push(brand);
+  const brand = existingData.banks.brands.find((b) => b.id === brandId)!;
+  data.banks.brands.push(brand);
 }
 
-data.brands.sort((a, b) => a.name.localeCompare(b.name));
+data.banks.brands.sort((a, b) => a.name.localeCompare(b.name));
 
 await fs.writeFile(
   path.join(rootDir, "data.json"),
