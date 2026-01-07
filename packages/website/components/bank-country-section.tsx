@@ -1,6 +1,6 @@
 "use client";
 
-import { BrandCard } from "./brand-card";
+import { BankBrandItem } from "./bank-brand-item";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -10,21 +10,21 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Brand, WeroData } from "@/lib/schema";
+import { BankBrand, Data } from "@/lib/schema";
 
-interface CountrySectionProps {
+interface BankCountrySectionProps {
   countryCode: string;
-  brands: Brand[];
-  weroApp: WeroData["standaloneAppResource"];
+  brands: BankBrand[];
+  weroApp: Data["banks"]["standaloneAppResource"];
   defaultExpanded?: boolean;
 }
 
-export function CountrySection({
+export function BankCountrySection({
   countryCode,
   brands,
   weroApp,
   defaultExpanded = true,
-}: CountrySectionProps) {
+}: BankCountrySectionProps) {
   const [isOpen, setIsOpen] = useState(defaultExpanded);
 
   const supportedCount = brands.filter(
@@ -63,7 +63,7 @@ export function CountrySection({
         <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
           <div className="grid gap-4 mt-4 md:grid-cols-2 lg:grid-cols-3">
             {brands.map((brand) => (
-              <BrandCard key={brand.id} brand={brand} weroApp={weroApp} />
+              <BankBrandItem key={brand.id} brand={brand} weroApp={weroApp} />
             ))}
           </div>
         </CollapsibleContent>

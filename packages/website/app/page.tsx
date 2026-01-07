@@ -1,5 +1,5 @@
 import { WeroTracker } from "@/components/wero-tracker";
-import { weroDataSchema } from "@/lib/schema";
+import { dataSchema } from "@/lib/schema";
 
 async function getWeroData() {
   const dataUrl = process.env.NEXT_PUBLIC_WEBSITE_DATA_URL;
@@ -10,7 +10,7 @@ async function getWeroData() {
   }
   const response = await fetch(dataUrl);
   const data = await response.json();
-  return weroDataSchema.parse(data);
+  return dataSchema.parse(data);
 }
 
 export default async function Page() {
