@@ -3,14 +3,22 @@
 
 # Wero Adoption Tracker
 
-Track the adoption of the European payment provider [Wero](https://wero-wallet.eu) across banks.
+Track the adoption of the European payment provider [Wero](https://wero-wallet.eu) across banks and online-shops.
 
 **🌐 Link: [https://werotracker.eu/](https://werotracker.eu/)**
 
-<img width="1285" height="874" alt="grafik" src="https://github.com/user-attachments/assets/c4ccece5-b6d1-46bb-8afb-38a1c1c0c324" />
+<img width="1282" height="919" alt="grafik" src="https://github.com/user-attachments/assets/91789dca-ba3e-47c4-9768-08ef6a10fb44" />
 
 In comparison to other payment providers like PayPal, Wero needs to be implemented by each bank in order to work.  
 This can make it hard to know whether a bank already supports Wero, has announced its support, or hasn’t publicly stated any plans.
+
+## Featues
+
+- 📈 Show adoption stats
+- 🔍 Search for banks and online shops
+- ✅ Filter for countries and support status (supported/announced/unsupported)
+- 💸 See individual payment features (P2P, eCommerce, POS), not every Wero implementation is equal
+- 📱 App availability
 
 ## Different levels of support
 
