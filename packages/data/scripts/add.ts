@@ -127,6 +127,11 @@ async function addMerchant(data: Data) {
     ]
   );
 
+  let notes = await text(
+    "Enter any additional notes about the merchant (or leave empty):"
+  );
+  notes = notes.trim();
+
   const newMerchant: Data["merchants"]["brands"][number] = {
     id: crypto.randomUUID(),
     name,
@@ -136,6 +141,7 @@ async function addMerchant(data: Data) {
     category,
     countries,
     weroSupport,
+    notes,
   };
 
   data.merchants.brands.push(newMerchant);
@@ -456,6 +462,12 @@ async function addBank(data: Data) {
 
     info(`Added new app "${newApp.name}".`);
   }
+
+  let notes = await text(
+    "Enter any additional notes about the bank (or leave empty):"
+  );
+  notes = notes.trim();
+  selectedBrand.notes = notes;
 
   // Add the bank to the brand
   selectedBrand.banks.push(newBank);

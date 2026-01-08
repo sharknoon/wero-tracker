@@ -144,6 +144,7 @@ for (const brand of weroData.brands) {
               weroSupport: "supported",
             }))
           ),
+    notes: existingBrandData?.notes ?? "",
   });
 }
 

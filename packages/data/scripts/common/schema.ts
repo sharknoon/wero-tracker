@@ -44,6 +44,7 @@ export const dataSchema = zod.strictObject({
             weroSupport: supportStatusSchema,
           })
         ),
+        notes: zod.string().optional(),
       })
     ),
     standaloneAppResource: zod.strictObject({
@@ -72,6 +73,7 @@ export const dataSchema = zod.strictObject({
         ]),
         countries: zod.array(zod.string().length(2)),
         weroSupport: supportStatusSchema,
+        notes: zod.string().optional(),
       })
     ),
   }),
