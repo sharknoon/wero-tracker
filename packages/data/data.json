@@ -20854,6 +20854,21 @@
         "weroSupport": "announced"
       },
       {
+        "id": "23f7c7ca-ea2e-414b-bf55-21253e3facb1",
+        "name": "Zalando",
+        "aliases": [],
+        "website": "https://zalando.com",
+        "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/23f7c7ca-ea2e-414b-bf55-21253e3facb1.png",
+        "category": "fashion",
+        "countries": [
+          "DE",
+          "IT",
+          "NL",
+          "PL"
+        ],
+        "weroSupport": "unsupported"
+      },
+      {
         "id": "a6c2c515-f4f6-4e38-ae7b-fdee2fe4bc1b",
         "name": "Zooplus",
         "aliases": [],
