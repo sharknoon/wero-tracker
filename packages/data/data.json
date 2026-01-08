@@ -20818,6 +20818,19 @@
         "weroSupport": "announced"
       },
       {
+        "id": "919137d8-8890-4d72-b99f-697a5c4088c2",
+        "name": "Temu",
+        "aliases": [],
+        "website": "https://temu.com",
+        "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/919137d8-8890-4d72-b99f-697a5c4088c2.png",
+        "category": "other",
+        "countries": [
+          "FR",
+          "DE"
+        ],
+        "weroSupport": "unsupported"
+      },
+      {
         "id": "fb516d92-2aee-4a10-8b1d-bb9d377c4b31",
         "name": "tedox",
         "aliases": [],
