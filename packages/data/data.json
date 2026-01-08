@@ -20659,6 +20659,18 @@
         "weroSupport": "announced"
       },
       {
+        "id": "d408a534-2a18-4b5e-8b22-82ab5fe1f61d",
+        "name": "Allegro",
+        "aliases": [],
+        "website": "https://allegro.pl",
+        "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/d408a534-2a18-4b5e-8b22-82ab5fe1f61d.png",
+        "category": "other",
+        "countries": [
+          "PL"
+        ],
+        "weroSupport": "unsupported"
+      },
+      {
         "id": "17ccf8ef-b7a2-4463-b610-7c79c2401c5c",
         "name": "Amazon DE",
         "aliases": [],
