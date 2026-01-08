@@ -20659,6 +20659,18 @@
         "weroSupport": "announced"
       },
       {
+        "id": "17ccf8ef-b7a2-4463-b610-7c79c2401c5c",
+        "name": "Amazon DE",
+        "aliases": [],
+        "website": "https://amazon.de",
+        "logoUrl": "https://raw.githubusercontent.com///main/packages/data/assets/17ccf8ef-b7a2-4463-b610-7c79c2401c5c.png",
+        "category": "other",
+        "countries": [
+          "DE"
+        ],
+        "weroSupport": "unsupported"
+      },
+      {
         "id": "062191ed-b7ad-450c-b73d-52066159f7f7",
         "name": "Baur",
         "aliases": [],
