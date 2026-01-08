@@ -20694,6 +20694,18 @@
         "weroSupport": "supported"
       },
       {
+        "id": "2f99525f-e56a-44eb-bcc3-5646e7e7c52e",
+        "name": "Traivelling",
+        "aliases": [],
+        "website": "https://traivelling.com/",
+        "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/37073db1-0a0e-4fc0-93e5-816f8c29109e.svg",
+        "category": "travel",
+        "countries": [
+          "DE"
+        ],
+        "weroSupport": "announced"
+      },
+      {
         "id": "7a9af6a9-8b79-43c2-a516-be3c868c4b3b",
         "name": "Veepee",
         "aliases": [],
