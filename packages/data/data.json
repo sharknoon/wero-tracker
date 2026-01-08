@@ -20731,6 +20731,21 @@
         "weroSupport": "announced"
       },
       {
+        "id": "df1544c0-fc15-4552-86f9-eb0433c0e29a",
+        "name": "Ebay",
+        "aliases": [],
+        "website": "https://ebay.com",
+        "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/df1544c0-fc15-4552-86f9-eb0433c0e29a.png",
+        "category": "other",
+        "countries": [
+          "DE",
+          "FR",
+          "IT",
+          "ES"
+        ],
+        "weroSupport": "unsupported"
+      },
+      {
         "id": "3c7fe46b-c6d3-409e-8f2f-7af6d94083b4",
         "name": "Eventim",
         "aliases": [],
