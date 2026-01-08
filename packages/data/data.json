@@ -2407,6 +2407,59 @@
         ]
       },
       {
+        "id": "c3a5134a-b666-4f10-90b6-eea07de29f41",
+        "name": "NLB",
+        "aliases": [
+          "Nova Ljubljanska banka"
+        ],
+        "weroSupport": "unsupported",
+        "countries": [
+          "SI",
+          "MK",
+          "BA",
+          "RS",
+          "ME",
+          "XK"
+        ],
+        "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/51a0a167-1bc7-42df-bf81-511546fa65a8.png",
+        "banks": [
+          {
+            "id": "f68cb079-a9d5-4a80-9c50-49cc9230710f",
+            "name": "NLB",
+            "website": "https://www.nlb.si/",
+            "bankContext": "LJBASI2XXXX",
+            "appIds": [
+              "08de0ced-67b3-481f-a4a9-db7c29751cca"
+            ],
+            "aliases": [],
+            "countries": [
+              "SI",
+              "MK",
+              "BA",
+              "RS",
+              "ME",
+              "XK"
+            ],
+            "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/51a0a167-1bc7-42df-bf81-511546fa65a8.png",
+            "standaloneAppSupport": "unknown",
+            "P2PPaymentsSupport": "unknown",
+            "eCommercePaymentsSupport": "unknown",
+            "POSPaymentsSupport": "unknown"
+          }
+        ],
+        "apps": [
+          {
+            "id": "08de0ced-67b3-481f-a4a9-db7c29751cca",
+            "name": "NLB Klik",
+            "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/adf35704-ca7a-4a87-b448-42f4f13da1f1.png",
+            "universalLink": "https://www.nlb.si/en/osebno/digitalne-storitve/nlb-klik",
+            "supportsDesktop": true,
+            "weroSupport": "unknown"
+          }
+        ],
+        "notes": ""
+      },
+      {
         "id": "94cac023-7866-4a8f-9dd1-6a2c0dde4d3b",
         "name": "Openbank",
         "aliases": [],
