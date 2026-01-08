@@ -47,8 +47,7 @@
         "aliases": [],
         "weroSupport": "announced",
         "countries": [
-          "BE",
-          "NL"
+          "BE"
         ],
         "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/1793d30e-e645-41be-8bf3-0786e0f67515.svg",
         "banks": [
@@ -62,8 +61,7 @@
             ],
             "aliases": [],
             "countries": [
-              "BE",
-              "NL"
+              "BE"
             ],
             "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/1793d30e-e645-41be-8bf3-0786e0f67515.svg",
             "standaloneAppSupport": "unsupported",
