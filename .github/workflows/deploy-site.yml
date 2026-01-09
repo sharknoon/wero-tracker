@@ -39,9 +39,9 @@ jobs:
         env:
           NEXT_PUBLIC_WEBSITE_SOURCE_REPOSITORY: ${{ github.server_url }}/${{ github.repository }}
           NEXT_PUBLIC_WEBSITE_CONTRIBUTION_GUIDELINES: ${{ vars.WEBSITE_CONTRIBUTION_GUIDELINES }}
-          NEXT_PUBLIC_WEBSITE_NEW_BANK_LINK: ${{ vars.WEBSITE_NEW_BANK_LINK }}
           NEXT_PUBLIC_WEBSITE_OFFICIAL_WERO_WEBSITE: ${{ vars.WEBSITE_OFFICIAL_WERO_WEBSITE }}
-          NEXT_PUBLIC_WEBSITE_DATA_URL: ${{ vars.WEBSITE_DATA_URL }}
+          NEXT_PUBLIC_WEBSITE_BANKS_URL: ${{ vars.WEBSITE_BANKS_URL }}
+          NEXT_PUBLIC_WEBSITE_MERCHANTS_URL: ${{ vars.WEBSITE_MERCHANTS_URL }}
       - uses: actions/upload-pages-artifact@v4
         with:
           path: ./packages/website/out
