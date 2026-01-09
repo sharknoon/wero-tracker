@@ -20659,6 +20659,18 @@
         "weroSupport": "announced"
       },
       {
+        "id": "d408a534-2a18-4b5e-8b22-82ab5fe1f61d",
+        "name": "Allegro",
+        "aliases": [],
+        "website": "https://allegro.pl",
+        "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/d408a534-2a18-4b5e-8b22-82ab5fe1f61d.png",
+        "category": "other",
+        "countries": [
+          "PL"
+        ],
+        "weroSupport": "unsupported"
+      },
+      {
         "id": "17ccf8ef-b7a2-4463-b610-7c79c2401c5c",
         "name": "Amazon DE",
         "aliases": [],
@@ -20731,6 +20743,21 @@
         "weroSupport": "announced"
       },
       {
+        "id": "df1544c0-fc15-4552-86f9-eb0433c0e29a",
+        "name": "Ebay",
+        "aliases": [],
+        "website": "https://ebay.com",
+        "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/df1544c0-fc15-4552-86f9-eb0433c0e29a.png",
+        "category": "other",
+        "countries": [
+          "DE",
+          "FR",
+          "IT",
+          "ES"
+        ],
+        "weroSupport": "unsupported"
+      },
+      {
         "id": "3c7fe46b-c6d3-409e-8f2f-7af6d94083b4",
         "name": "Eventim",
         "aliases": [],
@@ -20791,6 +20818,19 @@
         "weroSupport": "announced"
       },
       {
+        "id": "919137d8-8890-4d72-b99f-697a5c4088c2",
+        "name": "Temu",
+        "aliases": [],
+        "website": "https://temu.com",
+        "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/919137d8-8890-4d72-b99f-697a5c4088c2.png",
+        "category": "other",
+        "countries": [
+          "FR",
+          "DE"
+        ],
+        "weroSupport": "unsupported"
+      },
+      {
         "id": "fb516d92-2aee-4a10-8b1d-bb9d377c4b31",
         "name": "tedox",
         "aliases": [],
@@ -20825,6 +20865,21 @@
           "DE"
         ],
         "weroSupport": "announced"
+      },
+      {
+        "id": "23f7c7ca-ea2e-414b-bf55-21253e3facb1",
+        "name": "Zalando",
+        "aliases": [],
+        "website": "https://zalando.com",
+        "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/23f7c7ca-ea2e-414b-bf55-21253e3facb1.png",
+        "category": "fashion",
+        "countries": [
+          "DE",
+          "IT",
+          "NL",
+          "PL"
+        ],
+        "weroSupport": "unsupported"
       },
       {
         "id": "a6c2c515-f4f6-4e38-ae7b-fdee2fe4bc1b",
