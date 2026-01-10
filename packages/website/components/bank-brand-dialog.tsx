@@ -166,6 +166,10 @@ interface BankItemProps {
   onToggleDeletion: () => void;
   onRemove: () => void;
   canDelete: boolean;
+  bankAliasInput: string;
+  onBankAliasInputChange: (value: string) => void;
+  onAddBankAlias: () => void;
+  onRemoveBankAlias: (alias: string) => void;
 }
 
 function BankItem({
@@ -179,6 +183,10 @@ function BankItem({
   onToggleDeletion,
   onRemove,
   canDelete,
+  bankAliasInput,
+  onBankAliasInputChange,
+  onAddBankAlias,
+  onRemoveBankAlias,
 }: BankItemProps) {
   return (
     <Collapsible
@@ -242,6 +250,51 @@ function BankItem({
                 placeholder="e.g., https://www.deutsche-bank.de"
                 value={bank.website}
                 onChange={(e) => onUpdate({ website: e.target.value })}
+                disabled={bank.markedForDeletion}
+              />
+            </div>
+          </div>
+
+          <AliasInput
+            aliases={bank.aliases}
+            aliasInput={bankAliasInput}
+            onAliasInputChange={onBankAliasInputChange}
+            onAddAlias={onAddBankAlias}
+            onRemoveAlias={onRemoveBankAlias}
+            disabled={bank.markedForDeletion}
+          />
+
+          <CountrySelector
+            countries={bank.countries || []}
+            onToggleCountry={(country) => {
+              const currentCountries = bank.countries || [];
+              if (currentCountries.includes(country)) {
+                onUpdate({
+                  countries: currentCountries.filter((c) => c !== country),
+                });
+              } else {
+                onUpdate({ countries: [...currentCountries, country] });
+              }
+            }}
+            disabled={bank.markedForDeletion}
+          />
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label>Logo URL</Label>
+              <Input
+                placeholder="https://example.com/logo.png"
+                value={bank.logoUrl || ""}
+                onChange={(e) => onUpdate({ logoUrl: e.target.value })}
+                disabled={bank.markedForDeletion}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>BIC</Label>
+              <Input
+                placeholder="e.g., NTSBDEB1XXX"
+                value={bank.bankContext || ""}
+                onChange={(e) => onUpdate({ bankContext: e.target.value })}
                 disabled={bank.markedForDeletion}
               />
             </div>
@@ -326,6 +379,10 @@ interface BanksSectionProps {
   onToggleBankExpanded: (index: number) => void;
   onShowBanksSection: () => void;
   canDeleteBank: (index: number) => boolean;
+  bankAliasInputs: Record<number, string>;
+  onBankAliasInputChange: (index: number, value: string) => void;
+  onAddBankAlias: (index: number) => void;
+  onRemoveBankAlias: (index: number, alias: string) => void;
 }
 
 function BanksSection({
@@ -340,6 +397,10 @@ function BanksSection({
   onToggleBankExpanded,
   onShowBanksSection,
   canDeleteBank,
+  bankAliasInputs,
+  onBankAliasInputChange,
+  onAddBankAlias,
+  onRemoveBankAlias,
 }: BanksSectionProps) {
   const activeBanksCount = banks.filter((b) => !b.markedForDeletion).length;
 
@@ -389,6 +450,12 @@ function BanksSection({
               onToggleDeletion={() => onToggleBankDeletion(index)}
               onRemove={() => onRemoveBank(index)}
               canDelete={canDeleteBank(index)}
+              bankAliasInput={bankAliasInputs[index] || ""}
+              onBankAliasInputChange={(value) =>
+                onBankAliasInputChange(index, value)
+              }
+              onAddBankAlias={() => onAddBankAlias(index)}
+              onRemoveBankAlias={(alias) => onRemoveBankAlias(index, alias)}
             />
           ))}
 
@@ -855,6 +922,9 @@ export function BankBrandDialog() {
   // Banks form state
   const [banks, setBanks] = useState<BankFormData[]>([]);
   const [expandedBanks, setExpandedBanks] = useState<Set<number>>(new Set());
+  const [bankAliasInputs, setBankAliasInputs] = useState<
+    Record<number, string>
+  >({});
 
   // Apps form state
   const [apps, setApps] = useState<AppFormData[]>([]);
@@ -875,6 +945,7 @@ export function BankBrandDialog() {
     setReason("");
     setBanks([]);
     setExpandedBanks(new Set());
+    setBankAliasInputs({});
     setShowBanksSection(false);
     setApps([]);
     setExpandedApps(new Set());
@@ -993,6 +1064,33 @@ export function BankBrandDialog() {
     });
   };
 
+  // Bank alias management functions
+  const handleBankAliasInputChange = (index: number, value: string) => {
+    setBankAliasInputs((prev) => ({ ...prev, [index]: value }));
+  };
+
+  const handleAddBankAlias = (index: number) => {
+    const input = bankAliasInputs[index]?.trim();
+    if (input && !banks[index].aliases.includes(input)) {
+      setBanks((prev) =>
+        prev.map((bank, i) =>
+          i === index ? { ...bank, aliases: [...bank.aliases, input] } : bank,
+        ),
+      );
+      setBankAliasInputs((prev) => ({ ...prev, [index]: "" }));
+    }
+  };
+
+  const handleRemoveBankAlias = (index: number, alias: string) => {
+    setBanks((prev) =>
+      prev.map((bank, i) =>
+        i === index
+          ? { ...bank, aliases: bank.aliases.filter((a) => a !== alias) }
+          : bank,
+      ),
+    );
+  };
+
   // App management functions
   const handleAddApp = () => {
     const newIndex = apps.length;
@@ -1070,8 +1168,6 @@ export function BankBrandDialog() {
     };
 
     submitContribution(contribution);
-    resetForm();
-    closeDialog();
   };
 
   const handleClose = () => {
@@ -1227,6 +1323,10 @@ export function BankBrandDialog() {
                   onToggleBankExpanded={toggleBankExpanded}
                   onShowBanksSection={handleShowBanksSection}
                   canDeleteBank={canDeleteBank}
+                  bankAliasInputs={bankAliasInputs}
+                  onBankAliasInputChange={handleBankAliasInputChange}
+                  onAddBankAlias={handleAddBankAlias}
+                  onRemoveBankAlias={handleRemoveBankAlias}
                 />
 
                 <AppsSection

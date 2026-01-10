@@ -366,8 +366,6 @@ export function MerchantDialog() {
     };
 
     submitContribution(contribution);
-    resetForm();
-    closeDialog();
   };
 
   const handleClose = () => {

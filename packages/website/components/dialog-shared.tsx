@@ -26,6 +26,7 @@ export interface AliasInputProps {
   onAddAlias: () => void;
   onRemoveAlias: (alias: string) => void;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 export function AliasInput({
@@ -35,6 +36,7 @@ export function AliasInput({
   onAddAlias,
   onRemoveAlias,
   placeholder = "Add alias",
+  disabled,
 }: AliasInputProps) {
   return (
     <div className="space-y-2">
@@ -51,12 +53,14 @@ export function AliasInput({
               onAddAlias();
             }
           }}
+          disabled={disabled}
         />
         <Button
           type="button"
           variant="outline"
           size="icon"
           onClick={onAddAlias}
+          disabled={disabled}
         >
           <Plus className="size-4" />
         </Button>
@@ -92,12 +96,14 @@ export interface CountrySelectorProps {
   countries: string[];
   onToggleCountry: (country: string) => void;
   required?: boolean;
+  disabled?: boolean;
 }
 
 export function CountrySelector({
   countries,
   onToggleCountry,
   required = true,
+  disabled,
 }: CountrySelectorProps) {
   return (
     <div className="space-y-2">
@@ -110,11 +116,12 @@ export function CountrySelector({
             key={country}
             type="button"
             onClick={() => onToggleCountry(country)}
+            disabled={disabled}
             className={`flex items-center gap-2 px-2 py-1 text-sm rounded-md transition-colors ${
               countries.includes(country)
                 ? "bg-primary text-primary-foreground"
                 : "bg-secondary hover:bg-secondary/80"
-            }`}
+            } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             <CountryFlag countryCode={country} size="sm" />
             {new Intl.DisplayNames(["en"], { type: "region" }).of(country)}
