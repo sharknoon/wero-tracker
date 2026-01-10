@@ -1,0 +1,373 @@
+name: Process Contribution
+
+on:
+  issues:
+    types: [opened, labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  process-contribution:
+    runs-on: ubuntu-latest
+    if: contains(github.event.issue.labels.*.name, 'contribution')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Extract contribution data
+        id: extract
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.issue.body;
+
+            // Extract the base64 encoded contribution data from the issue body
+            const match = body.match(/<!-- CONTRIBUTION_DATA:(.+?) -->/);
+
+            if (!match) {
+              core.setFailed('No contribution data found in issue body');
+              return;
+            }
+
+            try {
+              const decoded = Buffer.from(match[1], 'base64').toString('utf-8');
+              const payload = JSON.parse(decoded);
+              
+              core.setOutput('contribution_type', payload.contribution.type);
+              core.setOutput('contribution_action', payload.contribution.action);
+              core.setOutput('contribution_data', JSON.stringify(payload));
+              core.setOutput('entity_name', payload.contribution.data.name || 'Unknown');
+              
+              console.log('Extracted contribution:', JSON.stringify(payload, null, 2));
+            } catch (error) {
+              core.setFailed(`Failed to parse contribution data: ${error.message}`);
+            }
+
+      - name: Create branch
+        id: branch
+        run: |
+          BRANCH_NAME="contribution/${{ github.event.issue.number }}-$(echo '${{ steps.extract.outputs.entity_name }}' | tr ' ' '-' | tr '[:upper:]' '[:lower:]' | head -c 30)"
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          git checkout -b "$BRANCH_NAME"
+
+      - name: Process contribution
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            const payload = JSON.parse('${{ steps.extract.outputs.contribution_data }}'.replace(/'/g, "\\'"));
+            const { contribution } = payload;
+            const { type, action, data } = contribution;
+
+            const banksPath = 'packages/data/banks.json';
+            const merchantsPath = 'packages/data/merchants.json';
+
+            if (type === 'merchant') {
+              // Process merchant contribution
+              const merchantsData = JSON.parse(fs.readFileSync(merchantsPath, 'utf-8'));
+              
+              if (action === 'add') {
+                // Generate new UUID for the merchant
+                const newMerchant = {
+                  id: crypto.randomUUID(),
+                  name: data.name,
+                  aliases: data.aliases || [],
+                  website: data.website,
+                  logoUrl: data.logoUrl,
+                  category: data.category,
+                  countries: data.countries,
+                  weroSupport: data.weroSupport,
+                  notes: data.notes || '',
+                };
+                
+                merchantsData.brands.push(newMerchant);
+                // Sort by name
+                merchantsData.brands.sort((a, b) => a.name.localeCompare(b.name));
+                
+              } else if (action === 'edit' && data.id) {
+                const index = merchantsData.brands.findIndex(m => m.id === data.id);
+                if (index !== -1) {
+                  merchantsData.brands[index] = {
+                    ...merchantsData.brands[index],
+                    name: data.name,
+                    aliases: data.aliases || [],
+                    website: data.website,
+                    logoUrl: data.logoUrl,
+                    category: data.category,
+                    countries: data.countries,
+                    weroSupport: data.weroSupport,
+                    notes: data.notes || '',
+                  };
+
+                  // Sort by name
+                  merchantsData.brands.sort((a, b) => a.name.localeCompare(b.name));
+                }
+                
+              } else if (action === 'delete' && data.id) {
+                merchantsData.brands = merchantsData.brands.filter(m => m.id !== data.id);
+              }
+              
+              fs.writeFileSync(merchantsPath, JSON.stringify(merchantsData, null, 2) + '\n');
+              
+            } else if (type === 'bank-brand') {
+              // Process bank brand contribution
+              const banksData = JSON.parse(fs.readFileSync(banksPath, 'utf-8'));
+              const banks = data.banks || [];
+              const apps = data.apps || [];
+              if (action === 'add') {
+                const newBrand = {
+                  id: crypto.randomUUID(),
+                  name: data.name,
+                  aliases: data.aliases || [],
+                  weroSupport: data.weroSupport,
+                  countries: data.countries,
+                  logoUrl: data.logoUrl,
+                  banks: banks.map(bank => ({
+                    id: crypto.randomUUID(),
+                    name: bank.name,
+                    website: bank.website || '',
+                    bankContext: bank.bankContext || '',
+                    appIds: bank.appIds || [],
+                    aliases: bank.aliases || [],
+                    countries: bank.countries || [],
+                    logoUrl: bank.logoUrl || '',
+                    standaloneAppSupport: bank.standaloneAppSupport || 'unknown',
+                    P2PPaymentsSupport: bank.P2PPaymentsSupport || 'unknown',
+                    eCommercePaymentsSupport: bank.eCommercePaymentsSupport || 'unknown',
+                    POSPaymentsSupport: bank.POSPaymentsSupport || 'unknown',
+                  })),
+                  apps: apps.map(app => ({
+                    id: crypto.randomUUID(),
+                    name: app.name,
+                    iconUrl: app.iconUrl || '',
+                    universalLink: app.universalLink || '',
+                    supportsDesktop: app.supportsDesktop || false,
+                    weroSupport: app.weroSupport || 'unknown',
+                  })),
+                  notes: data.notes || '',
+                };
+                
+                banksData.brands.push(newBrand);
+                banksData.brands.sort((a, b) => a.name.localeCompare(b.name));
+                
+              } else if (action === 'edit' && data.id) {
+                const index = banksData.brands.findIndex(b => b.id === data.id);
+                if (index !== -1) {
+                  // Update brand info
+                  banksData.brands[index] = {
+                    ...banksData.brands[index],
+                    name: data.name,
+                    aliases: data.aliases || [],
+                    weroSupport: data.weroSupport,
+                    countries: data.countries,
+                    logoUrl: data.logoUrl,
+                    notes: data.notes || '',
+                  };
+                  
+                  // Process bank updates
+                  if (banks.length > 0) {
+                    // Handle banks marked for deletion
+                    const banksToDelete = banks.filter(b => b.markedForDeletion && b.id).map(b => b.id);
+                    banksData.brands[index].banks = banksData.brands[index].banks.filter(b => !banksToDelete.includes(b.id));
+                    
+                    // Update existing banks and add new ones
+                    for (const bank of banks) {
+                      if (bank.markedForDeletion) continue;
+                      
+                      if (bank.id) {
+                        // Update existing bank
+                        const bankIndex = banksData.brands[index].banks.findIndex(b => b.id === bank.id);
+                        if (bankIndex !== -1) {
+                          banksData.brands[index].banks[bankIndex] = {
+                            ...banksData.brands[index].banks[bankIndex],
+                            name: bank.name,
+                            website: bank.website || '',
+                            bankContext: bank.bankContext || '',
+                            appIds: bank.appIds || [],
+                            aliases: bank.aliases || [],
+                            countries: bank.countries || [],
+                            logoUrl: bank.logoUrl || '',
+                            standaloneAppSupport: bank.standaloneAppSupport || 'unknown',
+                            P2PPaymentsSupport: bank.P2PPaymentsSupport || 'unknown',
+                            eCommercePaymentsSupport: bank.eCommercePaymentsSupport || 'unknown',
+                            POSPaymentsSupport: bank.POSPaymentsSupport || 'unknown',
+                          };
+                        }
+                      } else {
+                        // Add new bank
+                        banksData.brands[index].banks.push({
+                          id: crypto.randomUUID(),
+                          name: bank.name,
+                          website: bank.website || '',
+                          bankContext: bank.bankContext || '',
+                          appIds: bank.appIds || [],
+                          aliases: bank.aliases || [],
+                          countries: bank.countries || [],
+                          logoUrl: bank.logoUrl || '',
+                          standaloneAppSupport: bank.standaloneAppSupport || 'unknown',
+                          P2PPaymentsSupport: bank.P2PPaymentsSupport || 'unknown',
+                          eCommercePaymentsSupport: bank.eCommercePaymentsSupport || 'unknown',
+                          POSPaymentsSupport: bank.POSPaymentsSupport || 'unknown',
+                        });
+                      }
+                    }
+                    
+                    // Sort banks by name
+                    banksData.brands[index].banks.sort((a, b) => a.name.localeCompare(b.name));
+                  }
+                  
+                  // Process app updates
+                  if (apps.length > 0) {
+                    // Handle apps marked for deletion
+                    const appsToDelete = apps.filter(a => a.markedForDeletion && a.id).map(a => a.id);
+                    banksData.brands[index].apps = banksData.brands[index].apps.filter(a => !appsToDelete.includes(a.id));
+                    
+                    // Update existing apps and add new ones
+                    for (const app of apps) {
+                      if (app.markedForDeletion) continue;
+                      
+                      if (app.id) {
+                        // Update existing app
+                        const appIndex = banksData.brands[index].apps.findIndex(a => a.id === app.id);
+                        if (appIndex !== -1) {
+                          banksData.brands[index].apps[appIndex] = {
+                            ...banksData.brands[index].apps[appIndex],
+                            name: app.name,
+                            iconUrl: app.iconUrl || '',
+                            universalLink: app.universalLink || '',
+                            supportsDesktop: app.supportsDesktop || false,
+                            weroSupport: app.weroSupport || 'unknown',
+                          };
+                        }
+                      } else {
+                        // Add new app
+                        banksData.brands[index].apps.push({
+                          id: crypto.randomUUID(),
+                          name: app.name,
+                          iconUrl: app.iconUrl || '',
+                          universalLink: app.universalLink || '',
+                          supportsDesktop: app.supportsDesktop || false,
+                          weroSupport: app.weroSupport || 'unknown',
+                        });
+                      }
+                    }
+                    
+                    // Sort apps by name
+                    banksData.brands[index].apps.sort((a, b) => a.name.localeCompare(b.name));
+                  }
+                }
+                
+              } else if (action === 'delete' && data.id) {
+                // Check if only specific banks or apps should be deleted
+                const banksToDelete = banks.filter(b => b.markedForDeletion && b.id).map(b => b.id);
+                const appsToDelete = apps.filter(a => a.markedForDeletion && a.id).map(a => a.id);
+                
+                const allBanksMarked = banks.length > 0 && banks.every(b => b.markedForDeletion);
+                const allAppsMarked = apps.length === 0 || apps.every(a => a.markedForDeletion);
+                
+                if (allBanksMarked && allAppsMarked) {
+                  // Delete entire brand
+                  banksData.brands = banksData.brands.filter(b => b.id !== data.id);
+                } else {
+                  // Only delete selected banks/apps, not the entire brand
+                  const brandIndex = banksData.brands.findIndex(b => b.id === data.id);
+                  if (brandIndex !== -1) {
+                    if (banksToDelete.length > 0) {
+                      banksData.brands[brandIndex].banks = banksData.brands[brandIndex].banks.filter(b => !banksToDelete.includes(b.id));
+                    }
+                    if (appsToDelete.length > 0) {
+                      banksData.brands[brandIndex].apps = banksData.brands[brandIndex].apps.filter(a => !appsToDelete.includes(a.id));
+                    }
+                  }
+                }
+              }
+              
+              fs.writeFileSync(banksPath, JSON.stringify(banksData, null, 2) + '\n');
+              
+            }
+
+            console.log('Contribution processed successfully');
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add packages/data/banks.json packages/data/merchants.json
+          git commit -m "feat: ${{ steps.extract.outputs.contribution_action }} ${{ steps.extract.outputs.contribution_type }} - ${{ steps.extract.outputs.entity_name }}
+
+          Closes #${{ github.event.issue.number }}"
+
+      - name: Push changes
+        run: |
+          git push origin ${{ steps.branch.outputs.branch_name }}
+
+      - name: Create Pull Request
+        id: create-pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: pr } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `[Contribution] ${{ steps.extract.outputs.contribution_action }} ${{ steps.extract.outputs.contribution_type }}: ${{ steps.extract.outputs.entity_name }}`,
+              head: '${{ steps.branch.outputs.branch_name }}',
+              base: 'main',
+              body: `## Contribution Request
+
+            This PR was automatically generated from issue #${{ github.event.issue.number }}.
+
+            **Type:** ${{ steps.extract.outputs.contribution_type }}
+            **Action:** ${{ steps.extract.outputs.contribution_action }}
+            **Entity:** ${{ steps.extract.outputs.entity_name }}
+
+            ---
+
+            Please review the changes and merge if they look correct.
+
+            Closes #${{ github.event.issue.number }}`,
+              draft: false
+            });
+
+            core.setOutput('pr_number', pr.number);
+            core.setOutput('pr_url', pr.html_url);
+
+            console.log(`Created PR #${pr.number}: ${pr.html_url}`);
+
+      - name: Add comment to issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `🎉 Thank you for your contribution!
+
+            A pull request has been automatically created: ${{ steps.create-pr.outputs.pr_url }}
+
+            Once reviewed and approved by a maintainer, your changes will be merged and appear on the website.`
+            });
+
+      - name: Add label to issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['pr-created']
+            });
