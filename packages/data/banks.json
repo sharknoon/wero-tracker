@@ -3807,6 +3807,44 @@
       ]
     },
     {
+      "id": "e2a5ef11-0c55-40b0-83a4-c6952793a447",
+      "name": "Tomorrow",
+      "aliases": [],
+      "weroSupport": "unsupported",
+      "countries": [
+        "DE"
+      ],
+      "logoUrl": "https://play-lh.googleusercontent.com/dvy8H2o_CjB2AmZ6PAaziOiwdQIFBdVEio7r652xkymi9n4GaIuwiRqepdViHEdv59RP_BFVxVSiTUEkhRbjIA=w240-h480",
+      "banks": [
+        {
+          "id": "fa163fa8-7933-4510-afdd-ff69446567eb",
+          "name": "Tomorrow",
+          "website": "https://tomorrow.one/",
+          "bankContext": "SOBKDEBBXXX",
+          "appIds": [],
+          "aliases": [],
+          "countries": [
+            "DE"
+          ],
+          "logoUrl": "https://play-lh.googleusercontent.com/dvy8H2o_CjB2AmZ6PAaziOiwdQIFBdVEio7r652xkymi9n4GaIuwiRqepdViHEdv59RP_BFVxVSiTUEkhRbjIA=w240-h480",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "unsupported",
+          "eCommercePaymentsSupport": "unsupported",
+          "POSPaymentsSupport": "unsupported"
+        }
+      ],
+      "apps": [
+        {
+          "id": "94928425-0e48-4b9c-8575-eac3b2f49c56",
+          "name": "Tomorrow",
+          "iconUrl": "https://play-lh.googleusercontent.com/dvy8H2o_CjB2AmZ6PAaziOiwdQIFBdVEio7r652xkymi9n4GaIuwiRqepdViHEdv59RP_BFVxVSiTUEkhRbjIA=w240-h480",
+          "universalLink": "https://www.tomorrow.one/de-DE/banking/",
+          "supportsDesktop": false,
+          "weroSupport": "unsupported"
+        }
+      ]
+    },
+    {
       "id": "037b8d55-742c-491d-9212-1e1a9b6da6b5",
       "name": "Trade Republic",
       "aliases": [],
