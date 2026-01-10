@@ -2114,7 +2114,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/0506f723-8014-48d6-ab68-e30d147fd297-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "announced",
           "POSPaymentsSupport": "unknown"
         }
       ],
