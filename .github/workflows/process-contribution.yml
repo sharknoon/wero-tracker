@@ -2,7 +2,7 @@ name: Process Contribution
 
 on:
   issues:
-    types: [opened, labeled]
+    types: [labeled]
 
 permissions:
   contents: write
@@ -92,7 +92,7 @@ jobs:
                   category: data.category,
                   countries: data.countries,
                   weroSupport: data.weroSupport,
-                  notes: data.notes || '',
+                  ...(data.notes && { notes: data.notes }),
                 };
                 
                 merchantsData.brands.push(newMerchant);
@@ -111,7 +111,7 @@ jobs:
                     category: data.category,
                     countries: data.countries,
                     weroSupport: data.weroSupport,
-                    notes: data.notes || '',
+                    ...(data.notes && { notes: data.notes }),
                   };
 
                   // Sort by name
@@ -141,11 +141,11 @@ jobs:
                     id: crypto.randomUUID(),
                     name: bank.name,
                     website: bank.website || '',
-                    bankContext: bank.bankContext || '',
+                    ...(bank.bankContext && { bankContext: bank.bankContext }),
                     appIds: bank.appIds || [],
                     aliases: bank.aliases || [],
-                    countries: bank.countries || [],
-                    logoUrl: bank.logoUrl || '',
+                    ...(bank.countries && { countries: bank.countries }),
+                    ...(bank.logoUrl && { logoUrl: bank.logoUrl }),
                     standaloneAppSupport: bank.standaloneAppSupport || 'unknown',
                     P2PPaymentsSupport: bank.P2PPaymentsSupport || 'unknown',
                     eCommercePaymentsSupport: bank.eCommercePaymentsSupport || 'unknown',
@@ -159,7 +159,7 @@ jobs:
                     supportsDesktop: app.supportsDesktop || false,
                     weroSupport: app.weroSupport || 'unknown',
                   })),
-                  notes: data.notes || '',
+                  ...(data.notes && { notes: data.notes }),
                 };
                 
                 banksData.brands.push(newBrand);
@@ -176,7 +176,7 @@ jobs:
                     weroSupport: data.weroSupport,
                     countries: data.countries,
                     logoUrl: data.logoUrl,
-                    notes: data.notes || '',
+                    ...(data.notes && { notes: data.notes }),
                   };
                   
                   // Process bank updates
@@ -197,11 +197,11 @@ jobs:
                             ...banksData.brands[index].banks[bankIndex],
                             name: bank.name,
                             website: bank.website || '',
-                            bankContext: bank.bankContext || '',
-                            appIds: bank.appIds || [],
-                            aliases: bank.aliases || [],
-                            countries: bank.countries || [],
-                            logoUrl: bank.logoUrl || '',
+                            ...(bank.bankContext && { bankContext: bank.bankContext }),
+                            ...(bank.appIds && { appIds: bank.appIds }),
+                            ...(bank.aliases && { aliases: bank.aliases }),
+                            ...(bank.countries && { countries: bank.countries }),
+                            ...(bank.logoUrl && { logoUrl: bank.logoUrl }),
                             standaloneAppSupport: bank.standaloneAppSupport || 'unknown',
                             P2PPaymentsSupport: bank.P2PPaymentsSupport || 'unknown',
                             eCommercePaymentsSupport: bank.eCommercePaymentsSupport || 'unknown',
@@ -214,11 +214,11 @@ jobs:
                           id: crypto.randomUUID(),
                           name: bank.name,
                           website: bank.website || '',
-                          bankContext: bank.bankContext || '',
+                          ...(bank.bankContext && { bankContext: bank.bankContext }),
                           appIds: bank.appIds || [],
                           aliases: bank.aliases || [],
-                          countries: bank.countries || [],
-                          logoUrl: bank.logoUrl || '',
+                          ...(bank.countries && { countries: bank.countries }),
+                          ...(bank.logoUrl && { logoUrl: bank.logoUrl }),
                           standaloneAppSupport: bank.standaloneAppSupport || 'unknown',
                           P2PPaymentsSupport: bank.P2PPaymentsSupport || 'unknown',
                           eCommercePaymentsSupport: bank.eCommercePaymentsSupport || 'unknown',
