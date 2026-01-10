@@ -63,12 +63,14 @@ jobs:
 
       - name: Process contribution
         uses: actions/github-script@v7
+        env:
+          CONTRIBUTION_DATA: ${{ steps.extract.outputs.contribution_data }}
         with:
           script: |
             const fs = require('fs');
             const path = require('path');
 
-            const payload = JSON.parse('${{ steps.extract.outputs.contribution_data }}'.replace(/'/g, "\\'"));
+            const payload = JSON.parse(process.env.CONTRIBUTION_DATA);
             const { contribution } = payload;
             const { type, action, data } = contribution;
 
