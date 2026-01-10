@@ -83,13 +83,13 @@ export const dataSchema = zod.strictObject({
   merchants: merchantsSchema,
 });
 
+export type Data = zod.infer<typeof dataSchema>;
 export type BanksData = zod.infer<typeof banksSchema>;
 export type MerchantsData = zod.infer<typeof merchantsSchema>;
-export type Data = zod.infer<typeof dataSchema>;
-export type BankBrand = Data["banks"]["brands"][number];
-export type Bank = Data["banks"]["brands"][number]["banks"][number];
-export type BankingApp = Data["banks"]["brands"][number]["apps"][number];
-export type MerchantBrand = Data["merchants"]["brands"][number];
+export type BankBrand = BanksData["brands"][number];
+export type Bank = BankBrand["banks"][number];
+export type BankingApp = BankBrand["apps"][number];
+export type MerchantBrand = MerchantsData["brands"][number];
 export type MerchantCategory = MerchantBrand["category"];
 
 export type Source = {

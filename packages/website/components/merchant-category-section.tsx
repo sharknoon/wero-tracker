@@ -1,6 +1,6 @@
 "use client";
 
-import { MerchantBrandItem, categoryLabels } from "./merchant-brand-item";
+import { MerchantBrandItem } from "./merchant-brand-item";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -10,6 +10,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { MerchantBrand, MerchantCategory } from "@/lib/schema";
+import { merchantCategoryOptions } from "@/lib/constants";
 
 interface MerchantCategorySectionProps {
   category: MerchantCategory;
@@ -17,23 +18,13 @@ interface MerchantCategorySectionProps {
   defaultExpanded?: boolean;
 }
 
-const categoryIcons: Record<MerchantCategory, string> = {
-  fashion: "👗",
-  electronics: "📱",
-  "food-delivery": "🍕",
-  groceries: "🛒",
-  travel: "✈️",
-  entertainment: "🎬",
-  services: "🔧",
-  other: "📦",
-};
-
 export function MerchantCategorySection({
-  category,
+  category: c,
   merchants,
   defaultExpanded = true,
 }: MerchantCategorySectionProps) {
   const [isOpen, setIsOpen] = useState(defaultExpanded);
+  const category = merchantCategoryOptions.find((o) => o.value === c);
 
   const supportedCount = merchants.filter(
     (m) => m.weroSupport === "supported",
@@ -46,13 +37,11 @@ export function MerchantCategorySection({
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg bg-secondary/50 px-4 py-3 hover:bg-secondary transition-colors">
         <div className="flex items-center gap-3">
-          <span className="text-2xl" role="img" aria-label={category}>
-            {categoryIcons[category]}
+          <span className="text-2xl" role="img" aria-label={category?.label}>
+            {category?.emoji}
           </span>
           <div className="text-start">
-            <h2 className="font-semibold text-foreground">
-              {categoryLabels[category]}
-            </h2>
+            <h2 className="font-semibold text-foreground">{category?.label}</h2>
             <p className="text-xs text-muted-foreground">
               {merchants.length} shops • {supportedCount} supported •{" "}
               {announcedCount} announced

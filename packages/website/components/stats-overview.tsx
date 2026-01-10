@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { CircleCheck, CircleX, Clock, Flag, Store } from "lucide-react";
 import { Data } from "@/lib/schema";
+import { euCountries } from "@/lib/constants";
 
 interface StatsOverviewProps {
   data: Data;
@@ -49,7 +50,7 @@ export function StatsOverview({ data, activeView }: StatsOverviewProps) {
   const numberOfAnnouncedBanks = announcedBanks.length;
   const numberOfSupportedMerchants = supportedMerchants.length;
   const numberOfAnnouncedMerchants = announcedMerchants.length;
-  const euMemberCountries = 27;
+  const euMemberCountries = euCountries.length;
 
   const bankStats = [
     {

@@ -1,4 +1,4 @@
-import { ExternalLink, Info } from "lucide-react";
+import { Info, Landmark, Plus, Store } from "lucide-react";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,6 +8,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Image from "next/image";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useContribution } from "@/lib/contribution-context";
 
 export interface HeaderProps {
   sourceRepository: string;
@@ -15,11 +22,8 @@ export interface HeaderProps {
   lastUpdated: Date;
 }
 
-export function Header({
-  sourceRepository,
-  contributionGuidelines,
-  lastUpdated,
-}: HeaderProps) {
+export function Header({ sourceRepository, lastUpdated }: HeaderProps) {
+  const { openAddBankBrandDialog, openAddMerchantDialog } = useContribution();
   return (
     <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
       <div className="container mx-auto p-4">
@@ -36,7 +40,8 @@ export function Header({
                 Unofficial Wero Adoption Tracker
               </h1>
               <p className="text-xs text-muted-foreground">
-                Follow Wero&apos;s rollout across Europe&apos;s banks.
+                Follow Wero&apos;s rollout across Europe&apos;s banks and online
+                shops.
               </p>
             </div>
           </div>
@@ -50,22 +55,30 @@ export function Header({
                     Last updated: {lastUpdated.toLocaleDateString()}
                   </div>
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent className="bg-popover text-popover-foreground border p-3 [&_svg]:bg-popover [&_svg]:fill-popover [&_svg]:border-b [&_svg]:border-e [&_svg]:translate-y-[calc(-50%+1px)] [&_svg]:rounded-none [&_svg]:rounded-br-[2px]">
                   <p>Data is updated automatically every 24 hours.</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
 
-            <Button variant="outline" size="sm" className="gap-2" asChild>
-              <a
-                href={contributionGuidelines}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span className="hidden sm:inline">Contribute</span>
-                <ExternalLink size={12} />
-              </a>
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Plus size={16} />
+                  <span className="hidden sm:inline">Add</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={openAddBankBrandDialog}>
+                  <Landmark size={14} />
+                  Add missing bank
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={openAddMerchantDialog}>
+                  <Store size={14} />
+                  Add missing online shop
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button variant="ghost" size="sm" className="gap-2" asChild>
               <a
                 href={sourceRepository}

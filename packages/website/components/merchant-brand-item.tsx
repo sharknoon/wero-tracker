@@ -1,8 +1,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { StatusBadge } from "./status-badge";
 import { NotesText } from "./notes-text";
-import { ExternalLink } from "lucide-react";
-import { MerchantBrand, MerchantCategory } from "@/lib/schema";
+import { ExternalLink, MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { MerchantBrand } from "@/lib/schema";
 import {
   Item,
   ItemActions,
@@ -11,34 +11,26 @@ import {
   ItemMedia,
   ItemTitle,
 } from "./ui/item";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useContribution } from "@/lib/contribution-context";
+import { merchantCategoryOptions } from "@/lib/constants";
 
 interface MerchantBrandItemProps {
   merchant: MerchantBrand;
 }
 
-const categoryLabels: Record<MerchantCategory, string> = {
-  fashion: "Fashion & Apparel",
-  electronics: "Electronics",
-  "food-delivery": "Food Delivery",
-  groceries: "Groceries",
-  travel: "Travel & Booking",
-  entertainment: "Entertainment",
-  services: "Services",
-  other: "Other",
-};
-
-const categoryColors: Record<MerchantCategory, string> = {
-  fashion: "bg-pink-500/10 text-pink-500",
-  electronics: "bg-blue-500/10 text-blue-500",
-  "food-delivery": "bg-orange-500/10 text-orange-500",
-  groceries: "bg-green-500/10 text-green-500",
-  travel: "bg-purple-500/10 text-purple-500",
-  entertainment: "bg-yellow-500/10 text-yellow-500",
-  services: "bg-cyan-500/10 text-cyan-500",
-  other: "bg-gray-500/10 text-gray-500",
-};
-
 export function MerchantBrandItem({ merchant }: MerchantBrandItemProps) {
+  const { openEditMerchantDialog, openDeleteMerchantDialog } =
+    useContribution();
+  const category = merchantCategoryOptions.find(
+    (option) => option.value === merchant.category,
+  );
+
   return (
     <>
       <Item variant="outline">
@@ -56,30 +48,57 @@ export function MerchantBrandItem({ merchant }: MerchantBrandItemProps) {
         <ItemContent>
           <ItemTitle>
             {merchant.name}{" "}
-            <a
-              href={merchant.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-primary transition-colors shrink-0"
-            >
-              <ExternalLink size={14} />
-            </a>
             {merchant.notes && <NotesText notes={merchant.notes} />}
           </ItemTitle>
           <ItemDescription>
             <span
-              className={`text-xs px-2 py-0.5 rounded-full ${categoryColors[merchant.category]}`}
+              className={`text-xs px-2 py-0.5 rounded-full ${category?.color}`}
             >
-              {categoryLabels[merchant.category]}
+              {category?.label}
             </span>
           </ItemDescription>
         </ItemContent>
         <ItemActions>
           <StatusBadge status={merchant.weroSupport} sources={[]} showLabel />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                aria-label="More options"
+              >
+                <MoreVertical size={16} />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {merchant.website && (
+                <DropdownMenuItem asChild>
+                  <a
+                    href={merchant.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <ExternalLink size={14} />
+                    Open Website
+                  </a>
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem
+                onClick={() => openEditMerchantDialog(merchant)}
+              >
+                <Pencil size={14} />
+                Suggest Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => openDeleteMerchantDialog(merchant)}
+              >
+                <Trash2 size={14} />
+                Suggest Deletion
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </ItemActions>
       </Item>
     </>
   );
 }
-
-export { categoryLabels, categoryColors };

@@ -3,7 +3,15 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { StatusBadge, StatusDot } from "./status-badge";
 import { NotesText } from "./notes-text";
-import { Check, ChevronDown, ExternalLink, Landmark } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  ExternalLink,
+  Landmark,
+  MoreVertical,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Bank, BankBrand, SupportStatus, Data } from "@/lib/schema";
 import {
@@ -19,6 +27,13 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useContribution } from "@/lib/contribution-context";
 
 interface BankBrandItemProps {
   brand: BankBrand;
@@ -27,52 +42,84 @@ interface BankBrandItemProps {
 
 export function BankBrandItem({ brand, weroApp }: BankBrandItemProps) {
   const [selectedBank, setSelectedBank] = useState<Bank>(brand.banks[0]);
+  const { openEditBankBrandDialog, openDeleteBankBrandDialog } =
+    useContribution();
+
   return (
     <Card className="bg-transparent py-4">
-      <CardHeader className="px-4 pb-3">
-        <div className="flex items-start justify-between gap-3 overflow-hidden">
-          <div className="flex items-center gap-3 min-w-0">
-            <Avatar className="size-10 rounded-lg">
-              <AvatarImage
-                src={selectedBank.logoUrl ?? brand.logoUrl}
-                className="bg-white p-1 object-contain"
-              />
-              <AvatarFallback className="rounded-lg">
-                {brand.name.substring(0, 2).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <h3
-                  className="font-semibold text-foreground truncate"
-                  title={brand.name}
-                >
-                  {brand.name}
-                </h3>
-                {selectedBank.website && (
-                  <a
-                    href={selectedBank.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-primary transition-colors shrink-0"
-                  >
-                    <ExternalLink size={14} />
-                  </a>
-                )}
-                {brand.notes && <NotesText notes={brand.notes} />}
-              </div>
-              {brand.banks.length > 1 && (
-                <BankSelectorComboBox
-                  banks={brand.banks}
-                  selectedBank={selectedBank.id}
-                  setSelectedBank={(id) =>
-                    setSelectedBank(brand.banks.find((bank) => bank.id === id)!)
-                  }
-                />
-              )}
+      <CardHeader className="px-4">
+        <div className="flex items-start gap-3 overflow-hidden">
+          <Avatar className="size-10 rounded-lg">
+            <AvatarImage
+              src={selectedBank.logoUrl ?? brand.logoUrl}
+              className="bg-white p-1 object-contain"
+            />
+            <AvatarFallback className="rounded-lg">
+              {brand.name.substring(0, 2).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+
+          <div className="min-w-0 grow self-center">
+            <div className="flex items-center gap-2">
+              <h3
+                className="font-semibold text-foreground truncate"
+                title={brand.name}
+              >
+                {brand.name}
+              </h3>
+              {brand.notes && <NotesText notes={brand.notes} />}
             </div>
+            {brand.banks.length > 1 && (
+              <BankSelectorComboBox
+                banks={brand.banks}
+                selectedBank={selectedBank.id}
+                setSelectedBank={(id) =>
+                  setSelectedBank(brand.banks.find((bank) => bank.id === id)!)
+                }
+              />
+            )}
           </div>
-          <StatusBadge status={brand.weroSupport} sources={[]} showLabel />
+
+          <div className="flex items-center gap-2">
+            <StatusBadge status={brand.weroSupport} sources={[]} showLabel />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                  aria-label="More options"
+                >
+                  <MoreVertical size={16} />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {selectedBank.website && (
+                  <DropdownMenuItem asChild>
+                    <a
+                      href={selectedBank.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <ExternalLink size={14} />
+                      Open Website
+                    </a>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem
+                  onClick={() => openEditBankBrandDialog(brand)}
+                >
+                  <Pencil size={14} />
+                  Suggest Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => openDeleteBankBrandDialog(brand)}
+                >
+                  <Trash2 size={14} />
+                  Suggest Deletion
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="px-4 space-y-4">

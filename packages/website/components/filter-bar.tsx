@@ -1,15 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Search,
-  Filter,
-  CircleCheck,
-  Clock,
-  CircleX,
-  CircleQuestionMark,
-  X,
-} from "lucide-react";
+import { Search, Filter, X } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,6 +18,7 @@ import {
 } from "@/components/ui/input-group";
 import { CountryFlag } from "./country-flag";
 import { SupportStatus } from "@/lib/schema";
+import { supportStatusOptions } from "@/lib/constants";
 
 interface FilterBarProps {
   searchQuery: string;
@@ -48,38 +41,6 @@ export function FilterBar({
   availableCountries,
   activeView,
 }: FilterBarProps) {
-  const statuses: {
-    icon: React.ElementType;
-    iconColor: string;
-    value: SupportStatus;
-    label: string;
-  }[] = [
-    {
-      icon: CircleCheck,
-      iconColor: "text-status-supported",
-      value: "supported",
-      label: "Supported",
-    },
-    {
-      icon: Clock,
-      iconColor: "text-status-announced",
-      value: "announced",
-      label: "Announced",
-    },
-    {
-      icon: CircleX,
-      iconColor: "text-status-unsupported",
-      value: "unsupported",
-      label: "Unsupported",
-    },
-    {
-      icon: CircleQuestionMark,
-      iconColor: "text-status-unknown",
-      value: "unknown",
-      label: "Unknown",
-    },
-  ];
-
   const toggleSupportStatus = (status: SupportStatus) => {
     if (selectedStatuses.includes(status)) {
       onStatusChange(selectedStatuses.filter((s) => s !== status));
@@ -140,7 +101,7 @@ export function FilterBar({
         <DropdownMenuContent className="bg-card border-border">
           <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {statuses.map((status) => (
+          {supportStatusOptions.map((status) => (
             <DropdownMenuCheckboxItem
               key={status.value}
               checked={selectedStatuses.includes(status.value)}

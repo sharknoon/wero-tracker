@@ -19,6 +19,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MerchantCategory, SupportStatus, Data } from "@/lib/schema";
 import { Landmark, Plus, SearchX, Store } from "lucide-react";
 import { Button } from "./ui/button";
+import {
+  ContributionProvider,
+  useContribution,
+} from "@/lib/contribution-context";
+import { euCountries } from "@/lib/constants";
+import { BankBrandDialog } from "./bank-brand-dialog";
+import { MerchantDialog } from "./merchant-dialog";
 
 type ViewType = "banks" | "merchants";
 
@@ -27,6 +34,17 @@ interface WeroTrackerProps {
 }
 
 export function WeroTracker({ data }: WeroTrackerProps) {
+  return (
+    <ContributionProvider>
+      <WeroTrackerContent data={data} />
+      <BankBrandDialog />
+      <MerchantDialog />
+    </ContributionProvider>
+  );
+}
+
+function WeroTrackerContent({ data }: WeroTrackerProps) {
+  const { openAddBankBrandDialog, openAddMerchantDialog } = useContribution();
   const [activeView, setActiveView] = useState<ViewType>("banks");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatuses, setSelectedStatuses] = useState<SupportStatus[]>([]);
@@ -39,7 +57,6 @@ export function WeroTracker({ data }: WeroTrackerProps) {
     process.env.NEXT_PUBLIC_WEBSITE_SOURCE_REPOSITORY ?? "#";
   const contributionGuidelines =
     process.env.NEXT_PUBLIC_WEBSITE_CONTRIBUTION_GUIDELINES ?? "#";
-  const newBankLink = process.env.NEXT_PUBLIC_WEBSITE_NEW_BANK_LINK ?? "#";
   const officialWeroWebsite =
     process.env.NEXT_PUBLIC_WEBSITE_OFFICIAL_WERO_WEBSITE ?? "#";
 
@@ -141,7 +158,10 @@ export function WeroTracker({ data }: WeroTrackerProps) {
         (merchant) => merchant.countries,
       );
     }
-    return Array.from(new Set(countries)).sort();
+    const filteredCountries = countries.filter((code) =>
+      euCountries.includes(code),
+    );
+    return Array.from(new Set(filteredCountries)).sort();
   }, [activeView, data.banks.brands, data.merchants.brands]);
 
   // Get user's country from browser locale (using useSyncExternalStore to avoid hydration mismatch)
@@ -150,7 +170,6 @@ export function WeroTracker({ data }: WeroTrackerProps) {
     () => {
       // Client: extract country from browser locale
       const locale = navigator.language || navigator.languages?.[0];
-      console.log("Locale detected:", locale);
       if (locale) {
         const parts = locale.split("-");
         if (parts.length === 1 && parts[0].length === 2) {
@@ -172,7 +191,9 @@ export function WeroTracker({ data }: WeroTrackerProps) {
       brand.countries
         .filter(
           (code) =>
-            selectedCountries.length === 0 || selectedCountries.includes(code),
+            (selectedCountries.length === 0 ||
+              selectedCountries.includes(code)) &&
+            euCountries.includes(code),
         )
         .forEach((countryCode) => {
           if (!countryMap.has(countryCode)) {
@@ -273,20 +294,14 @@ export function WeroTracker({ data }: WeroTrackerProps) {
                   <EmptyTitle>No banks found</EmptyTitle>
                   <EmptyDescription>
                     No banks found matching your filters. You can help by adding
-                    missing banks via the data repository.
+                    missing banks.
                   </EmptyDescription>
                 </EmptyHeader>
                 <EmptyContent>
                   <div className="flex gap-2">
-                    <Button asChild>
-                      <a
-                        href={newBankLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Plus />
-                        Add missing bank
-                      </a>
+                    <Button onClick={openAddBankBrandDialog}>
+                      <Plus />
+                      Add missing bank
                     </Button>
                   </div>
                 </EmptyContent>
@@ -322,20 +337,14 @@ export function WeroTracker({ data }: WeroTrackerProps) {
                   <EmptyTitle>No online shops found</EmptyTitle>
                   <EmptyDescription>
                     No online shops found matching your filters. You can help by
-                    adding missing shops via the data repository.
+                    adding missing shops.
                   </EmptyDescription>
                 </EmptyHeader>
                 <EmptyContent>
                   <div className="flex gap-2">
-                    <Button asChild>
-                      <a
-                        href={newBankLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Plus />
-                        Add missing shop
-                      </a>
+                    <Button onClick={openAddMerchantDialog}>
+                      <Plus />
+                      Add missing shop
                     </Button>
                   </div>
                 </EmptyContent>
