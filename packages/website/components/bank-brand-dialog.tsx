@@ -442,7 +442,7 @@ function AppItem({
         app.markedForDeletion && "border-destructive/50 bg-destructive/5",
       )}
     >
-      <CollapsibleTrigger className="w-full flex items-center justify-between p-3 hover:bg-muted/50 transition-colors">
+      <CollapsibleTrigger className="flex items-center justify-between p-3 hover:bg-muted/50 transition-colors">
         <div className="flex items-center justify-between w-full gap-2 me-2">
           <div className="text-start min-w-0">
             <div
@@ -1181,7 +1181,7 @@ export function BankBrandDialog() {
           <DialogDescription>{getDescription()}</DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="max-h-[70vh] pr-4 -mr-4">
+        <ScrollArea className="max-h-[70vh] pr-4 -mr-4 **:max-w-[calc(100vw-5rem)] sm:**:max-w-116">
           <div className="space-y-4 py-2">
             {isDelete ? (
               <DeleteModeContent

@@ -396,7 +396,7 @@ export function MerchantDialog() {
           <DialogDescription>{getDescription()}</DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="max-h-[70vh] pr-4 -mr-4">
+        <ScrollArea className="max-h-[70vh] pr-4 -mr-4 **:max-w-[calc(100vw-5rem)] sm:**:max-w-116">
           <div className="space-y-4 py-2">
             {isDelete ? (
               <DeleteModeContent
