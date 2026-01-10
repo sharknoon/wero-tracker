@@ -442,7 +442,7 @@ function AppItem({
         app.markedForDeletion && "border-destructive/50 bg-destructive/5",
       )}
     >
-      <CollapsibleTrigger className="flex items-center justify-between p-3 hover:bg-muted/50 transition-colors">
+      <CollapsibleTrigger className="w-full flex items-center justify-between p-3 hover:bg-muted/50 transition-colors">
         <div className="flex items-center justify-between w-full gap-2 me-2">
           <div className="text-start min-w-0">
             <div
