@@ -39,7 +39,7 @@ This project heavily relies on up-to-date informations about the current state o
 
 You can help this project in several ways:
 
-- Report missing banks [via an GitHub Issue](https://github.com/sharknoon/wero-tracker-data/issues/new?template=add-missing-bank.md)
+- Report missing banks [via an GitHub Issue](https://github.com/sharknoon/wero-tracker/issues/new?template=add-missing-bank.md)
 - Report missing, false or oudated data [via an GitHub Issue](https://github.com/sharknoon/wero-tracker/issues/new?template=correct-missing-false-or-outdated-data.md)
 - Improve the website or change data directly by [forking it](https://github.com/sharknoon/wero-tracker/fork)
 
