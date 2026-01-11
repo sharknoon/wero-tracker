@@ -33,7 +33,7 @@ jobs:
             const body = context.payload.issue.body;
 
             // Extract the JSON from the custom markdown code block
-            const match = body.match(/```json contribution(.*?)```/);
+            const match = body.match(/```json contribution\s*([\s\S]*?)```/);
 
             if (!match) {
               core.setFailed('No contribution data found in issue body');
