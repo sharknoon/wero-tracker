@@ -222,7 +222,7 @@ function generateIssueBody(payload: {
 
   body += `### Data\n\n`;
   body += "```json contribution\n";
-  body += JSON.stringify(contribution.data, null, 2);
+  body += JSON.stringify(payload, null, 2);
   body += "\n```\n";
 
   return body;
