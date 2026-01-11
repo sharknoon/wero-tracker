@@ -95,6 +95,16 @@ if (!jsonInput) {
   process.exit(1);
 }
 
+const assetCache = new Map<string, string>();
+const saveAssetCached = async (url: string) => {
+  if (assetCache.has(url)) {
+    return assetCache.get(url)!;
+  }
+  const savedUrl = await saveAsset(url, crypto.randomUUID());
+  assetCache.set(url, savedUrl);
+  return savedUrl;
+};
+
 try {
   const payload = JSON.parse(jsonInput);
   const { contribution } = contributionSchema.parse(payload);
@@ -148,13 +158,13 @@ try {
       const newBankBrand = {
         ...data,
         id: crypto.randomUUID(),
-        logoUrl: await saveAsset(data.logoUrl, crypto.randomUUID()),
+        logoUrl: await saveAssetCached(data.logoUrl),
         banks: await Promise.all(
           data.banks.map(async (bank) => ({
             ...bank,
             id: crypto.randomUUID(),
             logoUrl: bank.logoUrl
-              ? await saveAsset(bank.logoUrl, crypto.randomUUID())
+              ? await saveAssetCached(bank.logoUrl)
               : undefined,
           }))
         ),
@@ -162,7 +172,7 @@ try {
           data.apps.map(async (app) => ({
             ...app,
             id: crypto.randomUUID(),
-            iconUrl: await saveAsset(app.iconUrl, crypto.randomUUID()),
+            iconUrl: await saveAssetCached(app.iconUrl),
           }))
         ),
       };
@@ -178,7 +188,7 @@ try {
         logoUrl:
           banksData.brands[index].logoUrl === data.logoUrl
             ? data.logoUrl
-            : await saveAsset(data.logoUrl, crypto.randomUUID()),
+            : await saveAssetCached(data.logoUrl),
         banks: await Promise.all(
           data.banks.map(async (bank) => {
             const existingBank = banksData.brands[index].banks.find(
@@ -190,7 +200,7 @@ try {
                 existingBank && existingBank.logoUrl === bank.logoUrl
                   ? bank.logoUrl
                   : bank.logoUrl
-                  ? await saveAsset(bank.logoUrl, crypto.randomUUID())
+                  ? await saveAssetCached(bank.logoUrl)
                   : undefined,
             };
           })
@@ -205,7 +215,7 @@ try {
               iconUrl:
                 existingApp && existingApp.iconUrl === app.iconUrl
                   ? app.iconUrl
-                  : await saveAsset(app.iconUrl, crypto.randomUUID()),
+                  : await saveAssetCached(app.iconUrl),
             };
           })
         ),
