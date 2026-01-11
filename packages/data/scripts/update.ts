@@ -163,33 +163,37 @@ for (const brand of weroData.brands) {
   );
   const banks: Bank[] = [];
   for (const bank of brand.banks) {
-    const existingBankData = existingBrandData?.banks.find(
+    const existingP2PBankData = existingBrandData?.banks.find(
       (b) => b.id === bank.id
     );
+    const ecommerceBankData = ecommerceResult
+      .data!.find((br) => br.banks.some((ba) => ba.id === bank.id))
+      ?.banks.find((ba) => ba.id === bank.id);
 
     banks.push({
       id: bank.id,
       name: bank.name,
-      website: existingBankData?.website ?? "https://example.com",
+      website: existingP2PBankData?.website ?? "https://example.com",
       bankContext: bank.bankContext,
       appIds:
-        bank.appIds.length === 0 ? existingBankData?.appIds ?? [] : bank.appIds,
+        bank.appIds.length === 0
+          ? existingP2PBankData?.appIds ?? []
+          : bank.appIds,
       aliases: bank.aliases,
       countries: bank.countries,
       logoUrl: bank.logoUrl ? await saveAsset(bank.logoUrl) : undefined,
       // Could be "announced"
       standaloneAppSupport: bank.supportsStandaloneApp
         ? "supported"
-        : existingBankData?.standaloneAppSupport ?? "unsupported",
+        : existingP2PBankData?.standaloneAppSupport ?? "unsupported",
       P2PPaymentsSupport: "supported" as const,
       eCommercePaymentsSupport:
-        existingBankData?.eCommercePaymentsSupport ??
-        ecommerceResult.data!.some((br) =>
-          br.banks.some((ba) => ba.id === bank.id)
+        ecommerceBankData?.supportedPaymentUseCases.includes(
+          "SingleImmediatePayments"
         )
           ? "supported"
           : "unsupported",
-      POSPaymentsSupport: existingBankData?.POSPaymentsSupport ?? "unknown",
+      POSPaymentsSupport: existingP2PBankData?.POSPaymentsSupport ?? "unknown",
     });
   }
 
