@@ -18,7 +18,7 @@ import { saveAsset } from "./common/assets.ts";
 // ============================================================================
 
 const contributionSchema = zod.strictObject({
-  contribution: zod.discriminatedUnion("type", [
+  contribution: zod.union([
     zod.strictObject({
       type: zod.literal("bank-brand"),
       action: zod.literal("add"),
