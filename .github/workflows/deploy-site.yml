@@ -5,6 +5,7 @@ on:
     branches: ["main"]
     paths:
       - packages/website/**
+      - packages/data/*.json
   workflow_dispatch:
   schedule:
     # Every 24 hours
