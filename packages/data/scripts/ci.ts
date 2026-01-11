@@ -148,9 +148,10 @@ try {
     }
 
     merchantsData.brands.sort((a, b) => a.name.localeCompare(b.name));
+    const validatedMerchantsData = merchantBrandsSchema.parse(merchantsData);
     await fs.writeFile(
       path.join(rootDir, "merchants.json"),
-      JSON.stringify(merchantsData, null, 2) + "\n",
+      JSON.stringify(validatedMerchantsData, null, 2) + "\n",
       "utf-8"
     );
   } else if (type === "bank-brand") {
@@ -247,9 +248,10 @@ try {
     }
 
     banksData.brands.sort((a, b) => a.name.localeCompare(b.name));
+    const validatedBanksData = bankBrandsSchema.parse(banksData);
     await fs.writeFile(
       path.join(rootDir, "banks.json"),
-      JSON.stringify(banksData, null, 2) + "\n",
+      JSON.stringify(validatedBanksData, null, 2) + "\n",
       "utf-8"
     );
   } else {

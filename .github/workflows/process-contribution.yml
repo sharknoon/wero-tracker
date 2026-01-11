@@ -71,7 +71,7 @@ jobs:
           CONTRIBUTION_DATA: ${{ steps.extract.outputs.contribution_data }}
           DATA_GITHUB_ORG: ${{ github.repository_owner }}
           DATA_GITHUB_REPO: ${{ github.event.repository.name }}
-          DATA_GITHUB_REF: ${{ steps.branch.outputs.branch_name }}
+          DATA_GITHUB_REF: ${{ github.ref }}
           DATA_ASSET_PATH: packages/data/assets
         run: |
           cd packages/data
