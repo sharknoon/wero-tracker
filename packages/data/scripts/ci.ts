@@ -20,6 +20,7 @@ import { saveAsset } from "./common/assets.ts";
 const contributionSchema = zod.strictObject({
   contribution: zod.union([
     zod.strictObject({
+      id: zod.uuid(),
       type: zod.literal("bank-brand"),
       action: zod.literal("add"),
       reason: zod.string().optional(),
@@ -29,18 +30,21 @@ const contributionSchema = zod.strictObject({
       }),
     }),
     zod.strictObject({
+      id: zod.uuid(),
       type: zod.literal("bank-brand"),
       action: zod.enum(["edit", "delete"]),
       reason: zod.string(),
       data: bankBrandSchema,
     }),
     zod.strictObject({
+      id: zod.uuid(),
       type: zod.literal("merchant"),
       action: zod.literal("add"),
       reason: zod.string().optional(),
       data: merchantBrandSchema.omit({ id: true }),
     }),
     zod.strictObject({
+      id: zod.uuid(),
       type: zod.literal("merchant"),
       action: zod.enum(["edit", "delete"]),
       reason: zod.string(),
