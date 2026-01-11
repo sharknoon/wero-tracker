@@ -2,7 +2,11 @@ import "dotenv/config";
 import fs from "node:fs/promises";
 import path from "node:path";
 import zod from "zod";
-import { type BanksData, bankBrandsSchema } from "./common/schema.ts";
+import {
+  type Bank,
+  type BanksData,
+  bankBrandsSchema,
+} from "./common/schema.ts";
 import { exists, rootDir } from "./common/fs.ts";
 import { saveAsset } from "./common/assets.ts";
 import { error, success } from "./common/prompt.ts";
@@ -51,18 +55,84 @@ const p2pSchema = zod.strictObject({
   }),
 });
 
-const p2pData = await fetch(process.env.DATA_WERO_API_URL ?? "").then((res) =>
-  res.json()
+const ecommerceSchema = zod.array(
+  zod.strictObject({
+    id: zod.uuid(),
+    name: zod.string(),
+    aliases: zod.array(zod.string()),
+    countries: zod.array(zod.string().length(2)),
+    logoUrl: zod.url(),
+    banks: zod.array(
+      zod.strictObject({
+        id: zod.uuid(),
+        name: zod.string(),
+        bankContext: zod.string().optional(),
+        appIds: zod.array(
+          zod.union([zod.uuid(), zod.literal("STANDALONE_APP_ID")])
+        ),
+        aliases: zod.array(zod.string()).optional(),
+        countries: zod.array(zod.string().length(2)).optional(),
+        logoUrl: zod.url(),
+        supportsStandaloneApp: zod.boolean(),
+        fieldTesting: zod.boolean(),
+        supportedPaymentUseCases: zod.array(
+          zod.union([
+            zod.literal("SingleP2P"),
+            zod.literal("SingleImmediatePayments"),
+            zod.literal("EventDependentPayments"),
+          ])
+        ),
+        apps: zod.array(
+          zod.strictObject({
+            id: zod.union([zod.uuid(), zod.literal("STANDALONE_APP_ID")]),
+            name: zod.string(),
+            iconUrl: zod.url(),
+            universalLink: zod.url(),
+            useCases: zod
+              .array(zod.union([zod.literal("ecom"), zod.literal("mcom")]))
+              .optional(),
+            supportsDesktop: zod.boolean().optional(),
+            bankName: zod.string(),
+          })
+        ),
+      })
+    ),
+    // Yes, I know, somehow Wero decided to have two duplicate app lists
+    apps: zod.array(
+      zod.strictObject({
+        id: zod.union([zod.uuid(), zod.literal("STANDALONE_APP_ID")]),
+        name: zod.string(),
+        iconUrl: zod.url(),
+        universalLink: zod.url(),
+        useCases: zod
+          .array(zod.union([zod.literal("ecom"), zod.literal("mcom")]))
+          .default([]),
+        supportsDesktop: zod.boolean().optional(),
+      })
+    ),
+  })
 );
 
-const result = await p2pSchema.safeParseAsync(p2pData);
+const p2pData = await fetch(process.env.DATA_WERO_P2P_API_URL ?? "").then(
+  (res) => res.json()
+);
+const ecommerceData = await fetch(
+  process.env.DATA_WERO_ECOM_API_URL ?? ""
+).then((res) => res.json());
 
-if (!result.success) {
-  error(zod.prettifyError(result.error));
+const p2pResult = await p2pSchema.safeParseAsync(p2pData);
+const ecommerceResult = await ecommerceSchema.safeParseAsync(ecommerceData);
+
+if (!p2pResult.success) {
+  error(zod.prettifyError(p2pResult.error));
+  process.exit(1);
+}
+if (!ecommerceResult.success) {
+  error(zod.prettifyError(ecommerceResult.error));
   process.exit(1);
 }
 
-const weroData = result.data.data;
+const weroData = p2pResult.data.data;
 
 export let existingBanksData: BanksData = {
   brands: [],
@@ -91,7 +161,7 @@ for (const brand of weroData.brands) {
   const existingBrandData = existingBanksData.brands.find(
     (b) => b.id === brand.id
   );
-  const banks = [];
+  const banks: Bank[] = [];
   for (const bank of brand.banks) {
     const existingBankData = existingBrandData?.banks.find(
       (b) => b.id === bank.id
@@ -113,7 +183,12 @@ for (const brand of weroData.brands) {
         : existingBankData?.standaloneAppSupport ?? "unsupported",
       P2PPaymentsSupport: "supported" as const,
       eCommercePaymentsSupport:
-        existingBankData?.eCommercePaymentsSupport ?? "unknown",
+        existingBankData?.eCommercePaymentsSupport ??
+        ecommerceResult.data!.some((br) =>
+          br.banks.some((ba) => ba.id === bank.id)
+        )
+          ? "supported"
+          : "unsupported",
       POSPaymentsSupport: existingBankData?.POSPaymentsSupport ?? "unknown",
     });
   }

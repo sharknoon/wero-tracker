@@ -118,7 +118,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/8bc28585-bed7-4d69-926f-02ce7aaf726d-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -194,7 +194,7 @@
           "aliases": [],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -230,7 +230,7 @@
           "aliases": [],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -266,7 +266,7 @@
           "aliases": [],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -342,7 +342,7 @@
           "aliases": [],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -378,7 +378,7 @@
           "aliases": [],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -416,7 +416,7 @@
           "aliases": [],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -524,7 +524,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/7f45efa8-3759-4517-bffd-753bb4bb21e3-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -605,7 +605,7 @@
           "aliases": [],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -774,7 +774,7 @@
           "aliases": [],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -814,7 +814,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/c9525fe9-69fa-5f73-b961-53ed633e652c-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -894,7 +894,7 @@
           "aliases": [],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -934,7 +934,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/2477046e-357c-53e2-92ae-a71889169522-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -1013,7 +1013,7 @@
           "aliases": [],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -1053,7 +1053,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/73711385-7613-5f76-98bb-adb1c7526042-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -1128,7 +1128,7 @@
           "aliases": [],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -1284,7 +1284,7 @@
           "aliases": [],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -1320,7 +1320,7 @@
           "aliases": [],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -1356,7 +1356,7 @@
           "aliases": [],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -1392,7 +1392,7 @@
           "aliases": [],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -1430,7 +1430,7 @@
           "aliases": [],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -1512,7 +1512,7 @@
           ],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -1644,7 +1644,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/f0ded948-dc85-4906-aca4-dfe2b021b97d-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -1760,7 +1760,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/fcc2315d-2de6-43cd-a88e-644f8c932b5e-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -1808,7 +1808,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/116eb1bb-bffd-4b5f-a7be-3c6bebb80b2c-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -1862,7 +1862,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/d9594b4c-2935-4a63-972e-bb9e5e4937e5-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -1902,7 +1902,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/6e9be178-8bb8-514a-be08-9d1cb0056ec6-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -1942,7 +1942,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/7219d750-eae2-4f32-9add-d1f8f5bcb92b-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -1993,7 +1993,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/7b823235-7656-4a44-9fce-1a772d9cc582-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -2033,7 +2033,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/a8886b70-4008-5bb6-bc51-d94e200f1d79-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -2069,7 +2069,7 @@
           "aliases": [],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -2109,7 +2109,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/76bc3901-220e-54e3-a67e-a1f666c5d812-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -2153,7 +2153,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/0506f723-8014-48d6-ab68-e30d147fd297-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "announced",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -2233,7 +2233,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/11ae797a-9476-53db-9380-7a799cf94f38-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -2273,7 +2273,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/ccf1edeb-73f2-5775-a978-907eca7626df-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -2311,7 +2311,7 @@
           "aliases": [],
           "standaloneAppSupport": "supported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -2349,7 +2349,7 @@
           "aliases": [],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -2385,7 +2385,7 @@
           "aliases": [],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -2582,7 +2582,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/fea9a927-4dd7-468e-bd93-d5941751c26f-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -2708,7 +2708,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/62cd51d2-3354-485b-bc30-9882691e5144-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         },
         {
@@ -2731,7 +2731,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/62cd51d2-3354-485b-bc30-9882691e5144-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         },
         {
@@ -2758,7 +2758,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/62cd51d2-3354-485b-bc30-9882691e5144-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         },
         {
@@ -2780,7 +2780,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/62cd51d2-3354-485b-bc30-9882691e5144-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         },
         {
@@ -2802,7 +2802,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/62cd51d2-3354-485b-bc30-9882691e5144-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         },
         {
@@ -2829,7 +2829,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/62cd51d2-3354-485b-bc30-9882691e5144-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         },
         {
@@ -2859,7 +2859,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/62cd51d2-3354-485b-bc30-9882691e5144-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         },
         {
@@ -2881,7 +2881,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/62cd51d2-3354-485b-bc30-9882691e5144-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         },
         {
@@ -2904,7 +2904,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/62cd51d2-3354-485b-bc30-9882691e5144-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         },
         {
@@ -2928,7 +2928,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/62cd51d2-3354-485b-bc30-9882691e5144-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -3092,7 +3092,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/dcd7d549-d6e8-5762-8f41-119b200a4314-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -3176,7 +3176,7 @@
           "aliases": [],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -3220,7 +3220,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/c9056246-e5c2-5536-ae16-39dc643f1585-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -3267,7 +3267,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/1d1556db-7920-433b-bf21-1678487bed05-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -3319,7 +3319,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/040191b8-19be-4a99-a6da-d24e5098aa04-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         },
         {
@@ -3375,7 +3375,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/040191b8-19be-4a99-a6da-d24e5098aa04-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         },
         {
@@ -3443,7 +3443,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/040191b8-19be-4a99-a6da-d24e5098aa04-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         },
         {
@@ -3475,7 +3475,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/040191b8-19be-4a99-a6da-d24e5098aa04-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         },
         {
@@ -3517,7 +3517,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/040191b8-19be-4a99-a6da-d24e5098aa04-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         },
         {
@@ -3572,7 +3572,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/040191b8-19be-4a99-a6da-d24e5098aa04-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         },
         {
@@ -3626,7 +3626,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/040191b8-19be-4a99-a6da-d24e5098aa04-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         },
         {
@@ -3662,7 +3662,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/040191b8-19be-4a99-a6da-d24e5098aa04-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         },
         {
@@ -3749,7 +3749,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/040191b8-19be-4a99-a6da-d24e5098aa04-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "supported",
           "POSPaymentsSupport": "unknown"
         }
       ],
