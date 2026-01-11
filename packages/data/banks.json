@@ -1070,6 +1070,7 @@
       "notes": ""
     },
     {
+      "id": "da873e08-1f77-4ff8-b2c0-d64f7fde08fa",
       "name": "CCF",
       "aliases": [],
       "weroSupport": "unknown",
@@ -1077,9 +1078,9 @@
         "FR"
       ],
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/contribution/45-ccf/packages/data/assets/882b192c-51c6-4bd6-8318-cc9800011997.jpg",
-      "notes": "",
       "banks": [
         {
+          "id": "d292f719-4a19-4f94-83c3-6dd2b418b86d",
           "name": "CCF",
           "website": "https://ccf.fr/",
           "bankContext": "CCDFFRPPXXX",
@@ -1092,21 +1093,20 @@
           "standaloneAppSupport": "unknown",
           "P2PPaymentsSupport": "unknown",
           "eCommercePaymentsSupport": "unknown",
-          "POSPaymentsSupport": "unknown",
-          "id": "d292f719-4a19-4f94-83c3-6dd2b418b86d"
+          "POSPaymentsSupport": "unknown"
         }
       ],
       "apps": [
         {
+          "id": "9e4e1043-eda8-4a09-a0f9-bf01a0abfaac",
           "name": "Mes Comptes CCF",
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/contribution/45-ccf/packages/data/assets/ccd1c5f8-f2a0-4bff-ba65-ac6d4076fd0e.png",
           "universalLink": "https://ccf.fr/",
           "supportsDesktop": true,
-          "weroSupport": "unknown",
-          "id": "9e4e1043-eda8-4a09-a0f9-bf01a0abfaac"
+          "weroSupport": "unknown"
         }
       ],
-      "id": "da873e08-1f77-4ff8-b2c0-d64f7fde08fa"
+      "notes": ""
     },
     {
       "id": "54a447de-1961-4a6b-9b79-f65068b17d0b",
@@ -3844,6 +3844,45 @@
           "weroSupport": "unsupported"
         }
       ]
+    },
+    {
+      "name": "Tomorrow",
+      "aliases": [],
+      "weroSupport": "unsupported",
+      "countries": [
+        "DE"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/contribution/49-tomorrow/packages/data/assets/b2f5084f-d229-4064-aab4-311aab2601fc.png",
+      "notes": "",
+      "banks": [
+        {
+          "name": "Tomorrow",
+          "website": "https://www.tomorrow.one/",
+          "bankContext": "SOBKDEBBXXX",
+          "appIds": [],
+          "aliases": [],
+          "countries": [
+            "DE"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/contribution/49-tomorrow/packages/data/assets/b2f5084f-d229-4064-aab4-311aab2601fc.png",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "unsupported",
+          "eCommercePaymentsSupport": "unsupported",
+          "POSPaymentsSupport": "unsupported",
+          "id": "f918fc42-6f17-4ca5-9b78-f0e4fe408c19"
+        }
+      ],
+      "apps": [
+        {
+          "name": "Tomorrow",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/contribution/49-tomorrow/packages/data/assets/b2f5084f-d229-4064-aab4-311aab2601fc.png",
+          "universalLink": "https://www.tomorrow.one",
+          "supportsDesktop": false,
+          "weroSupport": "unsupported",
+          "id": "923ade1d-fafd-4158-acb8-87312a2a761d"
+        }
+      ],
+      "id": "eab9a03d-efe1-4d0f-b4e6-24c6f7f57330"
     },
     {
       "id": "037b8d55-742c-491d-9212-1e1a9b6da6b5",
