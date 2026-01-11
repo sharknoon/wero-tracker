@@ -1070,6 +1070,45 @@
       "notes": ""
     },
     {
+      "name": "CCF",
+      "aliases": [],
+      "weroSupport": "unknown",
+      "countries": [
+        "FR"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/contribution/45-ccf/packages/data/assets/882b192c-51c6-4bd6-8318-cc9800011997.jpg",
+      "notes": "",
+      "banks": [
+        {
+          "name": "CCF",
+          "website": "https://ccf.fr/",
+          "bankContext": "CCDFFRPPXXX",
+          "appIds": [],
+          "aliases": [],
+          "countries": [
+            "FR"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/contribution/45-ccf/packages/data/assets/882b192c-51c6-4bd6-8318-cc9800011997.jpg",
+          "standaloneAppSupport": "unknown",
+          "P2PPaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "unknown",
+          "POSPaymentsSupport": "unknown",
+          "id": "d292f719-4a19-4f94-83c3-6dd2b418b86d"
+        }
+      ],
+      "apps": [
+        {
+          "name": "Mes Comptes CCF",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/contribution/45-ccf/packages/data/assets/ccd1c5f8-f2a0-4bff-ba65-ac6d4076fd0e.png",
+          "universalLink": "https://ccf.fr/",
+          "supportsDesktop": true,
+          "weroSupport": "unknown",
+          "id": "9e4e1043-eda8-4a09-a0f9-bf01a0abfaac"
+        }
+      ],
+      "id": "da873e08-1f77-4ff8-b2c0-d64f7fde08fa"
+    },
+    {
       "id": "54a447de-1961-4a6b-9b79-f65068b17d0b",
       "name": "CIC",
       "aliases": [],
