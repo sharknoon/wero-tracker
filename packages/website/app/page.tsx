@@ -1,5 +1,9 @@
 import { WeroTracker } from "@/components/wero-tracker";
-import { banksSchema, merchantsSchema, type Data } from "@/lib/schema";
+import {
+  bankBrandsSchema,
+  merchantBrandsSchema,
+  type Data,
+} from "@/lib/schema";
 
 async function getWeroData(): Promise<Data> {
   const banksUrl = process.env.NEXT_PUBLIC_WEBSITE_BANKS_URL;
@@ -21,8 +25,10 @@ async function getWeroData(): Promise<Data> {
     fetch(merchantsUrl),
   ]);
 
-  const banksData = banksSchema.parse(await banksResponse.json());
-  const merchantsData = merchantsSchema.parse(await merchantsResponse.json());
+  const banksData = bankBrandsSchema.parse(await banksResponse.json());
+  const merchantsData = merchantBrandsSchema.parse(
+    await merchantsResponse.json(),
+  );
 
   return {
     banks: banksData,
