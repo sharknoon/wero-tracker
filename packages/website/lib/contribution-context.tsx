@@ -221,12 +221,9 @@ function generateIssueBody(payload: {
   }
 
   body += `### Data\n\n`;
-  body += "```json\n";
+  body += "```json contribution\n";
   body += JSON.stringify(contribution.data, null, 2);
-  body += "\n```\n\n";
-
-  body += `---\n`;
-  body += `<!-- CONTRIBUTION_DATA:${btoa(JSON.stringify(payload))} -->\n`;
+  body += "\n```\n";
 
   return body;
 }

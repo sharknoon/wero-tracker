@@ -1161,8 +1161,8 @@ export function BankBrandDialog() {
         weroSupport,
         countries,
         logoUrl,
-        banks,
-        apps,
+        banks: banks.filter((b) => !b.markedForDeletion),
+        apps: apps.filter((a) => !a.markedForDeletion),
         notes,
       },
     };

@@ -32,8 +32,8 @@ jobs:
           script: |
             const body = context.payload.issue.body;
 
-            // Extract the base64 encoded contribution data from the issue body
-            const match = body.match(/<!-- CONTRIBUTION_DATA:(.+?) -->/);
+            // Extract the JSON from the custom markdown code block
+            const match = body.match(/```json contribution(.*?)```/);
 
             if (!match) {
               core.setFailed('No contribution data found in issue body');
@@ -41,12 +41,12 @@ jobs:
             }
 
             try {
-              const decoded = Buffer.from(match[1], 'base64').toString('utf-8');
-              const payload = JSON.parse(decoded);
+              const jsonContent = match[1].trim();
+              const payload = JSON.parse(jsonContent);
               
               core.setOutput('contribution_type', payload.contribution.type);
               core.setOutput('contribution_action', payload.contribution.action);
-              core.setOutput('contribution_data', JSON.stringify(payload));
+              core.setOutput('contribution_data', jsonContent);
               core.setOutput('entity_name', payload.contribution.data.name || 'Unknown');
               
               console.log('Extracted contribution:', JSON.stringify(payload, null, 2));
@@ -61,253 +61,27 @@ jobs:
           echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
           git checkout -b "$BRANCH_NAME"
 
+      - name: Install dependencies
+        run: |
+          cd packages/data
+          npm install
+
       - name: Process contribution
-        uses: actions/github-script@v7
         env:
           CONTRIBUTION_DATA: ${{ steps.extract.outputs.contribution_data }}
-        with:
-          script: |
-            const fs = require('fs');
-            const path = require('path');
-
-            const payload = JSON.parse(process.env.CONTRIBUTION_DATA);
-            const { contribution } = payload;
-            const { type, action, data } = contribution;
-
-            const banksPath = 'packages/data/banks.json';
-            const merchantsPath = 'packages/data/merchants.json';
-
-            if (type === 'merchant') {
-              // Process merchant contribution
-              const merchantsData = JSON.parse(fs.readFileSync(merchantsPath, 'utf-8'));
-              
-              if (action === 'add') {
-                // Generate new UUID for the merchant
-                const newMerchant = {
-                  id: crypto.randomUUID(),
-                  name: data.name,
-                  aliases: data.aliases || [],
-                  website: data.website,
-                  logoUrl: data.logoUrl,
-                  category: data.category,
-                  countries: data.countries,
-                  weroSupport: data.weroSupport,
-                  ...(data.notes && { notes: data.notes }),
-                };
-                
-                merchantsData.brands.push(newMerchant);
-                // Sort by name
-                merchantsData.brands.sort((a, b) => a.name.localeCompare(b.name));
-                
-              } else if (action === 'edit' && data.id) {
-                const index = merchantsData.brands.findIndex(m => m.id === data.id);
-                if (index !== -1) {
-                  merchantsData.brands[index] = {
-                    ...merchantsData.brands[index],
-                    name: data.name,
-                    aliases: data.aliases || [],
-                    website: data.website,
-                    logoUrl: data.logoUrl,
-                    category: data.category,
-                    countries: data.countries,
-                    weroSupport: data.weroSupport,
-                    ...(data.notes && { notes: data.notes }),
-                  };
-
-                  // Sort by name
-                  merchantsData.brands.sort((a, b) => a.name.localeCompare(b.name));
-                }
-                
-              } else if (action === 'delete' && data.id) {
-                merchantsData.brands = merchantsData.brands.filter(m => m.id !== data.id);
-              }
-              
-              fs.writeFileSync(merchantsPath, JSON.stringify(merchantsData, null, 2) + '\n');
-              
-            } else if (type === 'bank-brand') {
-              // Process bank brand contribution
-              const banksData = JSON.parse(fs.readFileSync(banksPath, 'utf-8'));
-              const banks = data.banks || [];
-              const apps = data.apps || [];
-              if (action === 'add') {
-                const newBrand = {
-                  id: crypto.randomUUID(),
-                  name: data.name,
-                  aliases: data.aliases || [],
-                  weroSupport: data.weroSupport,
-                  countries: data.countries,
-                  logoUrl: data.logoUrl,
-                  banks: banks.map(bank => ({
-                    id: crypto.randomUUID(),
-                    name: bank.name,
-                    website: bank.website || '',
-                    ...(bank.bankContext && { bankContext: bank.bankContext }),
-                    appIds: bank.appIds || [],
-                    aliases: bank.aliases || [],
-                    ...(bank.countries && { countries: bank.countries }),
-                    ...(bank.logoUrl && { logoUrl: bank.logoUrl }),
-                    standaloneAppSupport: bank.standaloneAppSupport || 'unknown',
-                    P2PPaymentsSupport: bank.P2PPaymentsSupport || 'unknown',
-                    eCommercePaymentsSupport: bank.eCommercePaymentsSupport || 'unknown',
-                    POSPaymentsSupport: bank.POSPaymentsSupport || 'unknown',
-                  })),
-                  apps: apps.map(app => ({
-                    id: crypto.randomUUID(),
-                    name: app.name,
-                    iconUrl: app.iconUrl || '',
-                    universalLink: app.universalLink || '',
-                    supportsDesktop: app.supportsDesktop || false,
-                    weroSupport: app.weroSupport || 'unknown',
-                  })),
-                  ...(data.notes && { notes: data.notes }),
-                };
-                
-                banksData.brands.push(newBrand);
-                banksData.brands.sort((a, b) => a.name.localeCompare(b.name));
-                
-              } else if (action === 'edit' && data.id) {
-                const index = banksData.brands.findIndex(b => b.id === data.id);
-                if (index !== -1) {
-                  // Update brand info
-                  banksData.brands[index] = {
-                    ...banksData.brands[index],
-                    name: data.name,
-                    aliases: data.aliases || [],
-                    weroSupport: data.weroSupport,
-                    countries: data.countries,
-                    logoUrl: data.logoUrl,
-                    ...(data.notes && { notes: data.notes }),
-                  };
-                  
-                  // Process bank updates
-                  if (banks.length > 0) {
-                    // Handle banks marked for deletion
-                    const banksToDelete = banks.filter(b => b.markedForDeletion && b.id).map(b => b.id);
-                    banksData.brands[index].banks = banksData.brands[index].banks.filter(b => !banksToDelete.includes(b.id));
-                    
-                    // Update existing banks and add new ones
-                    for (const bank of banks) {
-                      if (bank.markedForDeletion) continue;
-                      
-                      if (bank.id) {
-                        // Update existing bank
-                        const bankIndex = banksData.brands[index].banks.findIndex(b => b.id === bank.id);
-                        if (bankIndex !== -1) {
-                          banksData.brands[index].banks[bankIndex] = {
-                            ...banksData.brands[index].banks[bankIndex],
-                            name: bank.name,
-                            website: bank.website || '',
-                            ...(bank.bankContext && { bankContext: bank.bankContext }),
-                            ...(bank.appIds && { appIds: bank.appIds }),
-                            ...(bank.aliases && { aliases: bank.aliases }),
-                            ...(bank.countries && { countries: bank.countries }),
-                            ...(bank.logoUrl && { logoUrl: bank.logoUrl }),
-                            standaloneAppSupport: bank.standaloneAppSupport || 'unknown',
-                            P2PPaymentsSupport: bank.P2PPaymentsSupport || 'unknown',
-                            eCommercePaymentsSupport: bank.eCommercePaymentsSupport || 'unknown',
-                            POSPaymentsSupport: bank.POSPaymentsSupport || 'unknown',
-                          };
-                        }
-                      } else {
-                        // Add new bank
-                        banksData.brands[index].banks.push({
-                          id: crypto.randomUUID(),
-                          name: bank.name,
-                          website: bank.website || '',
-                          ...(bank.bankContext && { bankContext: bank.bankContext }),
-                          appIds: bank.appIds || [],
-                          aliases: bank.aliases || [],
-                          ...(bank.countries && { countries: bank.countries }),
-                          ...(bank.logoUrl && { logoUrl: bank.logoUrl }),
-                          standaloneAppSupport: bank.standaloneAppSupport || 'unknown',
-                          P2PPaymentsSupport: bank.P2PPaymentsSupport || 'unknown',
-                          eCommercePaymentsSupport: bank.eCommercePaymentsSupport || 'unknown',
-                          POSPaymentsSupport: bank.POSPaymentsSupport || 'unknown',
-                        });
-                      }
-                    }
-                    
-                    // Sort banks by name
-                    banksData.brands[index].banks.sort((a, b) => a.name.localeCompare(b.name));
-                  }
-                  
-                  // Process app updates
-                  if (apps.length > 0) {
-                    // Handle apps marked for deletion
-                    const appsToDelete = apps.filter(a => a.markedForDeletion && a.id).map(a => a.id);
-                    banksData.brands[index].apps = banksData.brands[index].apps.filter(a => !appsToDelete.includes(a.id));
-                    
-                    // Update existing apps and add new ones
-                    for (const app of apps) {
-                      if (app.markedForDeletion) continue;
-                      
-                      if (app.id) {
-                        // Update existing app
-                        const appIndex = banksData.brands[index].apps.findIndex(a => a.id === app.id);
-                        if (appIndex !== -1) {
-                          banksData.brands[index].apps[appIndex] = {
-                            ...banksData.brands[index].apps[appIndex],
-                            name: app.name,
-                            iconUrl: app.iconUrl || '',
-                            universalLink: app.universalLink || '',
-                            supportsDesktop: app.supportsDesktop || false,
-                            weroSupport: app.weroSupport || 'unknown',
-                          };
-                        }
-                      } else {
-                        // Add new app
-                        banksData.brands[index].apps.push({
-                          id: crypto.randomUUID(),
-                          name: app.name,
-                          iconUrl: app.iconUrl || '',
-                          universalLink: app.universalLink || '',
-                          supportsDesktop: app.supportsDesktop || false,
-                          weroSupport: app.weroSupport || 'unknown',
-                        });
-                      }
-                    }
-                    
-                    // Sort apps by name
-                    banksData.brands[index].apps.sort((a, b) => a.name.localeCompare(b.name));
-                  }
-                }
-                
-              } else if (action === 'delete' && data.id) {
-                // Check if only specific banks or apps should be deleted
-                const banksToDelete = banks.filter(b => b.markedForDeletion && b.id).map(b => b.id);
-                const appsToDelete = apps.filter(a => a.markedForDeletion && a.id).map(a => a.id);
-                
-                const allBanksMarked = banks.length > 0 && banks.every(b => b.markedForDeletion);
-                const allAppsMarked = apps.length === 0 || apps.every(a => a.markedForDeletion);
-                
-                if (allBanksMarked && allAppsMarked) {
-                  // Delete entire brand
-                  banksData.brands = banksData.brands.filter(b => b.id !== data.id);
-                } else {
-                  // Only delete selected banks/apps, not the entire brand
-                  const brandIndex = banksData.brands.findIndex(b => b.id === data.id);
-                  if (brandIndex !== -1) {
-                    if (banksToDelete.length > 0) {
-                      banksData.brands[brandIndex].banks = banksData.brands[brandIndex].banks.filter(b => !banksToDelete.includes(b.id));
-                    }
-                    if (appsToDelete.length > 0) {
-                      banksData.brands[brandIndex].apps = banksData.brands[brandIndex].apps.filter(a => !appsToDelete.includes(a.id));
-                    }
-                  }
-                }
-              }
-              
-              fs.writeFileSync(banksPath, JSON.stringify(banksData, null, 2) + '\n');
-              
-            }
-
-            console.log('Contribution processed successfully');
+          DATA_GITHUB_ORG: ${{ github.repository_owner }}
+          DATA_GITHUB_REPO: ${{ github.event.repository.name }}
+          DATA_GITHUB_REF: ${{ steps.branch.outputs.branch_name }}
+          DATA_ASSET_PATH: packages/data/assets
+        run: |
+          cd packages/data
+          npm run ci -- "$CONTRIBUTION_DATA"
 
       - name: Commit changes
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add packages/data/banks.json packages/data/merchants.json
+          git add packages/data/banks.json packages/data/merchants.json packages/data/assets/
           git commit -m "feat: ${{ steps.extract.outputs.contribution_action }} ${{ steps.extract.outputs.contribution_type }} - ${{ steps.extract.outputs.entity_name }}
 
           Closes #${{ github.event.issue.number }}"

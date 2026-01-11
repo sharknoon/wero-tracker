@@ -6,7 +6,8 @@
   "scripts": {
     "update": "node scripts/update.ts",
     "lint": "node scripts/lint.ts",
-    "add": "node scripts/add.ts"
+    "add": "node scripts/add.ts",
+    "ci": "node scripts/ci.ts"
   },
   "dependencies": {
     "@clack/prompts": "^0.11.0",

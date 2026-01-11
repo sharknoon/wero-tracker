@@ -3,8 +3,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import {
   type BankingApp,
-  banksSchema,
-  merchantsSchema,
+  bankBrandsSchema,
+  merchantBrandsSchema,
   type SupportStatus,
 } from "./common/schema.ts";
 import { exists, rootDir } from "./common/fs.ts";
@@ -89,14 +89,14 @@ const banksFileContent = await fs.readFile(
   "utf-8"
 );
 const banksJson = JSON.parse(banksFileContent);
-const banksData = banksSchema.parse(banksJson);
+const banksData = bankBrandsSchema.parse(banksJson);
 
 const merchantsFileContent = await fs.readFile(
   path.join(rootDir, "merchants.json"),
   "utf-8"
 );
 const merchantsJson = JSON.parse(merchantsFileContent);
-const merchantsData = merchantsSchema.parse(merchantsJson);
+const merchantsData = merchantBrandsSchema.parse(merchantsJson);
 
 for (const brand of banksData.brands) {
   // Check for missing websites

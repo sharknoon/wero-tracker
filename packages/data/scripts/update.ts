@@ -2,7 +2,7 @@ import "dotenv/config";
 import fs from "node:fs/promises";
 import path from "node:path";
 import zod from "zod";
-import { type BanksData, banksSchema } from "./common/schema.ts";
+import { type BanksData, bankBrandsSchema } from "./common/schema.ts";
 import { exists, rootDir } from "./common/fs.ts";
 import { saveAsset } from "./common/assets.ts";
 import { error, success } from "./common/prompt.ts";
@@ -75,7 +75,7 @@ if (await exists(path.join(rootDir, "banks.json"))) {
     "utf-8"
   );
   const data = JSON.parse(fileContent);
-  existingBanksData = banksSchema.parse(data);
+  existingBanksData = bankBrandsSchema.parse(data);
 }
 
 const banksData: BanksData = {

@@ -346,6 +346,35 @@ export function MerchantDialog() {
     }
   };
 
+  const getSubmitValidation = () => {
+    if (isDelete) {
+      const hasReason = reason.trim().length > 0;
+
+      if (!hasReason)
+        return {
+          valid: false,
+          message: "Please provide a reason for deletion",
+        };
+
+      return { valid: true, message: "" };
+    }
+
+    const errors: string[] = [];
+    if (!name.trim()) errors.push("Merchant name");
+    if (!website.trim()) errors.push("Website");
+    if (!logoUrl.trim()) errors.push("Logo URL");
+    if (countries.length === 0) errors.push("At least one country");
+    if (isEdit && !reason.trim()) errors.push("Reason for changes");
+
+    if (errors.length > 0) {
+      return { valid: false, message: `Missing: ${errors.join(", ")}` };
+    }
+
+    return { valid: true, message: "" };
+  };
+
+  const validation = getSubmitValidation();
+
   const handleSubmit = async () => {
     const contribution: MerchantContribution = {
       id: crypto.randomUUID(),
@@ -431,21 +460,24 @@ export function MerchantDialog() {
           </div>
         </ScrollArea>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={handleClose}>
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            disabled={
-              (!isDelete &&
-                (!name || !website || !logoUrl || countries.length === 0)) ||
-              !reason
-            }
-            variant={isDelete ? "destructive" : "default"}
-          >
-            {isDelete ? "Submit Deletion Request" : "Submit for Review"}
-          </Button>
+        <DialogFooter className="flex-col gap-2 sm:flex-row sm:items-center">
+          {!validation.valid && validation.message && (
+            <p className="text-xs text-muted-foreground mr-auto">
+              {validation.message}
+            </p>
+          )}
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSubmit}
+              disabled={!validation.valid}
+              variant={isDelete ? "destructive" : "default"}
+            >
+              {isDelete ? "Submit Deletion Request" : "Submit for Review"}
+            </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
