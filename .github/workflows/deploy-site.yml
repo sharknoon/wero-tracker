@@ -3,6 +3,8 @@ name: Deploy site
 on:
   push:
     branches: ["main"]
+    paths:
+      - packages/website/**
   workflow_dispatch:
   schedule:
     # Every 24 hours
