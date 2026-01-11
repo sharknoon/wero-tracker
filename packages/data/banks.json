@@ -1070,6 +1070,33 @@
       "notes": ""
     },
     {
+      "id": "edad8fab-8f1e-4757-b427-2a2a8160ade5",
+      "name": "CCF",
+      "aliases": [],
+      "weroSupport": "unknown",
+      "countries": [
+        "FR"
+      ],
+      "logoUrl": "https://cdn.xcancel.com/pic/31B7ECB47C091/pbs.twimg.com%2Fprofile_images%2F1914592093449658368%2FjZBGA9r1.jpg",
+      "banks": [
+        {
+          "id": "9d6a8001-7ce5-4bdf-aec3-c905f6f60463",
+          "name": "CCF",
+          "website": "https://ccf.fr/",
+          "appIds": [],
+          "aliases": [],
+          "countries": [
+            "FR"
+          ],
+          "standaloneAppSupport": "unknown",
+          "P2PPaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "unknown",
+          "POSPaymentsSupport": "unknown"
+        }
+      ],
+      "apps": []
+    },
+    {
       "id": "54a447de-1961-4a6b-9b79-f65068b17d0b",
       "name": "CIC",
       "aliases": [],
