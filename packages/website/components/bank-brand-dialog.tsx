@@ -170,6 +170,7 @@ interface BankItemProps {
   onBankAliasInputChange: (value: string) => void;
   onAddBankAlias: () => void;
   onRemoveBankAlias: (alias: string) => void;
+  availableApps: AppFormData[];
 }
 
 function BankItem({
@@ -187,6 +188,7 @@ function BankItem({
   onBankAliasInputChange,
   onAddBankAlias,
   onRemoveBankAlias,
+  availableApps,
 }: BankItemProps) {
   return (
     <Collapsible
@@ -330,6 +332,55 @@ function BankItem({
             />
           </div>
 
+          {availableApps.length > 0 && (
+            <div className="space-y-2">
+              <Label>Supported Banking Apps</Label>
+              <div className="space-y-2 border rounded-lg p-3">
+                {availableApps
+                  .filter((app) => !app.markedForDeletion)
+                  .map((app) => {
+                    const appId = app.id || app.name;
+                    const isSelected = bank.appIds.includes(appId);
+                    return (
+                      <div key={appId} className="flex items-center gap-2">
+                        <Switch
+                          id={`bank-${index}-app-${appId}`}
+                          checked={isSelected}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              onUpdate({ appIds: [...bank.appIds, appId] });
+                            } else {
+                              onUpdate({
+                                appIds: bank.appIds.filter(
+                                  (id) => id !== appId,
+                                ),
+                              });
+                            }
+                          }}
+                          disabled={bank.markedForDeletion}
+                        />
+                        <Label
+                          htmlFor={`bank-${index}-app-${appId}`}
+                          className="text-sm font-normal cursor-pointer"
+                        >
+                          {app.name || "Unnamed App"}
+                        </Label>
+                      </div>
+                    );
+                  })}
+                {availableApps.filter((app) => !app.markedForDeletion)
+                  .length === 0 && (
+                  <p className="text-sm text-muted-foreground">
+                    No apps available
+                  </p>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Select which banking apps this bank entity supports
+              </p>
+            </div>
+          )}
+
           <div className="flex justify-end gap-2 pt-2">
             {isEdit && bank.id && (
               <Button
@@ -383,6 +434,7 @@ interface BanksSectionProps {
   onBankAliasInputChange: (index: number, value: string) => void;
   onAddBankAlias: (index: number) => void;
   onRemoveBankAlias: (index: number, alias: string) => void;
+  availableApps: AppFormData[];
 }
 
 function BanksSection({
@@ -401,6 +453,7 @@ function BanksSection({
   onBankAliasInputChange,
   onAddBankAlias,
   onRemoveBankAlias,
+  availableApps,
 }: BanksSectionProps) {
   const activeBanksCount = banks.filter((b) => !b.markedForDeletion).length;
 
@@ -456,6 +509,7 @@ function BanksSection({
               }
               onAddBankAlias={() => onAddBankAlias(index)}
               onRemoveBankAlias={(alias) => onRemoveBankAlias(index, alias)}
+              availableApps={availableApps}
             />
           ))}
 
@@ -1327,6 +1381,7 @@ export function BankBrandDialog() {
                   onBankAliasInputChange={handleBankAliasInputChange}
                   onAddBankAlias={handleAddBankAlias}
                   onRemoveBankAlias={handleRemoveBankAlias}
+                  availableApps={apps}
                 />
 
                 <AppsSection

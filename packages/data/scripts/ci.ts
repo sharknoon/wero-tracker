@@ -181,13 +181,6 @@ try {
           }))
         ),
       };
-      // Add app ids to banks
-      const appIds = Array.from(
-        new Set(newBankBrand.apps.map((app) => app.id))
-      );
-      for (const bank of newBankBrand.banks) {
-        bank.appIds = appIds;
-      }
       banksData.brands.push(newBankBrand);
     } else if (action === "edit") {
       const index = banksData.brands.findIndex((b) => b.id === data.id);
