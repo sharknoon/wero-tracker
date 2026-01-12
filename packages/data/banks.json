@@ -956,6 +956,55 @@
       "notes": ""
     },
     {
+      "id": "80863564-ce73-44e8-b4a8-d7495cd4ab0c",
+      "name": "BTV",
+      "aliases": [
+        "BTV Vier Länder Bank"
+      ],
+      "weroSupport": "unsupported",
+      "countries": [
+        "AT",
+        "DE",
+        "CH",
+        "IT"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/c2076ffe-f3d4-44c0-aa60-7340fbe543ce.png",
+      "banks": [
+        {
+          "id": "bb8bfa88-9e4a-42b3-9816-3ec71f58cba1",
+          "name": "BTV",
+          "website": "http://www.btv.at/",
+          "bankContext": "BTVAAT22XXX",
+          "appIds": [
+            "aa431860-c4a3-41a2-af0f-066c25f69b87"
+          ],
+          "aliases": [],
+          "countries": [
+            "AT",
+            "DE",
+            "CH",
+            "IT"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/c2076ffe-f3d4-44c0-aa60-7340fbe543ce.png",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "unsupported",
+          "eCommercePaymentsSupport": "unsupported",
+          "POSPaymentsSupport": "unsupported"
+        }
+      ],
+      "apps": [
+        {
+          "id": "aa431860-c4a3-41a2-af0f-066c25f69b87",
+          "name": "BTV Banking",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/769ef610-5875-4075-8459-047994eff181.png",
+          "universalLink": "https://btv.at/services/internetbanking-apps/",
+          "supportsDesktop": true,
+          "weroSupport": "unsupported"
+        }
+      ],
+      "notes": ""
+    },
+    {
       "id": "6f51f58f-73f3-42c3-a273-cca1ea829fa1",
       "name": "BW Bank",
       "aliases": [],
@@ -2337,6 +2386,47 @@
       "notes": ""
     },
     {
+      "id": "d2cd7cb4-a032-4b3f-8ae1-a3dba764de0b",
+      "name": "Keytrade Bank",
+      "aliases": [],
+      "weroSupport": "unsupported",
+      "countries": [
+        "BE"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/b2c7adce-87a4-451f-91ec-60c25b8e1c52.jpg",
+      "banks": [
+        {
+          "id": "26b65f8c-d806-4154-937c-8ce7525a9ad4",
+          "name": "Keytrade Bank",
+          "website": "https://www.keytradebank.be/",
+          "bankContext": "KEYTBEBBXXX",
+          "appIds": [
+            "284937fc-9beb-452f-843a-9680a0d6da54"
+          ],
+          "aliases": [],
+          "countries": [
+            "BE"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/b2c7adce-87a4-451f-91ec-60c25b8e1c52.jpg",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "unsupported",
+          "eCommercePaymentsSupport": "unsupported",
+          "POSPaymentsSupport": "unsupported"
+        }
+      ],
+      "apps": [
+        {
+          "id": "284937fc-9beb-452f-843a-9680a0d6da54",
+          "name": "Keytrade Bank",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/1c837385-fb6d-4db5-a526-33eacd75442d.png",
+          "universalLink": "https://www.keytradebank.be/keytrade-mobile-en",
+          "supportsDesktop": true,
+          "weroSupport": "unsupported"
+        }
+      ],
+      "notes": ""
+    },
+    {
       "id": "2f984b0d-eb51-4629-81f6-089bc30a518d",
       "name": "La Banque Postale",
       "aliases": [
@@ -2541,6 +2631,53 @@
           "universalLink": "https://www.nlb.si/en/osebno/digitalne-storitve/nlb-klik",
           "supportsDesktop": true,
           "weroSupport": "unknown"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "7e73290c-518a-4d1e-a97b-b05b86c2fc97",
+      "name": "Nordea",
+      "aliases": [],
+      "weroSupport": "unsupported",
+      "countries": [
+        "FI",
+        "SE",
+        "NO",
+        "DK"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/b114ee62-3e75-48f8-8621-bc1b7671fa6f.jpg",
+      "banks": [
+        {
+          "id": "218bbd7c-c37d-418c-bc04-b6fed32ab71b",
+          "name": "Nordea",
+          "website": "https://www.nordea.com/",
+          "bankContext": "NDEAFIHHXXX",
+          "appIds": [
+            "8b49671e-c602-460d-aecf-a55a14ac1fff"
+          ],
+          "aliases": [],
+          "countries": [
+            "FI",
+            "SE",
+            "NO",
+            "DK"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/b114ee62-3e75-48f8-8621-bc1b7671fa6f.jpg",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "unsupported",
+          "eCommercePaymentsSupport": "unsupported",
+          "POSPaymentsSupport": "unsupported"
+        }
+      ],
+      "apps": [
+        {
+          "id": "8b49671e-c602-460d-aecf-a55a14ac1fff",
+          "name": "Nordea Mobile - Suomi",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/5d0aecb2-9ac4-4570-b987-3c97bd84b8aa.png",
+          "universalLink": "https://www.nordea.fi/henkiloasiakkaat/palvelumme/verkko-mobiilipalvelut/mobiilipankki/",
+          "supportsDesktop": true,
+          "weroSupport": "unsupported"
         }
       ],
       "notes": ""
