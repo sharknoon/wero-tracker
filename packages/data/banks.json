@@ -1073,11 +1073,11 @@
       "id": "da873e08-1f77-4ff8-b2c0-d64f7fde08fa",
       "name": "CCF",
       "aliases": [],
-      "weroSupport": "unknown",
+      "weroSupport": "unsupported",
       "countries": [
         "FR"
       ],
-      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/contribution/45-ccf/packages/data/assets/882b192c-51c6-4bd6-8318-cc9800011997.jpg",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/882b192c-51c6-4bd6-8318-cc9800011997.jpg",
       "banks": [
         {
           "id": "d292f719-4a19-4f94-83c3-6dd2b418b86d",
@@ -1089,21 +1089,21 @@
           "countries": [
             "FR"
           ],
-          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/contribution/45-ccf/packages/data/assets/882b192c-51c6-4bd6-8318-cc9800011997.jpg",
-          "standaloneAppSupport": "unknown",
-          "P2PPaymentsSupport": "unknown",
-          "eCommercePaymentsSupport": "unknown",
-          "POSPaymentsSupport": "unknown"
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/882b192c-51c6-4bd6-8318-cc9800011997.jpg",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "unsupported",
+          "eCommercePaymentsSupport": "unsupported",
+          "POSPaymentsSupport": "unsupported"
         }
       ],
       "apps": [
         {
           "id": "9e4e1043-eda8-4a09-a0f9-bf01a0abfaac",
           "name": "Mes Comptes CCF",
-          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/contribution/45-ccf/packages/data/assets/ccd1c5f8-f2a0-4bff-ba65-ac6d4076fd0e.png",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/ccd1c5f8-f2a0-4bff-ba65-ac6d4076fd0e.png",
           "universalLink": "https://ccf.fr/",
           "supportsDesktop": true,
-          "weroSupport": "unknown"
+          "weroSupport": "unsupported"
         }
       ],
       "notes": ""
@@ -3860,7 +3860,7 @@
           "name": "Tomorrow",
           "website": "https://www.tomorrow.one/",
           "bankContext": "SOBKDEBBXXX",
-          "appIds": [],
+          "appIds": ["eb6be035-3170-49ec-8b5e-6d9a8f9b965a"],
           "aliases": [],
           "countries": [
             "DE"

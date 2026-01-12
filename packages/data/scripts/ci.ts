@@ -17,42 +17,46 @@ import { saveAsset } from "./common/assets.ts";
 // TYPE DEFINITIONS FOR JSON INPUT
 // ============================================================================
 
-const contributionSchema = zod.strictObject({
-  contribution: zod.union([
-    zod.strictObject({
-      id: zod.uuid(),
-      type: zod.literal("bank-brand"),
-      action: zod.literal("add"),
-      reason: zod.string().optional(),
-      data: bankBrandSchema.omit({ id: true, banks: true, apps: true }).extend({
-        banks: zod.array(bankSchema.omit({ id: true })),
-        apps: zod.array(bankingAppSchema.omit({ id: true })),
+const contributionSchema = zod
+  .strictObject({
+    contribution: zod.union([
+      zod.strictObject({
+        id: zod.uuid(),
+        type: zod.literal("bank-brand"),
+        action: zod.literal("add"),
+        reason: zod.string().optional(),
+        data: bankBrandSchema
+          .omit({ id: true, banks: true, apps: true })
+          .extend({
+            banks: zod.array(bankSchema.omit({ id: true })),
+            apps: zod.array(bankingAppSchema.omit({ id: true })),
+          }),
       }),
-    }),
-    zod.strictObject({
-      id: zod.uuid(),
-      type: zod.literal("bank-brand"),
-      action: zod.enum(["edit", "delete"]),
-      reason: zod.string(),
-      data: bankBrandSchema,
-    }),
-    zod.strictObject({
-      id: zod.uuid(),
-      type: zod.literal("merchant"),
-      action: zod.literal("add"),
-      reason: zod.string().optional(),
-      data: merchantBrandSchema.omit({ id: true }),
-    }),
-    zod.strictObject({
-      id: zod.uuid(),
-      type: zod.literal("merchant"),
-      action: zod.enum(["edit", "delete"]),
-      reason: zod.string(),
-      data: merchantBrandSchema,
-    }),
-  ]),
-  timestamp: zod.string(),
-});
+      zod.strictObject({
+        id: zod.uuid(),
+        type: zod.literal("bank-brand"),
+        action: zod.enum(["edit", "delete"]),
+        reason: zod.string(),
+        data: bankBrandSchema,
+      }),
+      zod.strictObject({
+        id: zod.uuid(),
+        type: zod.literal("merchant"),
+        action: zod.literal("add"),
+        reason: zod.string().optional(),
+        data: merchantBrandSchema.omit({ id: true }),
+      }),
+      zod.strictObject({
+        id: zod.uuid(),
+        type: zod.literal("merchant"),
+        action: zod.enum(["edit", "delete"]),
+        reason: zod.string(),
+        data: merchantBrandSchema,
+      }),
+    ]),
+    timestamp: zod.string(),
+  })
+  .refine();
 
 // ============================================================================
 // MAIN LOGIC
@@ -177,6 +181,13 @@ try {
           }))
         ),
       };
+      // Add app ids to banks
+      const appIds = Array.from(
+        new Set(newBankBrand.apps.map((app) => app.id))
+      );
+      for (const bank of newBankBrand.banks) {
+        bank.appIds = appIds;
+      }
       banksData.brands.push(newBankBrand);
     } else if (action === "edit") {
       const index = banksData.brands.findIndex((b) => b.id === data.id);
