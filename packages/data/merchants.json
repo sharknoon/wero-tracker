@@ -109,6 +109,19 @@
       "weroSupport": "announced"
     },
     {
+      "id": "f8b22ed1-4382-421a-9cc0-ab41a0d09bb0",
+      "name": "DPD",
+      "aliases": [],
+      "website": "https://www.dpd.com/",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/b3fefa4f-61c1-4260-8dbe-6cae2800ab75.png",
+      "category": "services",
+      "countries": [
+        "DE"
+      ],
+      "weroSupport": "announced",
+      "notes": "https://www.dpd.com/de/de/news/dpd-launches-european-payment-solution-wero/"
+    },
+    {
       "id": "3c7fe46b-c6d3-409e-8f2f-7af6d94083b4",
       "name": "Eventim",
       "aliases": [],
