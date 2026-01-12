@@ -3984,6 +3984,53 @@
       ]
     },
     {
+      "id": "c91398a1-7d69-4adb-94f9-9fb219dfb8a0",
+      "name": "Triodos Bank",
+      "aliases": [],
+      "weroSupport": "announced",
+      "countries": [
+        "NL",
+        "BE",
+        "DE",
+        "ES"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/6c4174c2-0c0c-4ef5-828b-946d8f66c32f.jpg",
+      "banks": [
+        {
+          "id": "ee1e09ed-d3c1-4e68-b58c-71521d0e8f8e",
+          "name": "Triodos Bank",
+          "website": "https://www.triodos.com/",
+          "bankContext": "TRIONL2UXXX",
+          "appIds": [
+            "deaed0ce-a25d-45ea-8098-42155f248190"
+          ],
+          "aliases": [],
+          "countries": [
+            "BE",
+            "DE",
+            "NL",
+            "ES"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/6c4174c2-0c0c-4ef5-828b-946d8f66c32f.jpg",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "unsupported",
+          "eCommercePaymentsSupport": "unsupported",
+          "POSPaymentsSupport": "unsupported"
+        }
+      ],
+      "apps": [
+        {
+          "id": "deaed0ce-a25d-45ea-8098-42155f248190",
+          "name": "Triodos Bankieren NL",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/5f93006e-ba4f-40ae-9026-9fb2c9cb7b27.png",
+          "universalLink": "https://www.triodos.nl/mobiel-bankieren",
+          "supportsDesktop": true,
+          "weroSupport": "unsupported"
+        }
+      ],
+      "notes": "Wero ist aktuell noch nicht für alle Banken verfügbar. Aber sobald dies möglich ist, wird sich die zuständige Fachabteilung darum kümmern Ihnen Wero in der Triodos Banking App zur Verfügung zu stellen. Bis dahin bitten wir um Ihr Verständnis. Bei Fragen stehen wir Ihnen gerne zur Verfügung. Mit freundlichen Grüßen Ihre Triodos Bank Kundenbetreuung"
+    },
+    {
       "id": "218f5190-8bb0-4c67-9c77-34e4e079bf5c",
       "name": "vdk bank",
       "aliases": [],
