@@ -1084,7 +1084,9 @@
           "name": "CCF",
           "website": "https://ccf.fr/",
           "bankContext": "CCDFFRPPXXX",
-          "appIds": ["9e4e1043-eda8-4a09-a0f9-bf01a0abfaac"],
+          "appIds": [
+            "9e4e1043-eda8-4a09-a0f9-bf01a0abfaac"
+          ],
           "aliases": [],
           "countries": [
             "FR"
@@ -3860,7 +3862,9 @@
           "name": "Tomorrow",
           "website": "https://www.tomorrow.one/",
           "bankContext": "SOBKDEBBXXX",
-          "appIds": ["eb6be035-3170-49ec-8b5e-6d9a8f9b965a"],
+          "appIds": [
+            "eb6be035-3170-49ec-8b5e-6d9a8f9b965a"
+          ],
           "aliases": [],
           "countries": [
             "DE"
