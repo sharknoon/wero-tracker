@@ -3987,7 +3987,7 @@
       "id": "c91398a1-7d69-4adb-94f9-9fb219dfb8a0",
       "name": "Triodos Bank",
       "aliases": [],
-      "weroSupport": "unsupported",
+      "weroSupport": "announced",
       "countries": [
         "NL",
         "BE",
@@ -4028,7 +4028,7 @@
           "weroSupport": "unsupported"
         }
       ],
-      "notes": ""
+      "notes": "Wero ist aktuell noch nicht für alle Banken verfügbar. Aber sobald dies möglich ist, wird sich die zuständige Fachabteilung darum kümmern Ihnen Wero in der Triodos Banking App zur Verfügung zu stellen. Bis dahin bitten wir um Ihr Verständnis. Bei Fragen stehen wir Ihnen gerne zur Verfügung. Mit freundlichen Grüßen Ihre Triodos Bank Kundenbetreuung"
     },
     {
       "id": "218f5190-8bb0-4c67-9c77-34e4e079bf5c",
