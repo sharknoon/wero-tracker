@@ -1084,7 +1084,7 @@
           "name": "CCF",
           "website": "https://ccf.fr/",
           "bankContext": "CCDFFRPPXXX",
-          "appIds": [],
+          "appIds": ["9e4e1043-eda8-4a09-a0f9-bf01a0abfaac"],
           "aliases": [],
           "countries": [
             "FR"
