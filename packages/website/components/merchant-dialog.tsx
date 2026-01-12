@@ -382,7 +382,7 @@ export function MerchantDialog() {
       action: dialogAction!,
       reason: reason,
       data: {
-        id: existingMerchant?.id,
+        id: existingMerchant?.id ?? crypto.randomUUID(),
         name,
         aliases,
         website,
