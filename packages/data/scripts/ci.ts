@@ -17,46 +17,39 @@ import { saveAsset } from "./common/assets.ts";
 // TYPE DEFINITIONS FOR JSON INPUT
 // ============================================================================
 
-const contributionSchema = zod
-  .strictObject({
-    contribution: zod.union([
-      zod.strictObject({
-        id: zod.uuid(),
-        type: zod.literal("bank-brand"),
-        action: zod.literal("add"),
-        reason: zod.string().optional(),
-        data: bankBrandSchema
-          .omit({ id: true, banks: true, apps: true })
-          .extend({
-            banks: zod.array(bankSchema.omit({ id: true })),
-            apps: zod.array(bankingAppSchema.omit({ id: true })),
-          }),
-      }),
-      zod.strictObject({
-        id: zod.uuid(),
-        type: zod.literal("bank-brand"),
-        action: zod.enum(["edit", "delete"]),
-        reason: zod.string(),
-        data: bankBrandSchema,
-      }),
-      zod.strictObject({
-        id: zod.uuid(),
-        type: zod.literal("merchant"),
-        action: zod.literal("add"),
-        reason: zod.string().optional(),
-        data: merchantBrandSchema.omit({ id: true }),
-      }),
-      zod.strictObject({
-        id: zod.uuid(),
-        type: zod.literal("merchant"),
-        action: zod.enum(["edit", "delete"]),
-        reason: zod.string(),
-        data: merchantBrandSchema,
-      }),
-    ]),
-    timestamp: zod.string(),
-  })
-  .refine();
+const contributionSchema = zod.strictObject({
+  contribution: zod.union([
+    zod.strictObject({
+      id: zod.uuid(),
+      type: zod.literal("bank-brand"),
+      action: zod.literal("add"),
+      reason: zod.string().optional(),
+      data: bankBrandSchema,
+    }),
+    zod.strictObject({
+      id: zod.uuid(),
+      type: zod.literal("bank-brand"),
+      action: zod.enum(["edit", "delete"]),
+      reason: zod.string(),
+      data: bankBrandSchema,
+    }),
+    zod.strictObject({
+      id: zod.uuid(),
+      type: zod.literal("merchant"),
+      action: zod.literal("add"),
+      reason: zod.string().optional(),
+      data: merchantBrandSchema,
+    }),
+    zod.strictObject({
+      id: zod.uuid(),
+      type: zod.literal("merchant"),
+      action: zod.enum(["edit", "delete"]),
+      reason: zod.string(),
+      data: merchantBrandSchema,
+    }),
+  ]),
+  timestamp: zod.string(),
+});
 
 // ============================================================================
 // MAIN LOGIC
@@ -118,7 +111,6 @@ try {
     if (action === "add") {
       const newMerchant = {
         ...data,
-        id: crypto.randomUUID(),
         logoUrl: await saveAsset(data.logoUrl, crypto.randomUUID()),
       };
       merchantsData.brands.push(newMerchant);
@@ -162,12 +154,10 @@ try {
     if (action === "add") {
       const newBankBrand = {
         ...data,
-        id: crypto.randomUUID(),
         logoUrl: await saveAssetCached(data.logoUrl),
         banks: await Promise.all(
           data.banks.map(async (bank) => ({
             ...bank,
-            id: crypto.randomUUID(),
             logoUrl: bank.logoUrl
               ? await saveAssetCached(bank.logoUrl)
               : undefined,
@@ -176,7 +166,6 @@ try {
         apps: await Promise.all(
           data.apps.map(async (app) => ({
             ...app,
-            id: crypto.randomUUID(),
             iconUrl: await saveAssetCached(app.iconUrl),
           }))
         ),

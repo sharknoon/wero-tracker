@@ -1,4 +1,4 @@
-import { MerchantBrand, BankBrand, Bank, BankingApp } from "./schema";
+import { MerchantBrand, BankBrand } from "./schema";
 
 // Contribution action types
 export type ContributionAction = "add" | "edit" | "delete";
@@ -13,23 +13,13 @@ export interface BaseContribution {
 // Bank brand contribution - includes both brand data and banks data
 export interface BankBrandContribution extends BaseContribution {
   type: "bank-brand";
-  data: Omit<BankBrand, "id" | "banks" | "apps"> & {
-    id: string | undefined;
-    banks: (Omit<Bank, "id"> & {
-      id: string | undefined;
-    })[];
-    apps: (Omit<BankingApp, "id"> & {
-      id: string | undefined;
-    })[];
-  }; // Existing ID for edit/delete
+  data: BankBrand;
 }
 
 // Merchant contribution
 export interface MerchantContribution extends BaseContribution {
   type: "merchant";
-  data: Omit<MerchantBrand, "id"> & {
-    id: string | undefined;
-  }; // Existing ID for edit/delete
+  data: MerchantBrand;
 }
 
 // Union type for all contributions

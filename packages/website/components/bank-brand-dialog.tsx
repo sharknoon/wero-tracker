@@ -33,13 +33,11 @@ import {
   SupportStatusSelect,
 } from "./dialog-shared";
 
-type BankFormData = Omit<Bank, "id"> & {
-  id: string | undefined;
+type BankFormData = Bank & {
   markedForDeletion?: boolean;
 };
 
-type AppFormData = Omit<BankingApp, "id"> & {
-  id: string | undefined;
+type AppFormData = BankingApp & {
   markedForDeletion?: boolean;
 };
 
@@ -339,20 +337,19 @@ function BankItem({
                 {availableApps
                   .filter((app) => !app.markedForDeletion)
                   .map((app) => {
-                    const appId = app.id || app.name;
-                    const isSelected = bank.appIds.includes(appId);
+                    const isSelected = bank.appIds.includes(app.id);
                     return (
-                      <div key={appId} className="flex items-center gap-2">
+                      <div key={app.id} className="flex items-center gap-2">
                         <Switch
-                          id={`bank-${index}-app-${appId}`}
+                          id={`bank-${index}-app-${app.id}`}
                           checked={isSelected}
                           onCheckedChange={(checked) => {
                             if (checked) {
-                              onUpdate({ appIds: [...bank.appIds, appId] });
+                              onUpdate({ appIds: [...bank.appIds, app.id] });
                             } else {
                               onUpdate({
                                 appIds: bank.appIds.filter(
-                                  (id) => id !== appId,
+                                  (id) => id !== app.id,
                                 ),
                               });
                             }
@@ -360,7 +357,7 @@ function BankItem({
                           disabled={bank.markedForDeletion}
                         />
                         <Label
-                          htmlFor={`bank-${index}-app-${appId}`}
+                          htmlFor={`bank-${index}-app-${app.id}`}
                           className="text-sm font-normal cursor-pointer"
                         >
                           {app.name || "Unnamed App"}
@@ -1060,7 +1057,7 @@ export function BankBrandDialog() {
     setBanks([
       ...banks,
       {
-        id: undefined,
+        id: crypto.randomUUID(),
         name: "",
         website: "",
         bankContext: "",
@@ -1151,7 +1148,7 @@ export function BankBrandDialog() {
     setApps([
       ...apps,
       {
-        id: undefined,
+        id: crypto.randomUUID(),
         name: "",
         iconUrl: "",
         universalLink: "",
@@ -1209,7 +1206,7 @@ export function BankBrandDialog() {
       action: dialogAction!,
       reason: reason,
       data: {
-        id: existingBankBrand?.id,
+        id: existingBankBrand?.id ?? crypto.randomUUID(),
         name,
         aliases,
         weroSupport,
