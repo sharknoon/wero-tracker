@@ -81,6 +81,51 @@
       ]
     },
     {
+      "id": "5748da09-33dd-4898-8fbc-d3e2758a1720",
+      "name": "ASN Bank",
+      "aliases": [
+        "Volksbank",
+        "SNS Bank",
+        "Regiobank"
+      ],
+      "weroSupport": "announced",
+      "countries": [
+        "NL"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/642eba67-e7d6-4552-96e1-c1b33a2ec7c4.png",
+      "banks": [
+        {
+          "id": "f3e601e2-8586-4ee9-bf9f-8d46c4184380",
+          "name": "ASN Bank",
+          "website": "https://www.asnbank.nl/",
+          "bankContext": "ASNBNL21XXX",
+          "appIds": [
+            "e302c933-cb45-4534-b3f1-38519bf7ef78"
+          ],
+          "aliases": [],
+          "countries": [
+            "NL"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/642eba67-e7d6-4552-96e1-c1b33a2ec7c4.png",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "announced",
+          "eCommercePaymentsSupport": "announced",
+          "POSPaymentsSupport": "unknown"
+        }
+      ],
+      "apps": [
+        {
+          "id": "e302c933-cb45-4534-b3f1-38519bf7ef78",
+          "name": "ASN Bank",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/642eba67-e7d6-4552-96e1-c1b33a2ec7c4.png",
+          "universalLink": "https://www.asnbank.nl/asn-app-en-asn-online-bankieren/mobiel-bankieren/aan-de-slag-met-de-asn-app.html",
+          "supportsDesktop": true,
+          "weroSupport": "announced"
+        }
+      ],
+      "notes": ""
+    },
+    {
       "id": "ae3202ae-1125-4f8c-bec0-d9a94b79e959",
       "name": "Bank für Kirche und Diakonie eG – KD-Bank",
       "aliases": [],
