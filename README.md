@@ -45,6 +45,11 @@ You can help this project in several ways:
 
 Thank you very much in advance 😀
 
+Also a MASSIVE thank you to all who haev already contributed to this project
+
+<!-- readme: contributors -start -->
+<!-- readme: contributors -end -->
+
 ## Development
 
 ### Setup
