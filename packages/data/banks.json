@@ -5202,7 +5202,6 @@
             "Harzgerode",
             "Osterwieck",
             "Badersleben",
-            "Schwanebeck",
             "Blankenburg",
             "Quedlinburg",
             "GENODEF1QLB"
@@ -15291,14 +15290,13 @@
             "6006ffe1-d2bc-415b-9be5-041150bb30f5"
           ],
           "aliases": [
-            "Walldürn",
             "Höpfingen",
             "Hardheim",
+            "Walldürn",
             "Adelsheim",
             "Buchen",
             "Buchen (Odenwald)",
             "Mudau",
-            "Osterburken",
             "GENODE61BUC"
           ],
           "standaloneAppSupport": "unsupported",
@@ -16418,7 +16416,6 @@
             "Becherbach",
             "Lauterecken",
             "Offenbach-Hundheim",
-            "Olsbruecken",
             "Sien",
             "Wolfstein",
             "GENODE61LEK"
