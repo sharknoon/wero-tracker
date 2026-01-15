@@ -35,10 +35,6 @@ _paste image here_
 - [ ] Services
 - [ ] Other
 
-## In which countries does the merchant / shop operate (only for private customers, not for commercial customers). Please add them as a comma separated 2-digit country code list.
-
-_e.g. `DE,FR`_
-
 ## Does the merchant / shop support wero?
 
 - [ ] ✅ Supported

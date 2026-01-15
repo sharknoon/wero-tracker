@@ -28,11 +28,7 @@ import { AlertTriangle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { merchantCategoryOptions } from "@/lib/constants";
-import {
-  AliasInput,
-  CountrySelector,
-  SupportStatusSelect,
-} from "./dialog-shared";
+import { AliasInput, SupportStatusSelect } from "./dialog-shared";
 
 // ============================================================================
 // Delete Mode Content Component
@@ -131,8 +127,6 @@ interface MerchantFormContentProps {
   onLogoUrlChange: (value: string) => void;
   category: MerchantCategory;
   onCategoryChange: (value: MerchantCategory) => void;
-  countries: string[];
-  onToggleCountry: (country: string) => void;
   weroSupport: SupportStatus;
   onWeroSupportChange: (value: SupportStatus) => void;
   notes: string;
@@ -156,8 +150,6 @@ function MerchantFormContent({
   onLogoUrlChange,
   category,
   onCategoryChange,
-  countries,
-  onToggleCountry,
   weroSupport,
   onWeroSupportChange,
   notes,
@@ -223,11 +215,6 @@ function MerchantFormContent({
 
       <CategorySelect value={category} onChange={onCategoryChange} />
 
-      <CountrySelector
-        countries={countries}
-        onToggleCountry={onToggleCountry}
-      />
-
       <SupportStatusSelect
         label="Wero Support Status"
         value={weroSupport}
@@ -292,7 +279,6 @@ export function MerchantDialog() {
   const [website, setWebsite] = useState("");
   const [logoUrl, setLogoUrl] = useState("");
   const [category, setCategory] = useState<MerchantCategory>("other");
-  const [countries, setCountries] = useState<string[]>([]);
   const [weroSupport, setWeroSupport] = useState<SupportStatus>("unknown");
   const [notes, setNotes] = useState("");
   const [reason, setReason] = useState("");
@@ -304,7 +290,6 @@ export function MerchantDialog() {
     setWebsite("");
     setLogoUrl("");
     setCategory("other");
-    setCountries([]);
     setWeroSupport("unknown");
     setNotes("");
     setReason("");
@@ -319,7 +304,6 @@ export function MerchantDialog() {
       setWebsite(existingMerchant.website);
       setLogoUrl(existingMerchant.logoUrl);
       setCategory(existingMerchant.category);
-      setCountries(existingMerchant.countries);
       setWeroSupport(existingMerchant.weroSupport);
       setNotes(existingMerchant.notes || "");
     } else if (isOpen && !isEdit && !isDelete) {
@@ -336,14 +320,6 @@ export function MerchantDialog() {
 
   const handleRemoveAlias = (alias: string) => {
     setAliases(aliases.filter((a) => a !== alias));
-  };
-
-  const handleToggleCountry = (country: string) => {
-    if (countries.includes(country)) {
-      setCountries(countries.filter((c) => c !== country));
-    } else {
-      setCountries([...countries, country]);
-    }
   };
 
   const getSubmitValidation = () => {
@@ -363,7 +339,6 @@ export function MerchantDialog() {
     if (!name.trim()) errors.push("Merchant name");
     if (!website.trim()) errors.push("Website");
     if (!logoUrl.trim()) errors.push("Logo URL");
-    if (countries.length === 0) errors.push("At least one country");
     if (isEdit && !reason.trim()) errors.push("Reason for changes");
 
     if (errors.length > 0) {
@@ -388,7 +363,6 @@ export function MerchantDialog() {
         website,
         logoUrl,
         category,
-        countries,
         weroSupport,
         notes: notes,
       },
@@ -446,8 +420,6 @@ export function MerchantDialog() {
                 onLogoUrlChange={setLogoUrl}
                 category={category}
                 onCategoryChange={setCategory}
-                countries={countries}
-                onToggleCountry={handleToggleCountry}
                 weroSupport={weroSupport}
                 onWeroSupportChange={setWeroSupport}
                 notes={notes}

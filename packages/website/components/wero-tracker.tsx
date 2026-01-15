@@ -126,15 +126,6 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
             ) {
               return false;
             }
-            // Country filter
-            if (selectedCountries.length > 0) {
-              const hasCountry = merchant.countries.some((country) =>
-                selectedCountries.includes(country),
-              );
-              if (!hasCountry) {
-                return false;
-              }
-            }
             return true;
           }),
         },
@@ -150,19 +141,16 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
   ]);
 
   const availableCountries = useMemo(() => {
-    let countries;
-    if (activeView === "banks") {
-      countries = data.banks.brands.flatMap((brand) => brand.countries);
-    } else {
-      countries = data.merchants.brands.flatMap(
-        (merchant) => merchant.countries,
-      );
+    // Only banks have countries, merchants don't
+    if (activeView !== "banks") {
+      return [];
     }
+    const countries = data.banks.brands.flatMap((brand) => brand.countries);
     const filteredCountries = countries.filter((code) =>
       euCountries.includes(code),
     );
     return Array.from(new Set(filteredCountries)).sort();
-  }, [activeView, data.banks.brands, data.merchants.brands]);
+  }, [activeView, data.banks.brands]);
 
   // Get user's country from browser locale (using useSyncExternalStore to avoid hydration mismatch)
   const userCountry = useSyncExternalStore(

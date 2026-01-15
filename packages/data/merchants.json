@@ -1,4 +1,4 @@
-{
+﻿{
   "brands": [
     {
       "id": "d5e8e11d-8261-457c-a12e-00de88c683e6",
@@ -7,9 +7,6 @@
       "website": "https://shop.fck.de/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/22d8f1ae-986c-445e-8b2c-d4c7685947d2.png",
       "category": "other",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "supported"
     },
     {
@@ -19,9 +16,6 @@
       "website": "https://www.aireuropa.com/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/2e373738-a860-42f9-8972-e3984dd5775b.svg",
       "category": "travel",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "announced"
     },
     {
@@ -31,9 +25,6 @@
       "website": "https://www.airportliner.com/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/c8c86722-ecb0-11f0-8f3a-bb3b34ef1f6b.png",
       "category": "travel",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "supported"
     },
     {
@@ -43,9 +34,6 @@
       "website": "https://allegro.pl",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/d408a534-2a18-4b5e-8b22-82ab5fe1f61d.png",
       "category": "other",
-      "countries": [
-        "PL"
-      ],
       "weroSupport": "unsupported"
     },
     {
@@ -55,9 +43,6 @@
       "website": "https://amazon.de",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/17ccf8ef-b7a2-4463-b610-7c79c2401c5c.png",
       "category": "other",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "unsupported"
     },
     {
@@ -67,9 +52,6 @@
       "website": "https://www.baur.de/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/88bee4c3-9e8a-4e84-b962-177206a142e8.svg",
       "category": "other",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "announced"
     },
     {
@@ -79,9 +61,6 @@
       "website": "https://www.buch7.de/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/29e390cf-c6aa-44fd-9579-165cb1072d53.png",
       "category": "entertainment",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "announced",
       "notes": "We are already planning to introduce WERO as a payment method, as we announced in our last newsletter. As soon as WERO is available to us and all technical details have been clarified and implemented, we will offer WERO as an additional payment method. We kindly ask for your patience until implementation can take place, but we are working on it."
     },
@@ -92,9 +71,6 @@
       "website": "https://www.cewe.de/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/ab44678c-8a03-4174-9619-b4e8dc1d01e0.png",
       "category": "other",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "announced"
     },
     {
@@ -104,9 +80,6 @@
       "website": "https://www.cineplex.de/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/917a2584-591c-46e7-92c4-af9e962c6abc.png",
       "category": "entertainment",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "announced"
     },
     {
@@ -116,9 +89,6 @@
       "website": "https://www.decathlon.de/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/91d7813b-733d-4487-9814-98182524832b.svg",
       "category": "fashion",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "announced"
     },
     {
@@ -128,9 +98,6 @@
       "website": "https://ridedott.com/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/c17d6362-79b6-449e-95b0-038b2e51b9cb.svg",
       "category": "travel",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "announced"
     },
     {
@@ -140,9 +107,6 @@
       "website": "https://www.dpd.com/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/b3fefa4f-61c1-4260-8dbe-6cae2800ab75.png",
       "category": "services",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "announced",
       "notes": "https://www.dpd.com/de/de/news/dpd-launches-european-payment-solution-wero/"
     },
@@ -153,12 +117,6 @@
       "website": "https://ebay.com",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/df1544c0-fc15-4552-86f9-eb0433c0e29a.png",
       "category": "other",
-      "countries": [
-        "DE",
-        "FR",
-        "IT",
-        "ES"
-      ],
       "weroSupport": "unsupported"
     },
     {
@@ -168,9 +126,6 @@
       "website": "https://www.eventim.de/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/f69e9d98-5782-4af4-b279-e18483a2131f.svg",
       "category": "entertainment",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "supported"
     },
     {
@@ -180,9 +135,6 @@
       "website": "https://www.hornbach.de/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/767bbba7-bc26-4d32-a817-1469accb943c.svg",
       "category": "other",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "announced"
     },
     {
@@ -192,9 +144,6 @@
       "website": "https://www.feinkost-kaefer.de/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/57eccc3b-00be-47ce-a1a3-8f80ab1e2ef0.png",
       "category": "groceries",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "announced"
     },
     {
@@ -204,9 +153,6 @@
       "website": "https://shop-eu.kurzgesagt.org/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/66a0a1d6-76e8-4e93-aec4-c162f7efb3da.png",
       "category": "fashion",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "unsupported",
       "notes": ""
     },
@@ -217,9 +163,6 @@
       "website": "https://www.lidl.de/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/39aca394-eea3-4d09-bf0b-c34dc79b9968.svg",
       "category": "groceries",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "announced"
     },
     {
@@ -229,9 +172,6 @@
       "website": "https://www.lufthansa.com/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/edd11995-0f0d-4768-a6db-3a5faf41ca05.jpg",
       "category": "travel",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "unsupported",
       "notes": ""
     },
@@ -242,9 +182,6 @@
       "website": "https://www.reichelt.com/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/8a15509f-1203-42b9-b492-9a8dede7bacd.png",
       "category": "electronics",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "unsupported",
       "notes": ""
     },
@@ -255,9 +192,6 @@
       "website": "https://www.rossmann.de/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/201b4714-7762-4ac7-80a7-4fab3d6280da.svg",
       "category": "groceries",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "announced"
     },
     {
@@ -267,9 +201,6 @@
       "website": "https://www.shop-apotheke.com/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/3968fbaf-9f46-4016-b3a0-8c6aa8a3d5ae.png",
       "category": "other",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "unsupported",
       "notes": "We will not be offering this payment method in the near future. At this point, we cannot say for certain whether we will offer it in the future."
     },
@@ -280,9 +211,6 @@
       "website": "https://www.tedox.de/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/d45c21b2-6f8e-4906-be7a-631fd2a00b08.png",
       "category": "other",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "supported"
     },
     {
@@ -292,10 +220,6 @@
       "website": "https://temu.com",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/919137d8-8890-4d72-b99f-697a5c4088c2.png",
       "category": "other",
-      "countries": [
-        "FR",
-        "DE"
-      ],
       "weroSupport": "unsupported"
     },
     {
@@ -305,9 +229,6 @@
       "website": "https://traivelling.com/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/37073db1-0a0e-4fc0-93e5-816f8c29109e.svg",
       "category": "travel",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "announced"
     },
     {
@@ -317,9 +238,6 @@
       "website": "https://www.veepee.de/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/63f81d9e-f8f1-4527-8d40-41d35a72bdcc.png",
       "category": "other",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "announced"
     },
     {
@@ -329,12 +247,6 @@
       "website": "https://zalando.com",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/23f7c7ca-ea2e-414b-bf55-21253e3facb1.png",
       "category": "fashion",
-      "countries": [
-        "DE",
-        "IT",
-        "NL",
-        "PL"
-      ],
       "weroSupport": "unsupported"
     },
     {
@@ -344,9 +256,6 @@
       "website": "https://www.zooplus.de/",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/77f9a89d-1e27-4ef3-bb35-4a368f649d52.png",
       "category": "other",
-      "countries": [
-        "DE"
-      ],
       "weroSupport": "announced"
     }
   ]

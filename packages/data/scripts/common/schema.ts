@@ -69,7 +69,6 @@ export const merchantBrandSchema = zod.strictObject({
     "services",
     "other",
   ]),
-  countries: zod.array(zod.string().length(2)),
   weroSupport: supportStatusSchema,
   notes: zod.string().optional(),
 });
