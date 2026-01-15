@@ -111,19 +111,25 @@ export function FilterBar({
               {status.label}
             </DropdownMenuCheckboxItem>
           ))}
-          <DropdownMenuSeparator />
-          <DropdownMenuLabel>Filter by Country</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {availableCountries.map((country) => (
-            <DropdownMenuCheckboxItem
-              key={country}
-              checked={selectedCountries.includes(country)}
-              onCheckedChange={() => toggleCountry(country)}
-            >
-              <CountryFlag countryCode={country} size="sm" />
-              {new Intl.DisplayNames(["en"], { type: "region" }).of(country)}
-            </DropdownMenuCheckboxItem>
-          ))}
+          {activeView === "banks" && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel>Filter by Country</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {availableCountries.map((country) => (
+                <DropdownMenuCheckboxItem
+                  key={country}
+                  checked={selectedCountries.includes(country)}
+                  onCheckedChange={() => toggleCountry(country)}
+                >
+                  <CountryFlag countryCode={country} size="sm" />
+                  {new Intl.DisplayNames(["en"], { type: "region" }).of(
+                    country,
+                  )}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
