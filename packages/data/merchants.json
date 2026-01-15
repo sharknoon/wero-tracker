@@ -61,6 +61,19 @@
       "weroSupport": "announced"
     },
     {
+      "id": "4f44470c-65da-4dc7-bd62-3ab95b5cd484",
+      "name": "buch7",
+      "aliases": [],
+      "website": "https://www.buch7.de/",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/29e390cf-c6aa-44fd-9579-165cb1072d53.png",
+      "category": "entertainment",
+      "countries": [
+        "DE"
+      ],
+      "weroSupport": "announced",
+      "notes": "We are already planning to introduce WERO as a payment method, as we announced in our last newsletter. As soon as WERO is available to us and all technical details have been clarified and implemented, we will offer WERO as an additional payment method. We kindly ask for your patience until implementation can take place, but we are working on it."
+    },
+    {
       "id": "e50b80bf-7480-4605-a7cd-60d519fbf231",
       "name": "Cewe",
       "aliases": [],
@@ -158,6 +171,19 @@
       "weroSupport": "announced"
     },
     {
+      "id": "a4037b5c-497f-4d92-8cb1-98aeb635268d",
+      "name": "Kurzgesagt",
+      "aliases": [],
+      "website": "https://shop-eu.kurzgesagt.org/",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/66a0a1d6-76e8-4e93-aec4-c162f7efb3da.png",
+      "category": "fashion",
+      "countries": [
+        "DE"
+      ],
+      "weroSupport": "unsupported",
+      "notes": ""
+    },
+    {
       "id": "0c5611dc-0a36-4e9a-81ae-a6f408f4a38e",
       "name": "Lidl",
       "aliases": [],
@@ -170,6 +196,32 @@
       "weroSupport": "announced"
     },
     {
+      "id": "202690ef-b74c-49b3-ac1a-f0300ab1683d",
+      "name": "Lufthansa",
+      "aliases": [],
+      "website": "https://www.lufthansa.com/",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/edd11995-0f0d-4768-a6db-3a5faf41ca05.jpg",
+      "category": "travel",
+      "countries": [
+        "DE"
+      ],
+      "weroSupport": "unsupported",
+      "notes": ""
+    },
+    {
+      "id": "5f2cb38c-ee09-4fb5-bb4b-82f5fa463350",
+      "name": "Reichelt",
+      "aliases": [],
+      "website": "https://www.reichelt.com/",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/8a15509f-1203-42b9-b492-9a8dede7bacd.png",
+      "category": "electronics",
+      "countries": [
+        "DE"
+      ],
+      "weroSupport": "unsupported",
+      "notes": ""
+    },
+    {
       "id": "807086f4-bb31-4916-86f4-bab7906ed25a",
       "name": "Rossmann",
       "aliases": [],
@@ -180,6 +232,19 @@
         "DE"
       ],
       "weroSupport": "announced"
+    },
+    {
+      "id": "c8eedc7d-53bf-42ba-a382-6e67d5e7bc10",
+      "name": "Shop Apotheke",
+      "aliases": [],
+      "website": "https://www.shop-apotheke.com/",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/3968fbaf-9f46-4016-b3a0-8c6aa8a3d5ae.png",
+      "category": "other",
+      "countries": [
+        "DE"
+      ],
+      "weroSupport": "unsupported",
+      "notes": ""
     },
     {
       "id": "fb516d92-2aee-4a10-8b1d-bb9d377c4b31",
