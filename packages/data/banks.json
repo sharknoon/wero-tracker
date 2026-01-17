@@ -659,7 +659,7 @@
           "id": "80a28214-2c23-4042-88b8-e2ba798d41e2",
           "name": "Paiement entre personnes - Belfius",
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/a95b2874-36ae-570c-8c46-ec9494b415d1-xs.png",
-          "universalLink": "https://www.belfius.be/retail/fr/produits/paiement/smartphone/paiement-entre-personnes/index.aspx",
+          "universalLink": "https://www.belfius.be/common/fr/fw/generic/launcher.html?appkey=WERO_URL_INTENT",
           "supportsDesktop": false,
           "weroSupport": "supported"
         },
@@ -667,7 +667,7 @@
           "id": "7133db5e-2bd2-42bc-8761-60cede48d51f",
           "name": "Betalen onder vrienden - Belfius",
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/a95b2874-36ae-570c-8c46-ec9494b415d1-xs.png",
-          "universalLink": "https://www.belfius.be/retail/nl/producten/betalen/smartphone/betalen-onder-vrienden/index.aspx",
+          "universalLink": "https://www.belfius.be/common/nl/fw/generic/launcher.html?appkey=WERO_URL_INTENT",
           "supportsDesktop": false,
           "weroSupport": "supported"
         }
@@ -859,7 +859,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/c9525fe9-69fa-5f73-b961-53ed633e652c-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "supported",
+          "eCommercePaymentsSupport": "unsupported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -1998,7 +1998,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/6e9be178-8bb8-514a-be08-9d1cb0056ec6-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "supported",
+          "eCommercePaymentsSupport": "unsupported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -2129,7 +2129,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/a8886b70-4008-5bb6-bc51-d94e200f1d79-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "supported",
+          "eCommercePaymentsSupport": "unsupported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -13887,7 +13887,6 @@
             "Tannheim",
             "Wangen im Allgäu",
             "Argenbühl",
-            "Rot an der Rot",
             "Burgrieden",
             "Erlenmoos",
             "Erolzheim",
@@ -18283,9 +18282,9 @@
             "Finnentrop",
             "Sundern",
             "Arnsberg",
-            "Meschede",
-            "Olsberg",
             "Bestwig",
+            "Olsberg",
+            "Meschede",
             "Lennestadt",
             "Schmallenberg",
             "Winterberg",
