@@ -1005,6 +1005,99 @@
       "notes": ""
     },
     {
+      "id": "89e694ed-042d-4e6f-a96a-1c595a21d419",
+      "name": "bunq",
+      "aliases": [],
+      "weroSupport": "unsupported",
+      "countries": [
+        "AT",
+        "BE",
+        "BG",
+        "HR",
+        "CY",
+        "CZ",
+        "DK",
+        "EE",
+        "FI",
+        "FR",
+        "DE",
+        "GR",
+        "HU",
+        "IS",
+        "IE",
+        "IT",
+        "LI",
+        "LU",
+        "MT",
+        "NL",
+        "NO",
+        "PT",
+        "RO",
+        "SK",
+        "SI",
+        "ES",
+        "SE"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/1df1925c-5546-435c-848a-9049440ba0a0.svg",
+      "banks": [
+        {
+          "id": "854ef9ea-ae50-4845-88e8-8e9b6a1c277a",
+          "name": "bunq",
+          "website": "https://bunq.com/",
+          "bankContext": "BUNQNL2AXXX",
+          "appIds": [
+            "504f30eb-64be-4e0d-962e-58f7f4640717"
+          ],
+          "aliases": [],
+          "countries": [
+            "AT",
+            "BE",
+            "BG",
+            "HR",
+            "CY",
+            "CZ",
+            "DK",
+            "EE",
+            "FI",
+            "FR",
+            "DE",
+            "GR",
+            "HU",
+            "IS",
+            "IE",
+            "IT",
+            "LI",
+            "LU",
+            "MT",
+            "NL",
+            "NO",
+            "PT",
+            "RO",
+            "SK",
+            "SI",
+            "ES",
+            "SE"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/1df1925c-5546-435c-848a-9049440ba0a0.svg",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "unsupported",
+          "eCommercePaymentsSupport": "unsupported",
+          "POSPaymentsSupport": "unsupported"
+        }
+      ],
+      "apps": [
+        {
+          "id": "504f30eb-64be-4e0d-962e-58f7f4640717",
+          "name": "bunq",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/9c11b0cb-eede-4a77-a9b4-62fb166bee1f.png",
+          "universalLink": "https://bunq.com/",
+          "supportsDesktop": true,
+          "weroSupport": "unsupported"
+        }
+      ],
+      "notes": ""
+    },
+    {
       "id": "6f51f58f-73f3-42c3-a273-cca1ea829fa1",
       "name": "BW Bank",
       "aliases": [],
@@ -2306,6 +2399,47 @@
       ]
     },
     {
+      "id": "d5af2eb3-b3d5-43cc-ab58-cad7482ab712",
+      "name": "Intesa Sanpaolo",
+      "aliases": [],
+      "weroSupport": "unsupported",
+      "countries": [
+        "IT"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/617a1c79-66f7-4ccd-8454-55e1f3c50e0e.png",
+      "banks": [
+        {
+          "id": "17486bf7-e3ba-4ffb-9b1a-35ae06b94575",
+          "name": "Intesa Sanpaolo",
+          "website": "https://www.intesasanpaolo.com/",
+          "bankContext": "BCITITMMXXX",
+          "appIds": [
+            "e55694b0-828b-4144-8846-53a2399b4472"
+          ],
+          "aliases": [],
+          "countries": [
+            "IT"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/617a1c79-66f7-4ccd-8454-55e1f3c50e0e.png",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "unsupported",
+          "eCommercePaymentsSupport": "unsupported",
+          "POSPaymentsSupport": "unsupported"
+        }
+      ],
+      "apps": [
+        {
+          "id": "e55694b0-828b-4144-8846-53a2399b4472",
+          "name": "Intesa Sanpaolo Mobile",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/0b796dcf-232a-48d2-8e9d-8194068114e3.png",
+          "universalLink": "https://www.intesasanpaolo.com/it/persone-e-famiglie/tutti-i-giorni/intesa-sanpaolo-mobile/la-banca-nell-app/intesa-sanpaolo-mobile.html",
+          "supportsDesktop": true,
+          "weroSupport": "unsupported"
+        }
+      ],
+      "notes": ""
+    },
+    {
       "id": "d281d954-0516-461e-9b90-10a737223ae3",
       "name": "KBC",
       "aliases": [],
@@ -2498,6 +2632,47 @@
           "universalLink": "https://s.lcl.fr/SVi2/wero",
           "supportsDesktop": false,
           "weroSupport": "supported"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "285fd826-ad2e-4c41-97b9-fdf056ffbf21",
+      "name": "MLP",
+      "aliases": [],
+      "weroSupport": "unsupported",
+      "countries": [
+        "DE"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/cdd2954d-a28b-4b75-b983-b0cde193c232.svg",
+      "banks": [
+        {
+          "id": "ce8a7164-1930-4c87-a10d-3420ccef5664",
+          "name": "MLP",
+          "website": "https://mlp.de/finanzen-versicherungen/banking/",
+          "bankContext": "MLPBDE61XXX",
+          "appIds": [
+            "5b12b713-7ab7-4eb4-bf3a-01a93a318e03"
+          ],
+          "aliases": [],
+          "countries": [
+            "DE"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/cdd2954d-a28b-4b75-b983-b0cde193c232.svg",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "unsupported",
+          "eCommercePaymentsSupport": "unsupported",
+          "POSPaymentsSupport": "unsupported"
+        }
+      ],
+      "apps": [
+        {
+          "id": "5b12b713-7ab7-4eb4-bf3a-01a93a318e03",
+          "name": "MLP Banking",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/2daaf227-7522-49aa-a561-871bcf987f17.png",
+          "universalLink": "https://mlp.de/kontakt-service/service/haeufige-fragen/financial-home-banking-app/banking-app/",
+          "supportsDesktop": true,
+          "weroSupport": "unsupported"
         }
       ],
       "notes": ""
