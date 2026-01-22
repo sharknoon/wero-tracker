@@ -29,6 +29,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { merchantCategoryOptions } from "@/lib/constants";
 import { AliasInput, SupportStatusSelect } from "./dialog-shared";
+import { isValidUrl } from "@/lib/utils";
 
 // ============================================================================
 // Delete Mode Content Component
@@ -337,8 +338,8 @@ export function MerchantDialog() {
 
     const errors: string[] = [];
     if (!name.trim()) errors.push("Merchant name");
-    if (!website.trim()) errors.push("Website");
-    if (!logoUrl.trim()) errors.push("Logo URL");
+    if (!website.trim() || !isValidUrl(website.trim())) errors.push("Website");
+    if (!logoUrl.trim() || !isValidUrl(logoUrl.trim())) errors.push("Logo URL");
     if (isEdit && !reason.trim()) errors.push("Reason for changes");
 
     if (errors.length > 0) {

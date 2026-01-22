@@ -26,7 +26,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { cn } from "@/lib/utils";
+import { cn, isValidUrl } from "@/lib/utils";
 import {
   AliasInput,
   CountrySelector,
@@ -1273,7 +1273,7 @@ export function BankBrandDialog() {
 
     const errors: string[] = [];
     if (!name.trim()) errors.push("Brand name");
-    if (!logoUrl.trim()) errors.push("Logo URL");
+    if (!logoUrl.trim() || !isValidUrl(logoUrl.trim())) errors.push("Logo URL");
     if (countries.length === 0) errors.push("At least one country");
     if (activeBanksCount === 0) errors.push("At least one bank");
     if (isEdit && !reason.trim()) errors.push("Reason for changes");
@@ -1281,7 +1281,8 @@ export function BankBrandDialog() {
     // Validate individual banks
     const activeBanks = banks.filter((b) => !b.markedForDeletion);
     const invalidBanks = activeBanks.filter(
-      (b) => !b.name.trim() || !b.website.trim(),
+      (b) =>
+        !b.name.trim() || !b.website.trim() || !isValidUrl(b.website.trim()),
     );
     if (invalidBanks.length > 0) {
       errors.push(`${invalidBanks.length} bank(s) missing required fields`);
