@@ -1,4 +1,4 @@
-﻿{
+{
   "brands": [
     {
       "id": "d5e8e11d-8261-457c-a12e-00de88c683e6",
@@ -90,6 +90,16 @@
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/91d7813b-733d-4487-9814-98182524832b.svg",
       "category": "fashion",
       "weroSupport": "announced"
+    },
+    {
+      "id": "f51e67cb-2322-4ae8-98fd-285dd491cdbb",
+      "name": "dm",
+      "aliases": [],
+      "website": "https://www.dm.de/",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/50ee0f0c-18ad-43fa-858c-f42b606c7a7f.svg",
+      "category": "groceries",
+      "weroSupport": "announced",
+      "notes": "https://www.linkedin.com/posts/matthias-kaufmann-02412649_fulminante-pr%C3%A4sentation-von-martina-weimert-activity-7417541228075909120-be_4"
     },
     {
       "id": "e4a23d19-e49d-4740-b166-3285b173f547",

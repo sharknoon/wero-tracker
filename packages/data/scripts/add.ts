@@ -113,19 +113,6 @@ async function addMerchant(data: MerchantsData) {
     ]
   );
 
-  const countriesInput = await text(
-    "Enter 2-letter country codes separated by comma (e.g., DE, FR, BE):"
-  );
-  const countries = countriesInput
-    .split(",")
-    .map((c) => c.trim().toUpperCase())
-    .filter((c) => c.length === 2);
-
-  if (countries.length === 0) {
-    error("At least one valid country code is required.");
-    process.exit(1);
-  }
-
   const weroSupport = await select<SupportStatus>(
     "What is the Wero support status of this merchant?",
     [
@@ -164,7 +151,6 @@ async function addMerchant(data: MerchantsData) {
     website,
     logoUrl,
     category,
-    countries,
     weroSupport,
     notes,
   };
