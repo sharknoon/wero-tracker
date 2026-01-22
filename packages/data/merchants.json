@@ -226,6 +226,16 @@
       "notes": "https://www.linkedin.com/posts/matthias-kaufmann-02412649_fulminante-pr%C3%A4sentation-von-martina-weimert-activity-7417541228075909120-be_4/"
     },
     {
+      "id": "7fe03735-3771-4b58-af4b-39e5d4856ae5",
+      "name": "Otto",
+      "aliases": [],
+      "website": "https://www.otto.de",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/866a60ab-3f7a-4b11-96e7-408ba6a1e08e.svg",
+      "category": "other",
+      "weroSupport": "unknown",
+      "notes": ""
+    },
+    {
       "id": "5f2cb38c-ee09-4fb5-bb4b-82f5fa463350",
       "name": "Reichelt",
       "aliases": [],
