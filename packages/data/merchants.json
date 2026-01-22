@@ -19,6 +19,16 @@
       "weroSupport": "announced"
     },
     {
+      "id": "867e3f4f-c666-4697-9f54-dee8cb61fbe8",
+      "name": "Air France",
+      "aliases": [],
+      "website": "https://wwws.airfrance.fr/",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/442ff284-41bd-44e4-8c21-0a42bd048c66.svg",
+      "category": "travel",
+      "weroSupport": "announced",
+      "notes": "https://www.linkedin.com/posts/matthias-kaufmann-02412649_fulminante-pr%C3%A4sentation-von-martina-weimert-activity-7417541228075909120-be_4/"
+    },
+    {
       "id": "63c62e70-ecb2-11f0-9c9f-974f626ff2d3",
       "name": "airportLiner",
       "aliases": [],
@@ -92,6 +102,16 @@
       "weroSupport": "announced"
     },
     {
+      "id": "0f63846e-4c52-4aba-b85d-cffd45367a94",
+      "name": "DGFIP",
+      "aliases": [],
+      "website": "https://www.amendes.gouv.fr/",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/064a170f-109d-4a0d-b519-ac5533196af2.webp",
+      "category": "other",
+      "weroSupport": "announced",
+      "notes": "https://www.linkedin.com/posts/matthias-kaufmann-02412649_fulminante-pr%C3%A4sentation-von-martina-weimert-activity-7417541228075909120-be_4/"
+    },
+    {
       "id": "f51e67cb-2322-4ae8-98fd-285dd491cdbb",
       "name": "dm",
       "aliases": [],
@@ -119,6 +139,16 @@
       "category": "services",
       "weroSupport": "announced",
       "notes": "https://www.dpd.com/de/de/news/dpd-launches-european-payment-solution-wero/"
+    },
+    {
+      "id": "e357cd55-3b1d-42c8-b6ec-db7e2bcdc75d",
+      "name": "E.Leclerc",
+      "aliases": [],
+      "website": "https://www.e.leclerc/",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/53dac6af-4e77-488a-907e-5c56b857a66e.svg",
+      "category": "groceries",
+      "weroSupport": "announced",
+      "notes": "https://www.linkedin.com/posts/matthias-kaufmann-02412649_fulminante-pr%C3%A4sentation-von-martina-weimert-activity-7417541228075909120-be_4/"
     },
     {
       "id": "df1544c0-fc15-4552-86f9-eb0433c0e29a",
@@ -186,6 +216,16 @@
       "notes": ""
     },
     {
+      "id": "6aa46079-ea5b-480a-a4c1-b763d82b89fb",
+      "name": "Orange",
+      "aliases": [],
+      "website": "https://www.orange.com/",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/af1372e7-426e-40fb-bc85-94ecd6d3a24a.svg",
+      "category": "other",
+      "weroSupport": "announced",
+      "notes": "https://www.linkedin.com/posts/matthias-kaufmann-02412649_fulminante-pr%C3%A4sentation-von-martina-weimert-activity-7417541228075909120-be_4/"
+    },
+    {
       "id": "5f2cb38c-ee09-4fb5-bb4b-82f5fa463350",
       "name": "Reichelt",
       "aliases": [],
@@ -249,6 +289,16 @@
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/63f81d9e-f8f1-4527-8d40-41d35a72bdcc.png",
       "category": "other",
       "weroSupport": "announced"
+    },
+    {
+      "id": "41163f59-2473-46fc-8736-d2e5b1d19a7c",
+      "name": "Veepee",
+      "aliases": [],
+      "website": "https://www.veepee.fr/",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/3a338d26-872b-4e0e-9d1d-20b09805b21b.svg",
+      "category": "other",
+      "weroSupport": "announced",
+      "notes": "https://www.linkedin.com/posts/matthias-kaufmann-02412649_fulminante-pr%C3%A4sentation-von-martina-weimert-activity-7417541228075909120-be_4/"
     },
     {
       "id": "23f7c7ca-ea2e-414b-bf55-21253e3facb1",
