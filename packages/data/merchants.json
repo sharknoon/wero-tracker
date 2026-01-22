@@ -47,6 +47,16 @@
       "weroSupport": "unsupported"
     },
     {
+      "id": "2844a43f-8851-4c33-a869-684a1c9e1466",
+      "name": "Alternate",
+      "aliases": [],
+      "website": "https://www.alternate.de",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/d0995986-1c74-4de4-8fda-6338e67a24b9.jpg",
+      "category": "electronics",
+      "weroSupport": "unsupported",
+      "notes": ""
+    },
+    {
       "id": "17ccf8ef-b7a2-4463-b610-7c79c2401c5c",
       "name": "Amazon DE",
       "aliases": [],
