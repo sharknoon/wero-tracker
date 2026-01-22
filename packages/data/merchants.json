@@ -293,6 +293,16 @@
       "weroSupport": "unsupported"
     },
     {
+      "id": "56c4dbd2-629e-46dc-aee9-d0ecabee1709",
+      "name": "Thalia",
+      "aliases": [],
+      "website": "https://www.thalia.de",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/87558833-20f7-4a7a-bff5-3a7147e3cdf4.svg",
+      "category": "entertainment",
+      "weroSupport": "unknown",
+      "notes": ""
+    },
+    {
       "id": "2f99525f-e56a-44eb-bcc3-5646e7e7c52e",
       "name": "Traivelling",
       "aliases": [],
