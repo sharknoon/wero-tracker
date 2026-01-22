@@ -1615,7 +1615,7 @@
       "apps": [
         {
           "id": "632cca44-9fcf-4599-8321-07b0c3d1a325",
-          "name": "MyBanking",
+          "name": " MyBanking",
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/66d67f10-51fe-4381-a067-7bba260aa695-xs.png",
           "universalLink": "https://mybanking.banking-app-links.de/dynamicKey/wero",
           "supportsDesktop": false,
@@ -1863,7 +1863,7 @@
       "apps": [
         {
           "id": "632cca44-9fcf-4599-8321-07b0c3d1a325",
-          "name": "MyBanking",
+          "name": " MyBanking",
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/66d67f10-51fe-4381-a067-7bba260aa695-xs.png",
           "universalLink": "https://mybanking.banking-app-links.de/dynamicKey/wero",
           "supportsDesktop": false,
@@ -1911,7 +1911,7 @@
       "apps": [
         {
           "id": "632cca44-9fcf-4599-8321-07b0c3d1a325",
-          "name": "MyBanking",
+          "name": " MyBanking",
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/66d67f10-51fe-4381-a067-7bba260aa695-xs.png",
           "universalLink": "https://mybanking.banking-app-links.de/dynamicKey/wero",
           "supportsDesktop": false,
@@ -1965,7 +1965,7 @@
       "apps": [
         {
           "id": "632cca44-9fcf-4599-8321-07b0c3d1a325",
-          "name": "MyBanking",
+          "name": " MyBanking",
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/66d67f10-51fe-4381-a067-7bba260aa695-xs.png",
           "universalLink": "https://mybanking.banking-app-links.de/dynamicKey/wero",
           "supportsDesktop": false,
@@ -20926,7 +20926,7 @@
         },
         {
           "id": "632cca44-9fcf-4599-8321-07b0c3d1a325",
-          "name": "MyBanking",
+          "name": " MyBanking",
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/66d67f10-51fe-4381-a067-7bba260aa695-xs.png",
           "universalLink": "https://mybanking.banking-app-links.de/dynamicKey/wero",
           "supportsDesktop": false,
