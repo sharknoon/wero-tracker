@@ -226,6 +226,18 @@
       "notes": ""
     },
     {
+      "id": "bdc436e4-6b41-42f7-8b03-ef1cc596c630",
+      "name": "Media Markt",
+      "aliases": [
+        "Saturn"
+      ],
+      "website": "https://www.mediamarkt.de/",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/0f886a26-6a27-41fa-9e5b-206f0fc2720e.svg",
+      "category": "electronics",
+      "weroSupport": "announced",
+      "notes": ""
+    },
+    {
       "id": "6aa46079-ea5b-480a-a4c1-b763d82b89fb",
       "name": "Orange",
       "aliases": [],
