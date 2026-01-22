@@ -1,3 +1,5 @@
+name: Update readme contributors
+
 on:
     push:
         branches:
