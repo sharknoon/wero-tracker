@@ -222,7 +222,7 @@
     },
     {
       "id": "3dc80a31-e07d-49d3-b4dc-cc8d0e83bd2d",
-      "name": "Bank Millennium SA",
+      "name": "Bank Millennium",
       "aliases": [],
       "weroSupport": "unsupported",
       "countries": [
@@ -235,7 +235,9 @@
           "name": "Bank Millennium",
           "website": "https://www.bankmillennium.pl/",
           "bankContext": "BIGBPLPWXXX",
-          "appIds": [],
+          "appIds": [
+            "41344484-eb32-42eb-b877-389f85015a49"
+          ],
           "aliases": [],
           "countries": [
             "PL"
@@ -252,8 +254,8 @@
           "id": "41344484-eb32-42eb-b877-389f85015a49",
           "name": "Bank Millennium",
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/e8624f3e-29a3-4ef3-a0e3-c1cb5ac8f64e.webp",
-          "universalLink": "https://apps.apple.com/pl/app/bank-millennium/id412646128",
-          "supportsDesktop": false,
+          "universalLink": "https://www.bankmillennium.pl/en/electronic-banking/mobile-banking/mobile-application-individuals-business",
+          "supportsDesktop": true,
           "weroSupport": "unsupported"
         }
       ],
