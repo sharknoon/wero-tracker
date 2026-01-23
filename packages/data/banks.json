@@ -4479,6 +4479,56 @@
       "notes": "Wero ist aktuell noch nicht für alle Banken verfügbar. Aber sobald dies möglich ist, wird sich die zuständige Fachabteilung darum kümmern Ihnen Wero in der Triodos Banking App zur Verfügung zu stellen. Bis dahin bitten wir um Ihr Verständnis. Bei Fragen stehen wir Ihnen gerne zur Verfügung. Mit freundlichen Grüßen Ihre Triodos Bank Kundenbetreuung"
     },
     {
+      "id": "91cca255-3d48-458d-8d2a-369e02143be4",
+      "name": "Van Lanschot Kempen",
+      "aliases": [],
+      "weroSupport": "announced",
+      "countries": [
+        "NL"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/102ed431-247d-4311-be6c-0f71e7fcf114.png",
+      "banks": [
+        {
+          "id": "5b44b3b2-b6bf-4b6e-9d10-993aca0d4c8a",
+          "name": "Van Lanschot Kempen",
+          "website": "https://www.vanlanschotkempen.com/",
+          "bankContext": "FVLBCHZZ",
+          "appIds": [
+            "e37ecd4f-ceb2-4531-acbd-519dc069aa5d",
+            "aa0d68da-b105-462a-9361-39379bf97821"
+          ],
+          "aliases": [],
+          "countries": [
+            "NL"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/102ed431-247d-4311-be6c-0f71e7fcf114.png",
+          "standaloneAppSupport": "unknown",
+          "P2PPaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "announced",
+          "POSPaymentsSupport": "unknown"
+        }
+      ],
+      "apps": [
+        {
+          "id": "e37ecd4f-ceb2-4531-acbd-519dc069aa5d",
+          "name": "Private Banking",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/3e9e6f92-49c7-4699-92bc-8cfaf86d0d53.webp",
+          "universalLink": "https://apps.apple.com/nl/app/private-banking/id1291890795",
+          "supportsDesktop": false,
+          "weroSupport": "announced"
+        },
+        {
+          "id": "aa0d68da-b105-462a-9361-39379bf97821",
+          "name": "Private Banking",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/e9e48d05-7429-49c0-bc09-cec5bd9acd75.png",
+          "universalLink": "https://play.google.com/store/apps/details?id=com.LoginApp&pcampaignid=web_share&pli=1",
+          "supportsDesktop": false,
+          "weroSupport": "announced"
+        }
+      ],
+      "notes": ""
+    },
+    {
       "id": "218f5190-8bb0-4c67-9c77-34e4e079bf5c",
       "name": "vdk bank",
       "aliases": [],
