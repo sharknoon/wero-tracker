@@ -1,6 +1,47 @@
 {
   "brands": [
     {
+      "id": "efd393f3-3248-4924-87de-23805bdd8a18",
+      "name": "1822direkt",
+      "aliases": [],
+      "weroSupport": "unsupported",
+      "countries": [
+        "DE"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/e1b2f80e-8db8-4f50-b1eb-0e8c72ce248c.svg",
+      "banks": [
+        {
+          "id": "ce25eaac-3345-4a94-a85b-d69bc96f5105",
+          "name": "1822direkt",
+          "website": "https://www.1822direkt.de/",
+          "bankContext": "HELADEF1822",
+          "appIds": [
+            "11f1fb42-1e9a-463d-b10b-6cf69d3a2284"
+          ],
+          "aliases": [],
+          "countries": [
+            "DE"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/e1b2f80e-8db8-4f50-b1eb-0e8c72ce248c.svg",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "unsupported",
+          "eCommercePaymentsSupport": "unsupported",
+          "POSPaymentsSupport": "unsupported"
+        }
+      ],
+      "apps": [
+        {
+          "id": "11f1fb42-1e9a-463d-b10b-6cf69d3a2284",
+          "name": "1822direkt Banking",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/8be17fa6-99f1-401b-8bae-2e223e65492f.png",
+          "universalLink": "https://www.1822direkt.de/service/banking-apps/",
+          "supportsDesktop": true,
+          "weroSupport": "unsupported"
+        }
+      ],
+      "notes": ""
+    },
+    {
       "id": "e5f4a6b2-39d3-4770-8a37-80482ccaf9fe",
       "name": "ABN AMRO",
       "aliases": [],
@@ -2767,6 +2808,51 @@
       ]
     },
     {
+      "id": "228041ee-e91b-4d9b-a4f1-d63f6916d052",
+      "name": "Nickel",
+      "aliases": [],
+      "weroSupport": "announced",
+      "countries": [
+        "FR",
+        "BE",
+        "DE"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/4f9cdaa6-c78b-4916-8d0e-5b5d99ad5990.svg",
+      "banks": [
+        {
+          "id": "2c635226-bab8-4519-aae7-8cad6d6a09b6",
+          "name": "Nickel",
+          "website": "https://nickel.eu/",
+          "bankContext": "FPELFR21XXX",
+          "appIds": [
+            "a5d3a232-0703-4bee-9276-218d69389f4d"
+          ],
+          "aliases": [],
+          "countries": [
+            "FR",
+            "BE",
+            "DE"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/4f9cdaa6-c78b-4916-8d0e-5b5d99ad5990.svg",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "announced",
+          "eCommercePaymentsSupport": "announced",
+          "POSPaymentsSupport": "unsupported"
+        }
+      ],
+      "apps": [
+        {
+          "id": "a5d3a232-0703-4bee-9276-218d69389f4d",
+          "name": "Nickel",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/5b47bcc5-e422-4b93-86fd-a52684c683cb.png",
+          "universalLink": "https://support.nickel.eu/de/wie-kann-ich-die-nickel-app-herunterladen",
+          "supportsDesktop": true,
+          "weroSupport": "announced"
+        }
+      ],
+      "notes": "https://www.linkedin.com/posts/emmanuel-legras-46a1a559_at-nickel-our-priority-is-to-simplify-the-activity-7404130190114705409-k4iu/"
+    },
+    {
       "id": "c3a5134a-b666-4f10-90b6-eea07de29f41",
       "name": "NLB",
       "aliases": [
@@ -2860,6 +2946,47 @@
           "name": "Nordea Mobile - Suomi",
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/5d0aecb2-9ac4-4570-b987-3c97bd84b8aa.png",
           "universalLink": "https://www.nordea.fi/henkiloasiakkaat/palvelumme/verkko-mobiilipalvelut/mobiilipankki/",
+          "supportsDesktop": true,
+          "weroSupport": "unsupported"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "57a4363f-8877-45ef-9831-9cbf25fc3595",
+      "name": "norisbank",
+      "aliases": [],
+      "weroSupport": "unsupported",
+      "countries": [
+        "DE"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/aaf25679-23bb-49ae-a20f-f0811f0b6f78.svg",
+      "banks": [
+        {
+          "id": "2adb9279-2810-47dc-b606-4dcba268cede",
+          "name": "norisbank",
+          "website": "https://www.norisbank.de/",
+          "bankContext": "NORSDE51XXX",
+          "appIds": [
+            "c811ea19-fee6-4988-b907-aaf8bfa51dd3"
+          ],
+          "aliases": [],
+          "countries": [
+            "DE"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/aaf25679-23bb-49ae-a20f-f0811f0b6f78.svg",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "unsupported",
+          "eCommercePaymentsSupport": "unsupported",
+          "POSPaymentsSupport": "unsupported"
+        }
+      ],
+      "apps": [
+        {
+          "id": "c811ea19-fee6-4988-b907-aaf8bfa51dd3",
+          "name": "norisbank",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/aff0fd89-cc81-44b4-9d02-c8b371f1ed7c.png",
+          "universalLink": "https://www.norisbank.de/service/banking/norisbank-app.html",
           "supportsDesktop": true,
           "weroSupport": "unsupported"
         }

@@ -258,6 +258,16 @@
       "notes": ""
     },
     {
+      "id": "2e066bb0-0483-41c0-944b-d8efaf650ebd",
+      "name": "Proton",
+      "aliases": [],
+      "website": "https://proton.me/",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/2009405a-1711-408b-b514-0619f92f2fca.svg",
+      "category": "services",
+      "weroSupport": "unsupported",
+      "notes": ""
+    },
+    {
       "id": "5f2cb38c-ee09-4fb5-bb4b-82f5fa463350",
       "name": "Reichelt",
       "aliases": [],
