@@ -221,6 +221,45 @@
       "notes": ""
     },
     {
+      "id": "3dc80a31-e07d-49d3-b4dc-cc8d0e83bd2d",
+      "name": "Bank Millennium SA",
+      "aliases": [],
+      "weroSupport": "unsupported",
+      "countries": [
+        "PL"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/9cfea946-58eb-4933-96fe-56815bffda08.jpg",
+      "banks": [
+        {
+          "id": "a99bce9d-a50f-4522-92fc-5ef77641f482",
+          "name": "Bank Millennium",
+          "website": "https://www.bankmillennium.pl/",
+          "bankContext": "BIGBPLPWXXX",
+          "appIds": [],
+          "aliases": [],
+          "countries": [
+            "PL"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/9cfea946-58eb-4933-96fe-56815bffda08.jpg",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "unsupported",
+          "eCommercePaymentsSupport": "unsupported",
+          "POSPaymentsSupport": "unsupported"
+        }
+      ],
+      "apps": [
+        {
+          "id": "41344484-eb32-42eb-b877-389f85015a49",
+          "name": "Bank Millennium",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/e8624f3e-29a3-4ef3-a0e3-c1cb5ac8f64e.webp",
+          "universalLink": "https://apps.apple.com/pl/app/bank-millennium/id412646128",
+          "supportsDesktop": false,
+          "weroSupport": "unsupported"
+        }
+      ],
+      "notes": ""
+    },
+    {
       "id": "7be25ec5-43e1-41c6-b148-88d1522b1db6",
       "name": "Bank Van Breda",
       "aliases": [],
