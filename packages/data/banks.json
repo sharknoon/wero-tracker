@@ -1708,7 +1708,7 @@
       "apps": [
         {
           "id": "632cca44-9fcf-4599-8321-07b0c3d1a325",
-          "name": " MyBanking",
+          "name": "MyBanking",
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/66d67f10-51fe-4381-a067-7bba260aa695-xs.png",
           "universalLink": "https://mybanking.banking-app-links.de/dynamicKey/wero",
           "supportsDesktop": false,
@@ -1956,7 +1956,7 @@
       "apps": [
         {
           "id": "632cca44-9fcf-4599-8321-07b0c3d1a325",
-          "name": " MyBanking",
+          "name": "MyBanking",
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/66d67f10-51fe-4381-a067-7bba260aa695-xs.png",
           "universalLink": "https://mybanking.banking-app-links.de/dynamicKey/wero",
           "supportsDesktop": false,
@@ -2004,7 +2004,7 @@
       "apps": [
         {
           "id": "632cca44-9fcf-4599-8321-07b0c3d1a325",
-          "name": " MyBanking",
+          "name": "MyBanking",
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/66d67f10-51fe-4381-a067-7bba260aa695-xs.png",
           "universalLink": "https://mybanking.banking-app-links.de/dynamicKey/wero",
           "supportsDesktop": false,
@@ -2058,7 +2058,7 @@
       "apps": [
         {
           "id": "632cca44-9fcf-4599-8321-07b0c3d1a325",
-          "name": " MyBanking",
+          "name": "MyBanking",
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/66d67f10-51fe-4381-a067-7bba260aa695-xs.png",
           "universalLink": "https://mybanking.banking-app-links.de/dynamicKey/wero",
           "supportsDesktop": false,
@@ -2289,7 +2289,8 @@
           "name": "ING Belgium",
           "website": "https://www.ing.be/",
           "appIds": [
-            "7bfeff21-c1d1-4485-a1ac-51595052f725"
+            "7bfeff21-c1d1-4485-a1ac-51595052f725",
+            "e5cc2184-54bf-4f4c-abb6-e336d5b1bc6e"
           ],
           "aliases": [],
           "countries": [
@@ -2308,6 +2309,14 @@
           "name": "ING Belgium",
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/8c4078b5-84dc-4f99-97f7-34b4c24d9c34-xs.png",
           "universalLink": "https://www.ing.be/wero/p2p",
+          "supportsDesktop": false,
+          "weroSupport": "supported"
+        },
+        {
+          "id": "e5cc2184-54bf-4f4c-abb6-e336d5b1bc6e",
+          "name": "ING Belgium",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/8c4078b5-84dc-4f99-97f7-34b4c24d9c34-xs.png",
+          "universalLink": "https://www.ing.be/wero/emcommerce?consentId={consentId}",
           "supportsDesktop": false,
           "weroSupport": "supported"
         }
@@ -5543,7 +5552,6 @@
             "Nürnberg",
             "Eichstätt",
             "Bamberg",
-            "Augsburg",
             "Freiburg im Breisgau",
             "Passau",
             "Stuttgart",
@@ -8815,6 +8823,26 @@
             "Mittelneufnach",
             "Fischach",
             "GENODEF1SMU"
+          ],
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "supported",
+          "eCommercePaymentsSupport": "supported",
+          "POSPaymentsSupport": "unknown"
+        },
+        {
+          "id": "6f4637c7-571a-4390-ac88-049b16ac8962",
+          "name": "Raiffeisenbank Singoldtal eG",
+          "website": "https://example.com",
+          "bankContext": "GENODEF1HUA",
+          "appIds": [
+            "6006ffe1-d2bc-415b-9be5-041150bb30f5"
+          ],
+          "aliases": [
+            "Igling",
+            "Langerringen",
+            "Hurlach",
+            "Raisting",
+            "GENODEF1HUA"
           ],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
@@ -14499,22 +14527,14 @@
           ],
           "aliases": [
             "Merdingen",
-            "Hartheim",
             "Bad Krozingen",
             "Breisach",
-            "Bad Krozingen-Biengen",
-            "Bollschweil",
             "Eschbach",
-            "Gottenheim",
-            "Neuenburg-Grißheim",
             "Ihringen",
             "Heitersheim",
             "Freiburg-Opfingen",
             "Freiburg-Tiengen",
-            "Bad Krozingen-Tunsel",
             "Ehrenkirchen",
-            "Freiburg-Munzingen",
-            "Freiburg-Waltershofen",
             "Badenweiler",
             "Buggingen",
             "Müllheim",
@@ -21101,7 +21121,7 @@
         },
         {
           "id": "632cca44-9fcf-4599-8321-07b0c3d1a325",
-          "name": " MyBanking",
+          "name": "MyBanking",
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/66d67f10-51fe-4381-a067-7bba260aa695-xs.png",
           "universalLink": "https://mybanking.banking-app-links.de/dynamicKey/wero",
           "supportsDesktop": false,
