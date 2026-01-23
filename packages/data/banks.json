@@ -2611,6 +2611,56 @@
       "notes": ""
     },
     {
+      "id": "9d0d497a-2174-4383-9a9d-0ca5b1d0d40e",
+      "name": "knab",
+      "aliases": [],
+      "weroSupport": "announced",
+      "countries": [
+        "NL"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/a6b6f05e-2923-45aa-84cd-d9999a8253e2.svg",
+      "banks": [
+        {
+          "id": "a5e81197-49ec-40f5-8dda-a3e3e5139459",
+          "name": "knab",
+          "website": "https://www.knab.nl/",
+          "bankContext": "KNABNL2H",
+          "appIds": [
+            "ba4d6e3b-229c-4888-a526-3acc0e120247",
+            "363fd715-ac4e-487c-8418-addc5c6321d9"
+          ],
+          "aliases": [],
+          "countries": [
+            "NL"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/a6b6f05e-2923-45aa-84cd-d9999a8253e2.svg",
+          "standaloneAppSupport": "unknown",
+          "P2PPaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "announced",
+          "POSPaymentsSupport": "unknown"
+        }
+      ],
+      "apps": [
+        {
+          "id": "ba4d6e3b-229c-4888-a526-3acc0e120247",
+          "name": "Knab Bankieren",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/251089f7-0c04-49ac-b4e5-7504876cda54.webp",
+          "universalLink": "https://apps.apple.com/nl/app/knab-bankieren/id529493145",
+          "supportsDesktop": false,
+          "weroSupport": "announced"
+        },
+        {
+          "id": "363fd715-ac4e-487c-8418-addc5c6321d9",
+          "name": "Knab Bankieren",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/efa57532-748d-4206-9129-244b0c746f24.png",
+          "universalLink": "https://play.google.com/store/apps/details?id=bvm.bvmapp",
+          "supportsDesktop": false,
+          "weroSupport": "announced"
+        }
+      ],
+      "notes": ""
+    },
+    {
       "id": "2f984b0d-eb51-4629-81f6-089bc30a518d",
       "name": "La Banque Postale",
       "aliases": [
