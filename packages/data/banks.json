@@ -2371,8 +2371,7 @@
           "name": "ING Belgium",
           "website": "https://www.ing.be/",
           "appIds": [
-            "7bfeff21-c1d1-4485-a1ac-51595052f725",
-            "e5cc2184-54bf-4f4c-abb6-e336d5b1bc6e"
+            "7bfeff21-c1d1-4485-a1ac-51595052f725"
           ],
           "aliases": [],
           "countries": [
@@ -2391,14 +2390,6 @@
           "name": "ING Belgium",
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/8c4078b5-84dc-4f99-97f7-34b4c24d9c34-xs.png",
           "universalLink": "https://www.ing.be/wero/p2p",
-          "supportsDesktop": false,
-          "weroSupport": "supported"
-        },
-        {
-          "id": "e5cc2184-54bf-4f4c-abb6-e336d5b1bc6e",
-          "name": "ING Belgium",
-          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/8c4078b5-84dc-4f99-97f7-34b4c24d9c34-xs.png",
-          "universalLink": "https://www.ing.be/wero/emcommerce?consentId={consentId}",
           "supportsDesktop": false,
           "weroSupport": "supported"
         }
@@ -11046,6 +11037,7 @@
             "Gedern",
             "Altenstadt",
             "Neuberg-Ravolzhausen",
+            "Wächterbach",
             "Frankfurt",
             "Ranstadt",
             "Hirzenhain",
