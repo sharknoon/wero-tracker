@@ -2049,6 +2049,39 @@
       "notes": ""
     },
     {
+      "id": "da3fd892-4d60-4d5c-8f72-87edd961d42a",
+      "name": "Erste Bank und Sparkassen",
+      "aliases": [
+        "sparkasse",
+        "erste bank"
+      ],
+      "weroSupport": "unsupported",
+      "countries": [
+        "AT"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/095ac740-349b-4ceb-8dad-2ee5225cf699.png",
+      "banks": [
+        {
+          "id": "a81fa9e4-16a2-47af-a0d6-0987c9b24af5",
+          "name": "Sparkasse Oberösterreich",
+          "website": "https://www.sparkasse.at/oberoesterreich",
+          "bankContext": "",
+          "appIds": [],
+          "aliases": [],
+          "countries": [
+            "AT"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/db9197fd-49ec-438e-acf0-5b17d69e4c8e.svg",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "unsupported",
+          "eCommercePaymentsSupport": "unsupported",
+          "POSPaymentsSupport": "unsupported"
+        }
+      ],
+      "apps": [],
+      "notes": ""
+    },
+    {
       "id": "c2c8c802-9032-460b-8256-73c76358b5ee",
       "name": "EthikBank",
       "aliases": [],
