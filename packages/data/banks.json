@@ -1090,7 +1090,7 @@
       "id": "89e694ed-042d-4e6f-a96a-1c595a21d419",
       "name": "bunq",
       "aliases": [],
-      "weroSupport": "unsupported",
+      "weroSupport": "announced",
       "countries": [
         "AT",
         "BE",
@@ -1162,9 +1162,9 @@
           ],
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/1df1925c-5546-435c-848a-9049440ba0a0.svg",
           "standaloneAppSupport": "unsupported",
-          "P2PPaymentsSupport": "unsupported",
-          "eCommercePaymentsSupport": "unsupported",
-          "POSPaymentsSupport": "unsupported"
+          "P2PPaymentsSupport": "announced",
+          "eCommercePaymentsSupport": "announced",
+          "POSPaymentsSupport": "unknown"
         }
       ],
       "apps": [
@@ -1174,7 +1174,48 @@
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/9c11b0cb-eede-4a77-a9b4-62fb166bee1f.png",
           "universalLink": "https://bunq.com/",
           "supportsDesktop": true,
-          "weroSupport": "unsupported"
+          "weroSupport": "announced"
+        }
+      ],
+      "notes": "For now only announced for the netherlands as part of the transition from iDeal to Wero."
+    },
+    {
+      "id": "816ee9fe-0fd0-4614-8c15-cb1726428b6d",
+      "name": "BUUT",
+      "aliases": [],
+      "weroSupport": "announced",
+      "countries": [
+        "NL"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/0e6fa3ad-b9b0-4aa8-9f02-a91a78777eab.png",
+      "banks": [
+        {
+          "id": "ad42a768-da5a-410a-9c58-856f97fabed3",
+          "name": "BUUT",
+          "website": "https://www.buut.com/",
+          "bankContext": "BUUTNL2AXXX",
+          "appIds": [
+            "38bf87dc-bed7-4e30-b86e-1e980b38a70c"
+          ],
+          "aliases": [],
+          "countries": [
+            "NL"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/0e6fa3ad-b9b0-4aa8-9f02-a91a78777eab.png",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "announced",
+          "eCommercePaymentsSupport": "announced",
+          "POSPaymentsSupport": "unknown"
+        }
+      ],
+      "apps": [
+        {
+          "id": "38bf87dc-bed7-4e30-b86e-1e980b38a70c",
+          "name": "BUUT",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/0e6fa3ad-b9b0-4aa8-9f02-a91a78777eab.png",
+          "universalLink": "https://www.buut.com/download",
+          "supportsDesktop": false,
+          "weroSupport": "announced"
         }
       ],
       "notes": ""
@@ -2066,7 +2107,9 @@
           "name": "Sparkasse Oberösterreich",
           "website": "https://www.sparkasse.at/oberoesterreich",
           "bankContext": "",
-          "appIds": [],
+          "appIds": [
+            "c45579d6-7027-4441-bb8d-ad47493bcd86"
+          ],
           "aliases": [],
           "countries": [
             "AT"
@@ -2078,7 +2121,16 @@
           "POSPaymentsSupport": "unsupported"
         }
       ],
-      "apps": [],
+      "apps": [
+        {
+          "id": "c45579d6-7027-4441-bb8d-ad47493bcd86",
+          "name": "George Österreich",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/d8d1de07-12f7-46c0-94ce-c6e365bd9bcc.png",
+          "universalLink": "https://www.sparkasse.at/sgruppe/privatkunden/digitales-banking/apps/george-go-app",
+          "supportsDesktop": true,
+          "weroSupport": "unsupported"
+        }
+      ],
       "notes": ""
     },
     {
@@ -2179,6 +2231,47 @@
           "universalLink": "https://mybanking.banking-app-links.de/dynamicKey/wero",
           "supportsDesktop": false,
           "weroSupport": "supported"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "9f0ff76a-cb9f-4b34-9437-046c6c824567",
+      "name": "Finom",
+      "aliases": [],
+      "weroSupport": "announced",
+      "countries": [
+        "NL"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/16722b12-2162-469f-a7f7-d154229e48c6.svg",
+      "banks": [
+        {
+          "id": "bd43c132-10c7-40c2-831a-09c2d9b4bd7a",
+          "name": "Finom",
+          "website": "https://finom.co/",
+          "bankContext": "FNOMNL22XXX",
+          "appIds": [
+            "d7dce9f0-e3cd-4e15-8c52-f58ea9c55497"
+          ],
+          "aliases": [],
+          "countries": [
+            "NL"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/16722b12-2162-469f-a7f7-d154229e48c6.svg",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "announced",
+          "eCommercePaymentsSupport": "announced",
+          "POSPaymentsSupport": "unknown"
+        }
+      ],
+      "apps": [
+        {
+          "id": "d7dce9f0-e3cd-4e15-8c52-f58ea9c55497",
+          "name": "Finom",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/ad57fdb8-5be3-4948-8c7c-2d6d0e1a21f6.png",
+          "universalLink": "https://finom.co/",
+          "supportsDesktop": true,
+          "weroSupport": "announced"
         }
       ],
       "notes": ""
@@ -2899,7 +2992,7 @@
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/33b04a79-d6b2-4d2f-bbe1-44ec7569faf1.svg",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "announced",
-          "eCommercePaymentsSupport": "unknown",
+          "eCommercePaymentsSupport": "announced",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -2913,6 +3006,47 @@
           "weroSupport": "announced"
         }
       ]
+    },
+    {
+      "id": "ba682bf0-7102-46c5-b2b3-987c7f4ffbd3",
+      "name": "Nationale-Nederlanden",
+      "aliases": [],
+      "weroSupport": "announced",
+      "countries": [
+        "NL"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/a6478656-f40b-4a55-9619-2aed1ff93dfd.svg",
+      "banks": [
+        {
+          "id": "892312ce-b8e9-4246-9084-3ac4b87a685c",
+          "name": "Nationale-Nederlanden",
+          "website": "https://www.nn.nl/",
+          "bankContext": "NNBANL2GXXX",
+          "appIds": [
+            "812e4e29-3d81-481a-a83f-cbe44481f940"
+          ],
+          "aliases": [],
+          "countries": [
+            "NL"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/a6478656-f40b-4a55-9619-2aed1ff93dfd.svg",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "announced",
+          "eCommercePaymentsSupport": "announced",
+          "POSPaymentsSupport": "unknown"
+        }
+      ],
+      "apps": [
+        {
+          "id": "812e4e29-3d81-481a-a83f-cbe44481f940",
+          "name": "Nationale-Nederlanden",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/ad7d80c6-c0e9-409b-ab43-4de8d6b380de.png",
+          "universalLink": "https://www.nn.nl/app.htm",
+          "supportsDesktop": true,
+          "weroSupport": "announced"
+        }
+      ],
+      "notes": ""
     },
     {
       "id": "228041ee-e91b-4d9b-a4f1-d63f6916d052",
@@ -3674,7 +3808,8 @@
       "countries": [
         "FR",
         "DE",
-        "BE"
+        "BE",
+        "NL"
       ],
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/dcd7d549-d6e8-5762-8f41-119b200a4314-xs.png",
       "banks": [
@@ -3689,12 +3824,13 @@
           "countries": [
             "FR",
             "DE",
-            "BE"
+            "BE",
+            "NL"
           ],
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/dcd7d549-d6e8-5762-8f41-119b200a4314-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "unsupported",
+          "eCommercePaymentsSupport": "announced",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -4568,9 +4704,9 @@
           ],
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/6c4174c2-0c0c-4ef5-828b-946d8f66c32f.jpg",
           "standaloneAppSupport": "unsupported",
-          "P2PPaymentsSupport": "unsupported",
-          "eCommercePaymentsSupport": "unsupported",
-          "POSPaymentsSupport": "unsupported"
+          "P2PPaymentsSupport": "announced",
+          "eCommercePaymentsSupport": "announced",
+          "POSPaymentsSupport": "unknown"
         }
       ],
       "apps": [
@@ -4580,7 +4716,7 @@
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/5f93006e-ba4f-40ae-9026-9fb2c9cb7b27.png",
           "universalLink": "https://www.triodos.nl/mobiel-bankieren",
           "supportsDesktop": true,
-          "weroSupport": "unsupported"
+          "weroSupport": "announced"
         }
       ],
       "notes": "Wero ist aktuell noch nicht für alle Banken verfügbar. Aber sobald dies möglich ist, wird sich die zuständige Fachabteilung darum kümmern Ihnen Wero in der Triodos Banking App zur Verfügung zu stellen. Bis dahin bitten wir um Ihr Verständnis. Bei Fragen stehen wir Ihnen gerne zur Verfügung. Mit freundlichen Grüßen Ihre Triodos Bank Kundenbetreuung"
@@ -9107,7 +9243,7 @@
         {
           "id": "6f4637c7-571a-4390-ac88-049b16ac8962",
           "name": "Raiffeisenbank Singoldtal eG",
-          "website": "https://example.com",
+          "website": "https://www.rb-singoldtal.de/",
           "bankContext": "GENODEF1HUA",
           "appIds": [
             "6006ffe1-d2bc-415b-9be5-041150bb30f5"
@@ -21402,6 +21538,47 @@
           "universalLink": "https://mybanking.banking-app-links.de/dynamicKey/wero",
           "supportsDesktop": false,
           "weroSupport": "supported"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "5b348f3f-8a07-441c-a6d3-7c2f26cd7b73",
+      "name": "Yoursafe",
+      "aliases": [],
+      "weroSupport": "announced",
+      "countries": [
+        "NL"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/f6882786-b9c6-4f80-9bdc-9251afe829e2.svg",
+      "banks": [
+        {
+          "id": "9af27db9-619d-4a0b-bb48-2e1125a386a6",
+          "name": "Yoursafe",
+          "website": "https://www.yoursafe.com/",
+          "bankContext": "YOURNL2AXXX",
+          "appIds": [
+            "d0899068-95c2-4b62-a1e8-1d391ebf7afc"
+          ],
+          "aliases": [],
+          "countries": [
+            "NL"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/f6882786-b9c6-4f80-9bdc-9251afe829e2.svg",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "announced",
+          "eCommercePaymentsSupport": "announced",
+          "POSPaymentsSupport": "unknown"
+        }
+      ],
+      "apps": [
+        {
+          "id": "d0899068-95c2-4b62-a1e8-1d391ebf7afc",
+          "name": "Yoursafe",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/0fc1752a-4c4d-4d0d-a2af-76528d596e7f.png",
+          "universalLink": "https://www.yoursafe.com/en/yoursafeapp.html",
+          "supportsDesktop": true,
+          "weroSupport": "announced"
         }
       ],
       "notes": ""
