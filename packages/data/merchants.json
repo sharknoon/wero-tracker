@@ -197,6 +197,19 @@
       "weroSupport": "announced"
     },
     {
+      "id": "1ce0e0c9-740d-470d-9822-c239b2972432",
+      "name": "Kalenderhaus.de",
+      "aliases": [
+        "Kalenderhaus",
+        "Moluna GmbH"
+      ],
+      "website": "https://www.kalenderhaus.de",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/7677a607-0435-4fa3-adc0-97d64dd46bae.jpg",
+      "category": "entertainment",
+      "weroSupport": "unsupported",
+      "notes": ""
+    },
+    {
       "id": "a4037b5c-497f-4d92-8cb1-98aeb635268d",
       "name": "Kurzgesagt",
       "aliases": [],
