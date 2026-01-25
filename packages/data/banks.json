@@ -1499,7 +1499,7 @@
       "id": "ac8ec5ac-adf8-4816-94b2-0166085660d0",
       "name": "Consorsbank",
       "aliases": [],
-      "weroSupport": "unsupported",
+      "weroSupport": "announced",
       "countries": [
         "DE"
       ],
@@ -1518,10 +1518,10 @@
             "DE"
           ],
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/3d1ba575-55fc-4ebe-a146-f0a294894dae.svg",
-          "standaloneAppSupport": "unsupported",
-          "P2PPaymentsSupport": "unsupported",
-          "eCommercePaymentsSupport": "unsupported",
-          "POSPaymentsSupport": "unsupported"
+          "standaloneAppSupport": "unknown",
+          "P2PPaymentsSupport": "announced",
+          "eCommercePaymentsSupport": "announced",
+          "POSPaymentsSupport": "unknown"
         }
       ],
       "apps": [
@@ -1531,9 +1531,10 @@
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/44cf6c60-2843-473f-81ab-17e57a725f6d.png",
           "universalLink": "https://www.consorsbank.de/web/Service-Beratung/Mobile-App/App",
           "supportsDesktop": true,
-          "weroSupport": "unsupported"
+          "weroSupport": "unknown"
         }
-      ]
+      ],
+      "notes": "https://group.bnpparibas/en/news/bnp-paribas-partners-with-wero-for-e-commerce-payment-solutions"
     },
     {
       "id": "43d46f93-d84d-459b-9126-1f267b9efb4a",
