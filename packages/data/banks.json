@@ -2644,6 +2644,47 @@
       "notes": ""
     },
     {
+      "id": "9d0d497a-2174-4383-9a9d-0ca5b1d0d40e",
+      "name": "Knab",
+      "aliases": [],
+      "weroSupport": "announced",
+      "countries": [
+        "NL"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/48e3b280-cb38-4deb-a138-b9f914c45995.svg",
+      "banks": [
+        {
+          "id": "a5e81197-49ec-40f5-8dda-a3e3e5139459",
+          "name": "Knab",
+          "website": "https://www.knab.nl/",
+          "bankContext": "KNABNL2HXXX",
+          "appIds": [
+            "ba4d6e3b-229c-4888-a526-3acc0e120247"
+          ],
+          "aliases": [],
+          "countries": [
+            "NL"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/48e3b280-cb38-4deb-a138-b9f914c45995.svg",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "announced",
+          "eCommercePaymentsSupport": "announced",
+          "POSPaymentsSupport": "unknown"
+        }
+      ],
+      "apps": [
+        {
+          "id": "ba4d6e3b-229c-4888-a526-3acc0e120247",
+          "name": "Knab Bankieren",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/1b5f010e-7e57-48d4-9afe-497210e76af0.png",
+          "universalLink": "https://www.knab.nl/particulier/online-bankieren/app",
+          "supportsDesktop": true,
+          "weroSupport": "announced"
+        }
+      ],
+      "notes": ""
+    },
+    {
       "id": "2f984b0d-eb51-4629-81f6-089bc30a518d",
       "name": "La Banque Postale",
       "aliases": [
