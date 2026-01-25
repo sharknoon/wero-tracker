@@ -254,7 +254,7 @@
       "website": "https://www.otto.de",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/866a60ab-3f7a-4b11-96e7-408ba6a1e08e.svg",
       "category": "other",
-      "weroSupport": "unknown",
+      "weroSupport": "unsupported",
       "notes": ""
     },
     {
