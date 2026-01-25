@@ -1212,8 +1212,20 @@ export function BankBrandDialog() {
         weroSupport,
         countries,
         logoUrl,
-        banks: banks.filter((b) => !b.markedForDeletion),
-        apps: apps.filter((a) => !a.markedForDeletion),
+        banks: banks
+          .filter((b) => !b.markedForDeletion)
+          .map((b) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { markedForDeletion, ...bankData } = b;
+            return bankData;
+          }),
+        apps: apps
+          .filter((a) => !a.markedForDeletion)
+          .map((a) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { markedForDeletion, ...appData } = a;
+            return appData;
+          }),
         notes,
       },
     };
