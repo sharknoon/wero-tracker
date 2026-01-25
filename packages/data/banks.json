@@ -4553,6 +4553,47 @@
       "notes": "Wero ist aktuell noch nicht für alle Banken verfügbar. Aber sobald dies möglich ist, wird sich die zuständige Fachabteilung darum kümmern Ihnen Wero in der Triodos Banking App zur Verfügung zu stellen. Bis dahin bitten wir um Ihr Verständnis. Bei Fragen stehen wir Ihnen gerne zur Verfügung. Mit freundlichen Grüßen Ihre Triodos Bank Kundenbetreuung"
     },
     {
+      "id": "91cca255-3d48-458d-8d2a-369e02143be4",
+      "name": "Van Lanschot Kempen",
+      "aliases": [],
+      "weroSupport": "announced",
+      "countries": [
+        "NL"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/ba8172e9-c484-4096-9079-f1e59a99b746.svg",
+      "banks": [
+        {
+          "id": "5b44b3b2-b6bf-4b6e-9d10-993aca0d4c8a",
+          "name": "Van Lanschot Kempen",
+          "website": "https://www.vanlanschotkempen.com/",
+          "bankContext": "FVLBCHZZXXX",
+          "appIds": [
+            "aa0d68da-b105-462a-9361-39379bf97821"
+          ],
+          "aliases": [],
+          "countries": [
+            "NL"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/28fc78d3-9bec-4de2-87d3-8b5f41d0751f.png",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "announced",
+          "eCommercePaymentsSupport": "announced",
+          "POSPaymentsSupport": "unknown"
+        }
+      ],
+      "apps": [
+        {
+          "id": "aa0d68da-b105-462a-9361-39379bf97821",
+          "name": "Private Banking",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/04692f49-f0a3-4267-9907-0e545735153c.png",
+          "universalLink": "https://www.vanlanschotkempen.com/nl-nl/private-banking/help/private-banking-app",
+          "supportsDesktop": true,
+          "weroSupport": "announced"
+        }
+      ],
+      "notes": ""
+    },
+    {
       "id": "218f5190-8bb0-4c67-9c77-34e4e079bf5c",
       "name": "vdk bank",
       "aliases": [],
