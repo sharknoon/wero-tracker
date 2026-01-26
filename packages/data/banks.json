@@ -3808,8 +3808,7 @@
       "countries": [
         "FR",
         "DE",
-        "BE",
-        "NL"
+        "BE"
       ],
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/dcd7d549-d6e8-5762-8f41-119b200a4314-xs.png",
       "banks": [
@@ -3824,13 +3823,12 @@
           "countries": [
             "FR",
             "DE",
-            "BE",
-            "NL"
+            "BE"
           ],
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/dcd7d549-d6e8-5762-8f41-119b200a4314-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "announced",
+          "eCommercePaymentsSupport": "unsupported",
           "POSPaymentsSupport": "unknown"
         }
       ],
