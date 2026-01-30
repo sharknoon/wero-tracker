@@ -57,7 +57,9 @@ jobs:
       - name: Create branch
         id: branch
         run: |
-          BRANCH_NAME="contribution/${{ github.event.issue.number }}-$(echo '${{ steps.extract.outputs.entity_name }}' | tr ' ' '-' | tr '[:upper:]' '[:lower:]' | head -c 30)"
+          ENTITY_NAME="${{ steps.extract.outputs.entity_name }}"
+          SANITIZED=$(echo "$ENTITY_NAME" | tr ' ' '-' | tr '[:upper:]' '[:lower:]' | head -c 30)
+          BRANCH_NAME="contribution/${{ github.event.issue.number }}-${SANITIZED}"
           echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
           git checkout -b "$BRANCH_NAME"
 
