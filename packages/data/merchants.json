@@ -179,6 +179,16 @@
       "weroSupport": "supported"
     },
     {
+      "id": "927d67ee-ee38-4c60-82af-f421b6b664f2",
+      "name": "Grashüpfer",
+      "aliases": [],
+      "website": "https://der-grashuepfer-shop.de",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/d9c42b65-0aa1-4532-9350-07c27e3ac4b5.png",
+      "category": "groceries",
+      "weroSupport": "unsupported",
+      "notes": ""
+    },
+    {
       "id": "6f3168f7-b1a6-40e3-b0fb-61514152b540",
       "name": "Hornbach",
       "aliases": [],
@@ -206,6 +216,16 @@
       "website": "https://www.kalenderhaus.de",
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/7677a607-0435-4fa3-adc0-97d64dd46bae.jpg",
       "category": "entertainment",
+      "weroSupport": "unsupported",
+      "notes": ""
+    },
+    {
+      "id": "ed615bce-efbb-47af-bbc7-32f4786e79ec",
+      "name": "Kaufland",
+      "aliases": [],
+      "website": "https://www.kaufland.de/",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/50f50af4-cc31-4662-a61b-bd27012eef92.svg",
+      "category": "other",
       "weroSupport": "unsupported",
       "notes": ""
     },

@@ -1606,7 +1606,7 @@
           "id": "cc928ec7-bcaf-4d84-bb1c-63ef91be3aa6",
           "name": "Ma Banque",
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/92e0d2a2-25b3-56f8-9b9f-5e970fa14cf5-xs.png",
-          "universalLink": "https://www.credit-agricole.fr/particulier/applications/ma-banque.html",
+          "universalLink": "https://www.credit-agricole.fr/particulier/applications/ma-banque/paiement-wero.html",
           "supportsDesktop": false,
           "weroSupport": "supported"
         }
@@ -1927,7 +1927,8 @@
           "supportsDesktop": true,
           "weroSupport": "unsupported"
         }
-      ]
+      ],
+      "notes": "'Wir verfolgen die Entwicklungen bzgl. Wero sehr aufmerksam und beobachten den Markt kontinuierlich, um fundierte Entscheidungen treffen zu können. Dabei fließen sowohl technologische Trends auch anderer Zahlungsdienste als auch die Bedürfnisse unserer Kundinnen und Kunden in unsere Überlegungen ein. Eine finale Entscheidung zur Einführung oder Nicht-Einführung wurde bislang jedoch nicht getroffen' https://www.iphone-ticker.de/bezahldienst-wero-bei-der-dkb-das-sagt-die-bank-272018/"
     },
     {
       "id": "842a3cec-a541-4193-9372-c87871532bad",
@@ -3653,8 +3654,8 @@
           ],
           "aliases": [
             "Köln",
-            "Bonn",
             "Trier",
+            "Bonn",
             "Aachen",
             "GENODEF1P13"
           ],
@@ -3808,8 +3809,7 @@
       "countries": [
         "FR",
         "DE",
-        "BE",
-        "NL"
+        "BE"
       ],
       "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/dcd7d549-d6e8-5762-8f41-119b200a4314-xs.png",
       "banks": [
@@ -3824,13 +3824,12 @@
           "countries": [
             "FR",
             "DE",
-            "BE",
-            "NL"
+            "BE"
           ],
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/dcd7d549-d6e8-5762-8f41-119b200a4314-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
-          "eCommercePaymentsSupport": "announced",
+          "eCommercePaymentsSupport": "unsupported",
           "POSPaymentsSupport": "unknown"
         }
       ],
@@ -7648,10 +7647,7 @@
           "aliases": [
             "Haag",
             "Gars",
-            "Oberornau/Obertaufk.",
-            "Reichertsheim",
             "Maitenbeth",
-            "Unterreit",
             "GENODEF1HMA"
           ],
           "standaloneAppSupport": "unsupported",
@@ -8161,8 +8157,6 @@
           ],
           "aliases": [
             "Ergolding",
-            "Gündlkofen",
-            "Landshut",
             "Bruckberg",
             "Altdorf",
             "Furth",
@@ -8172,13 +8166,12 @@
             "Wildenberg",
             "Pfeffenhausen",
             "Weihmichl",
-            "Obersüßbach",
             "Hohenthann",
             "Rottenburg a.d.Laaber",
             "Neufahrn",
             "Weng",
             "Rottenburg",
-            "Gammelsdorf",
+            "Landshut",
             "GENODEF1ERG"
           ],
           "standaloneAppSupport": "unsupported",
@@ -11637,7 +11630,6 @@
             "Treis-Karden",
             "Nickenich",
             "Ochtendung",
-            "Mayschoß",
             "Oberfell",
             "Waldesch",
             "Münstermaifeld",
@@ -13994,8 +13986,8 @@
             "Grünstadt",
             "Böhl-Iggelheim",
             "Schwetzingen",
-            "Dirmstein",
             "Frankenthal",
+            "Dirmstein",
             "Lambsheim",
             "Bad Dürkheim",
             "Bockenheim",
@@ -14976,11 +14968,10 @@
             "Teningen",
             "Gutach im Breisgau",
             "Waldkirch",
-            "Denzlingen",
             "Elzach",
             "Simonswald",
+            "Denzlingen",
             "Freiamt",
-            "Biederbach",
             "GENODE61EMM"
           ],
           "standaloneAppSupport": "unsupported",
@@ -18447,7 +18438,6 @@
             "Würzburg",
             "Würzburg-Sanderau",
             "Würzburg-Lengfeld",
-            "Gerbrunn",
             "Würzburg-Heidingsf.",
             "Randersacker",
             "Veitshöchheim",
@@ -18464,6 +18454,7 @@
             "Giebelstadt",
             "Sommerhausen",
             "Leinach",
+            "Gerbrunn",
             "Reichenberg",
             "Thüngersheim",
             "Rimpar",
