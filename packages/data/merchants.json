@@ -210,6 +210,16 @@
       "notes": ""
     },
     {
+      "id": "ed615bce-efbb-47af-bbc7-32f4786e79ec",
+      "name": "Kaufland",
+      "aliases": [],
+      "website": "https://www.kaufland.de/",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/50f50af4-cc31-4662-a61b-bd27012eef92.svg",
+      "category": "other",
+      "weroSupport": "unsupported",
+      "notes": ""
+    },
+    {
       "id": "a4037b5c-497f-4d92-8cb1-98aeb635268d",
       "name": "Kurzgesagt",
       "aliases": [],
