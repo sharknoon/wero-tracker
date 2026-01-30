@@ -330,6 +330,16 @@
       "notes": "We will not be offering this payment method in the near future. At this point, we cannot say for certain whether we will offer it in the future."
     },
     {
+      "id": "a3876370-0568-4911-85f7-4b5e087378b9",
+      "name": "Smileys's",
+      "aliases": [],
+      "website": "https://www.smileys.de/",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/8341e75c-aef4-4022-862b-164f5040bd07.png",
+      "category": "food-delivery",
+      "weroSupport": "unsupported",
+      "notes": ""
+    },
+    {
       "id": "fb516d92-2aee-4a10-8b1d-bb9d377c4b31",
       "name": "tedox",
       "aliases": [],
