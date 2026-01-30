@@ -3654,8 +3654,8 @@
           ],
           "aliases": [
             "Köln",
-            "Bonn",
             "Trier",
+            "Bonn",
             "Aachen",
             "GENODEF1P13"
           ],
@@ -7647,10 +7647,7 @@
           "aliases": [
             "Haag",
             "Gars",
-            "Oberornau/Obertaufk.",
-            "Reichertsheim",
             "Maitenbeth",
-            "Unterreit",
             "GENODEF1HMA"
           ],
           "standaloneAppSupport": "unsupported",
@@ -8160,8 +8157,6 @@
           ],
           "aliases": [
             "Ergolding",
-            "Gündlkofen",
-            "Landshut",
             "Bruckberg",
             "Altdorf",
             "Furth",
@@ -8171,13 +8166,12 @@
             "Wildenberg",
             "Pfeffenhausen",
             "Weihmichl",
-            "Obersüßbach",
             "Hohenthann",
             "Rottenburg a.d.Laaber",
             "Neufahrn",
             "Weng",
             "Rottenburg",
-            "Gammelsdorf",
+            "Landshut",
             "GENODEF1ERG"
           ],
           "standaloneAppSupport": "unsupported",
@@ -11636,7 +11630,6 @@
             "Treis-Karden",
             "Nickenich",
             "Ochtendung",
-            "Mayschoß",
             "Oberfell",
             "Waldesch",
             "Münstermaifeld",
