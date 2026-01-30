@@ -2409,6 +2409,47 @@
       "notes": ""
     },
     {
+      "id": "54e79909-d4b9-4068-ab60-97764a4075f5",
+      "name": "Grenke",
+      "aliases": [],
+      "weroSupport": "unsupported",
+      "countries": [
+        "DE"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/f98f53b2-e317-4e83-8288-1af442f94f9a.svg",
+      "banks": [
+        {
+          "id": "1f0a94f4-95f1-4eb1-b1ec-421c8eb4199e",
+          "name": "Grenke",
+          "website": "https://www.grenke.de",
+          "bankContext": "GREBDEH1XXX",
+          "appIds": [
+            "87925b95-4d47-4c8a-af61-4741b3d637e5"
+          ],
+          "aliases": [],
+          "countries": [
+            "DE"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/f98f53b2-e317-4e83-8288-1af442f94f9a.svg",
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "unsupported",
+          "eCommercePaymentsSupport": "unsupported",
+          "POSPaymentsSupport": "unsupported"
+        }
+      ],
+      "apps": [
+        {
+          "id": "87925b95-4d47-4c8a-af61-4741b3d637e5",
+          "name": "MyBanking",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/6163e8b6-ef92-4c01-876f-d244a9c1ad5b.png",
+          "universalLink": "https://www.grenke.de/produkte/service/banking-app/",
+          "supportsDesktop": true,
+          "weroSupport": "unsupported"
+        }
+      ],
+      "notes": ""
+    },
+    {
       "id": "5b8d8a7f-c2e0-49a6-9192-5efb5a5331d4",
       "name": "Hello bank! Belgium",
       "aliases": [],
