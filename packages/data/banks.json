@@ -302,6 +302,48 @@
       ]
     },
     {
+      "id": "657d1ce9-82e3-4819-8d72-8372612d9db9",
+      "name": "Bankhaus Anton Hafner KG",
+      "aliases": [],
+      "weroSupport": "supported",
+      "countries": [
+        "DE"
+      ],
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/b704f3ab-db0f-44db-88ad-8b2231792790-xs.png",
+      "banks": [
+        {
+          "id": "6953a571-7504-4131-95b5-055fdf1cdee2",
+          "name": "Bankhaus Anton Hafner KG",
+          "website": "https://example.com",
+          "bankContext": "ANHODE77XXX",
+          "appIds": [
+            "632cca44-9fcf-4599-8321-07b0c3d1a325"
+          ],
+          "aliases": [
+            "Augsburg",
+            "Zusmarshausen",
+            "Dinkelscherben",
+            "ANHODE77XXX"
+          ],
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "supported",
+          "eCommercePaymentsSupport": "supported",
+          "POSPaymentsSupport": "unknown"
+        }
+      ],
+      "apps": [
+        {
+          "id": "632cca44-9fcf-4599-8321-07b0c3d1a325",
+          "name": "MyBanking",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/66d67f10-51fe-4381-a067-7bba260aa695-xs.png",
+          "universalLink": "https://mybanking.banking-app-links.de/dynamicKey/wero",
+          "supportsDesktop": false,
+          "weroSupport": "supported"
+        }
+      ],
+      "notes": ""
+    },
+    {
       "id": "2de3f687-dcbf-48df-9841-010854d7dfa4",
       "name": "Banque BCP",
       "aliases": [],
@@ -4558,6 +4600,7 @@
           "name": "Sparkasse",
           "website": "https://www.sparkasse.de/",
           "appIds": [
+            "d1796889-152f-48ba-8a08-58b6f7734141",
             "bc3abb31-8878-4324-9ac4-57b89089c7a4"
           ],
           "aliases": [],
@@ -4572,6 +4615,14 @@
         }
       ],
       "apps": [
+        {
+          "id": "d1796889-152f-48ba-8a08-58b6f7734141",
+          "name": "Sparkasse Ihre mobile Filiale",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/7f4e9855-31c9-567d-9bb1-1e3212252d8a-xs.png",
+          "universalLink": "https://www.sparkasse.de/_deeplink/wero-consent?wero-consent={consentId}",
+          "supportsDesktop": false,
+          "weroSupport": "supported"
+        },
         {
           "id": "bc3abb31-8878-4324-9ac4-57b89089c7a4",
           "name": "Sparkasse Ihre mobile Filiale",
@@ -6466,13 +6517,11 @@
           ],
           "aliases": [
             "Frankfurt",
-            "Müllrose",
             "Eisenhüttenstadt",
-            "Neuzelle",
             "Storkow",
             "Beeskow",
-            "Tauche",
             "Bad Saarow",
+            "Müllrose",
             "GENODEF1BKW"
           ],
           "countries": [
@@ -9496,6 +9545,23 @@
           "POSPaymentsSupport": "unknown"
         },
         {
+          "id": "fde3544a-3927-4dbf-82b5-6e67c2f8ffc4",
+          "name": "Raiffeisenbank Tüngental eG",
+          "website": "https://example.com",
+          "bankContext": "GENODES1TUN",
+          "appIds": [
+            "6006ffe1-d2bc-415b-9be5-041150bb30f5"
+          ],
+          "aliases": [
+            "Schwäbisch Hall",
+            "GENODES1TUN"
+          ],
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "supported",
+          "eCommercePaymentsSupport": "supported",
+          "POSPaymentsSupport": "unknown"
+        },
+        {
           "id": "ca379b45-2dcb-464b-a034-3e57533ccad9",
           "name": "Raiffeisenbank Türkheim eG",
           "website": "https://www.rb-tuerkheim.de/",
@@ -11894,6 +11960,7 @@
             "Wessobrunn",
             "Eberfing",
             "Huglfing",
+            "Berg/Aufkirchen",
             "Uffing",
             "Obersöchering",
             "Bichl",
