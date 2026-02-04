@@ -189,6 +189,16 @@
       "weroSupport": "supported"
     },
     {
+      "id": "3bec0d49-965a-4d7b-bb55-e56e6321227e",
+      "name": "funktionelles.de",
+      "aliases": [],
+      "website": "https://www.funktionelles.de",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/d2360918-4125-4e2e-8de0-da82ef53cd1b.png",
+      "category": "fashion",
+      "weroSupport": "unsupported",
+      "notes": ""
+    },
+    {
       "id": "927d67ee-ee38-4c60-82af-f421b6b664f2",
       "name": "Grashüpfer",
       "aliases": [],
