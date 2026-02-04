@@ -209,6 +209,16 @@
       "notes": ""
     },
     {
+      "id": "df79d05c-c4c9-4238-8457-728a92e7b356",
+      "name": "Hansapark",
+      "aliases": [],
+      "website": "https://www.hansapark.de/",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/f833f011-bb6e-41a6-a263-d45c2574a37d.jpg",
+      "category": "entertainment",
+      "weroSupport": "supported",
+      "notes": ""
+    },
+    {
       "id": "6f3168f7-b1a6-40e3-b0fb-61514152b540",
       "name": "Hornbach",
       "aliases": [],
