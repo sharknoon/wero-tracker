@@ -85,6 +85,16 @@
       "notes": "We are already planning to introduce WERO as a payment method, as we announced in our last newsletter. As soon as WERO is available to us and all technical details have been clarified and implemented, we will offer WERO as an additional payment method. We kindly ask for your patience until implementation can take place, but we are working on it."
     },
     {
+      "id": "03fb0223-3fa7-48d0-a296-44331334df0b",
+      "name": "Camperdays",
+      "aliases": [],
+      "website": "https://www.camperdays.de/",
+      "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/01fe30db-d16d-432f-9922-e68112521d12.svg",
+      "category": "travel",
+      "weroSupport": "supported",
+      "notes": ""
+    },
+    {
       "id": "e50b80bf-7480-4605-a7cd-60d519fbf231",
       "name": "Cewe",
       "aliases": [],
