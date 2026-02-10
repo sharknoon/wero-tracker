@@ -1637,6 +1637,10 @@
             "cc928ec7-bcaf-4d84-bb1c-63ef91be3aa6"
           ],
           "aliases": [],
+          "countries": [
+            "FR"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/92e0d2a2-25b3-56f8-9b9f-5e970fa14cf5-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
           "eCommercePaymentsSupport": "unsupported",
@@ -5671,7 +5675,6 @@
             "Markt Rettenbach",
             "Sontheim",
             "Dirlewang",
-            "Kirchdorf",
             "Stockheim",
             "Ungerhausen",
             "Hawangen",
