@@ -5145,7 +5145,6 @@
             "Bernau",
             "Wandlitz",
             "Glienicke",
-            "Dreieich",
             "Gransee",
             "Nauen",
             "BEVODEBBXXX"
@@ -5416,6 +5415,27 @@
           "aliases": [
             "Leinfelden-Echterdingen",
             "GENODES1ECH"
+          ],
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "supported",
+          "eCommercePaymentsSupport": "supported",
+          "POSPaymentsSupport": "unknown"
+        },
+        {
+          "id": "6936bb2f-f089-42a6-ae35-9a923b437b92",
+          "name": "Eckernförder Bank eG Volksbank-Raiffeisenbank",
+          "website": "https://example.com",
+          "bankContext": "GENODEF1EFO",
+          "appIds": [
+            "6006ffe1-d2bc-415b-9be5-041150bb30f5"
+          ],
+          "aliases": [
+            "Eckernförde",
+            "Kiel",
+            "Gettorf",
+            "Dänischenhagen",
+            "Rieseby",
+            "GENODEF1EFO"
           ],
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
