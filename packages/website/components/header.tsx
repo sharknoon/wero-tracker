@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Image from "next/image";
@@ -47,19 +46,17 @@ export function Header({ sourceRepository, lastUpdated }: HeaderProps) {
           </div>
 
           <div className="flex items-center justify-center md:justify-start gap-3">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="flex items-center gap-2 rounded-lg bg-muted px-2.5 py-1.5 text-xs text-muted-foreground">
-                    <Info size={14} />
-                    Last updated: {lastUpdated.toLocaleDateString()}
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent className="bg-popover text-popover-foreground border p-3 [&_svg]:bg-popover [&_svg]:fill-popover [&_svg]:border-b [&_svg]:border-e [&_svg]:translate-y-[calc(-50%+1px)] [&_svg]:rounded-none [&_svg]:rounded-br-[2px]">
-                  <p>Data is updated automatically every 24 hours.</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex items-center gap-2 rounded-lg bg-muted px-2.5 py-1.5 text-xs text-muted-foreground">
+                  <Info size={14} />
+                  Last updated: {lastUpdated.toLocaleDateString()}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent className="bg-popover text-popover-foreground border p-3 [&_svg]:bg-popover [&_svg]:fill-popover [&_svg]:border-b [&_svg]:border-e [&_svg]:translate-y-[calc(-50%+1px)] [&_svg]:rounded-none [&_svg]:rounded-br-[2px]">
+                <p>Data is updated automatically every 24 hours.</p>
+              </TooltipContent>
+            </Tooltip>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

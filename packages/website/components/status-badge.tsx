@@ -11,7 +11,6 @@ import {
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Source, SupportStatus } from "@/lib/schema";
@@ -94,40 +93,38 @@ export function StatusBadge({
   }
 
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div className="cursor-help">{badge}</div>
-        </TooltipTrigger>
-        <TooltipContent className="max-w-xs">
-          <div className="space-y-2">
-            {notes && (
-              <p className="flex items-center gap-2 text-sm">
-                <Info size={14} />
-                {notes}
-              </p>
-            )}
-            {sources && sources.length > 0 && (
-              <div className="space-y-1">
-                <p className="text-xs font-medium">Sources:</p>
-                {sources.map((source, i) => (
-                  <a
-                    key={i}
-                    href={source.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-xs hover:underline"
-                  >
-                    <ExternalLink size={10} className="shrink-0" />
-                    {source.label}
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className="cursor-help">{badge}</div>
+      </TooltipTrigger>
+      <TooltipContent className="max-w-xs">
+        <div className="space-y-2">
+          {notes && (
+            <p className="flex items-center gap-2 text-sm">
+              <Info size={14} />
+              {notes}
+            </p>
+          )}
+          {sources && sources.length > 0 && (
+            <div className="space-y-1">
+              <p className="text-xs font-medium">Sources:</p>
+              {sources.map((source, i) => (
+                <a
+                  key={i}
+                  href={source.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-xs hover:underline"
+                >
+                  <ExternalLink size={10} className="shrink-0" />
+                  {source.label}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      </TooltipContent>
+    </Tooltip>
   );
 }
 
