@@ -1542,7 +1542,7 @@
       "id": "541e72fe-a16e-4b57-aba7-e0bb1ca0c911",
       "name": "Commerzbank",
       "aliases": [],
-      "weroSupport": "unsupported",
+      "weroSupport": "announced",
       "countries": [
         "DE"
       ],
@@ -1561,10 +1561,10 @@
             "DE"
           ],
           "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/c608575f-53a6-4626-ad57-ab9dcd682ed9.svg",
-          "standaloneAppSupport": "unsupported",
-          "P2PPaymentsSupport": "unsupported",
-          "eCommercePaymentsSupport": "unsupported",
-          "POSPaymentsSupport": "unsupported"
+          "standaloneAppSupport": "announced",
+          "P2PPaymentsSupport": "announced",
+          "eCommercePaymentsSupport": "announced",
+          "POSPaymentsSupport": "unknown"
         }
       ],
       "apps": [
@@ -1576,7 +1576,8 @@
           "supportsDesktop": true,
           "weroSupport": "unsupported"
         }
-      ]
+      ],
+      "notes": ""
     },
     {
       "id": "ac8ec5ac-adf8-4816-94b2-0166085660d0",
