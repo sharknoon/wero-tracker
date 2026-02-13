@@ -2,7 +2,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { StatusBadge } from "./status-badge";
 import { NotesText } from "./notes-text";
 import { ExternalLink, MoreVertical, Pencil, Trash2 } from "lucide-react";
-import { MerchantBrand } from "@/lib/schema";
 import {
   Item,
   ItemActions,
@@ -19,9 +18,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useContribution } from "@/lib/contribution-context";
 import { merchantCategoryOptions } from "@/lib/constants";
+import { Merchant } from "@/db/schema/merchants";
 
 interface MerchantBrandItemProps {
-  merchant: MerchantBrand;
+  merchant: Merchant;
 }
 
 export function MerchantBrandItem({ merchant }: MerchantBrandItemProps) {
@@ -59,7 +59,7 @@ export function MerchantBrandItem({ merchant }: MerchantBrandItemProps) {
           </ItemDescription>
         </ItemContent>
         <ItemActions>
-          <StatusBadge status={merchant.weroSupport} sources={[]} showLabel />
+          <StatusBadge status={merchant.weroSupport} showLabel />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button

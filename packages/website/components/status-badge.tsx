@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils";
 import {
   Check,
-  ExternalLink,
   Info,
   CircleCheck,
   Clock,
@@ -13,11 +12,10 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Source, SupportStatus } from "@/lib/schema";
+import { SupportStatus } from "@/db/schema/support";
 
 interface StatusBadgeProps {
   status: SupportStatus;
-  sources?: Source[];
   notes?: string;
   showLabel?: boolean;
   size?: "sm" | "md" | "lg";
@@ -55,7 +53,6 @@ const statusConfig: Record<
 
 export function StatusBadge({
   status,
-  sources,
   notes,
   showLabel = false,
   size = "md",
@@ -88,7 +85,7 @@ export function StatusBadge({
     </div>
   );
 
-  if (!sources?.length && !notes) {
+  if (!notes) {
     return badge;
   }
 
@@ -104,23 +101,6 @@ export function StatusBadge({
               <Info size={14} />
               {notes}
             </p>
-          )}
-          {sources && sources.length > 0 && (
-            <div className="space-y-1">
-              <p className="text-xs font-medium">Sources:</p>
-              {sources.map((source, i) => (
-                <a
-                  key={i}
-                  href={source.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-xs hover:underline"
-                >
-                  <ExternalLink size={10} className="shrink-0" />
-                  {source.label}
-                </a>
-              ))}
-            </div>
           )}
         </div>
       </TooltipContent>

@@ -1,30 +1,30 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { CircleCheck, CircleX, Clock, Flag, Store } from "lucide-react";
-import { Data } from "@/lib/schema";
 import { euCountries } from "@/lib/constants";
+import { WeroData } from "@/app/page";
 
 interface StatsOverviewProps {
-  data: Data;
+  data: WeroData;
   activeView: "banks" | "merchants";
 }
 
 export function StatsOverview({ data, activeView }: StatsOverviewProps) {
   const supportedBanks =
     activeView === "banks"
-      ? data.banks.brands.filter((b) => b.weroSupport === "supported")
+      ? data.bankBrands.filter((b) => b.weroSupport === "supported")
       : [];
   const announcedBanks =
     activeView === "banks"
-      ? data.banks.brands.filter((b) => b.weroSupport === "announced")
+      ? data.bankBrands.filter((b) => b.weroSupport === "announced")
       : [];
 
   const supportedMerchants =
     activeView === "merchants"
-      ? data.merchants.brands.filter((m) => m.weroSupport === "supported")
+      ? data.merchants.filter((m) => m.weroSupport === "supported")
       : [];
   const announcedMerchants =
     activeView === "merchants"
-      ? data.merchants.brands.filter((m) => m.weroSupport === "announced")
+      ? data.merchants.filter((m) => m.weroSupport === "announced")
       : [];
 
   const supportedBankCountries =
@@ -63,7 +63,7 @@ export function StatsOverview({ data, activeView }: StatsOverviewProps) {
     {
       label: "Supported Banks",
       value: numberOfSupportedBanks,
-      subtext: `${data.banks.brands.length > 0 ? Math.round((numberOfSupportedBanks / data.banks.brands.length) * 100) : 0}% of tracked banks (${data.banks.brands.length} total)`,
+      subtext: `${data.bankBrands.length > 0 ? Math.round((numberOfSupportedBanks / data.bankBrands.length) * 100) : 0}% of tracked banks (${data.bankBrands.length} total)`,
       icon: CircleCheck,
       color: "text-status-supported",
     },
@@ -77,7 +77,7 @@ export function StatsOverview({ data, activeView }: StatsOverviewProps) {
     {
       label: "Unsupported Banks",
       value:
-        data.banks.brands.length -
+        data.bankBrands.length -
         numberOfSupportedBanks -
         numberOfAnnouncedBanks,
       subtext: `that have not announced support yet`,
@@ -89,7 +89,7 @@ export function StatsOverview({ data, activeView }: StatsOverviewProps) {
   const merchantStats = [
     {
       label: "Total Shops",
-      value: data.merchants.brands.length,
+      value: data.merchants.length,
       subtext: "online shops tracked",
       icon: Store,
       color: "text-primary",
@@ -97,7 +97,7 @@ export function StatsOverview({ data, activeView }: StatsOverviewProps) {
     {
       label: "Supported Shops",
       value: numberOfSupportedMerchants,
-      subtext: `${data.merchants.brands.length > 0 ? Math.round((numberOfSupportedMerchants / data.merchants.brands.length) * 100) : 0}% of tracked shops`,
+      subtext: `${data.merchants.length > 0 ? Math.round((numberOfSupportedMerchants / data.merchants.length) * 100) : 0}% of tracked shops`,
       icon: CircleCheck,
       color: "text-status-supported",
     },
@@ -111,7 +111,7 @@ export function StatsOverview({ data, activeView }: StatsOverviewProps) {
     {
       label: "Unsupported Shops",
       value:
-        data.merchants.brands.length -
+        data.merchants.length -
         numberOfSupportedMerchants -
         numberOfAnnouncedMerchants,
       subtext: `that have not announced support yet`,

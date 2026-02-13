@@ -13,7 +13,6 @@ import {
   Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Bank, BankBrand, SupportStatus, Data } from "@/lib/schema";
 import {
   Popover,
   PopoverContent,
@@ -34,14 +33,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useContribution } from "@/lib/contribution-context";
+import { Bank } from "@/db/schema/banks";
+import { WeroData } from "@/app/page";
+import { SupportStatus } from "@/db/schema/support";
 
 interface BankBrandItemProps {
-  brand: BankBrand;
-  weroApp: Data["banks"]["standaloneAppResource"];
+  brand: WeroData["bankBrands"][number];
 }
 
-export function BankBrandItem({ brand, weroApp }: BankBrandItemProps) {
-  const [selectedBank, setSelectedBank] = useState<Bank>(brand.banks[0]);
+export function BankBrandItem({ brand }: BankBrandItemProps) {
+  const [selectedBank, setSelectedBank] = useState<
+    (typeof brand.banks)[number]
+  >(brand.banks[0]);
   const { openEditBankBrandDialog, openDeleteBankBrandDialog } =
     useContribution();
 
@@ -81,7 +84,7 @@ export function BankBrandItem({ brand, weroApp }: BankBrandItemProps) {
           </div>
 
           <div className="flex items-center gap-2">
-            <StatusBadge status={brand.weroSupport} sources={[]} showLabel />
+            <StatusBadge status={brand.weroSupport} showLabel />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
@@ -129,12 +132,12 @@ export function BankBrandItem({ brand, weroApp }: BankBrandItemProps) {
             Payment Features
           </h4>
           <div className="grid grid-cols-3 gap-2">
-            <FeatureItem label="P2P" status={selectedBank.P2PPaymentsSupport} />
+            <FeatureItem label="P2P" status={selectedBank.posPaymentsSupport} />
             <FeatureItem
               label="eCommerce"
               status={selectedBank.eCommercePaymentsSupport}
             />
-            <FeatureItem label="POS" status={selectedBank.POSPaymentsSupport} />
+            <FeatureItem label="POS" status={selectedBank.posPaymentsSupport} />
           </div>
         </div>
 
@@ -145,25 +148,21 @@ export function BankBrandItem({ brand, weroApp }: BankBrandItemProps) {
           </h4>
           <div className="grid grid-cols-2 gap-3">
             <AppBadge
-              iconUrl={weroApp.iconUrl}
-              name={weroApp.name}
+              iconUrl="/wero-app.png"
+              name="Wero"
               status={selectedBank.standaloneAppSupport}
-              link={weroApp.universalLink}
+              link="https://app.weropay.eu/"
             />
-            {selectedBank.appIds.map((appId) => {
-              const app = brand.apps.find((a) => a.id === appId);
-              if (!app) return null;
-              return (
-                <AppBadge
-                  key={app.id}
-                  iconUrl={app.iconUrl}
-                  name={app.name}
-                  status={app.weroSupport}
-                  link={app.universalLink}
-                />
-              );
-            })}
-            {selectedBank.appIds.length === 0 && (
+            {selectedBank.bankingAppsToBanks.map(({ bankingApp: app }) => (
+              <AppBadge
+                key={app.id}
+                iconUrl={app.iconUrl}
+                name={app.name}
+                status={app.weroSupport}
+                link={app.universalLink}
+              />
+            ))}
+            {selectedBank.bankingAppsToBanks.length === 0 && (
               <div
                 className={cn(
                   "flex items-center gap-2 rounded-lg px-3 py-2 text-sm flex-1 bg-secondary/50 text-muted-foreground",

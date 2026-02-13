@@ -23,13 +23,14 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useContribution } from "@/lib/contribution-context";
 import { MerchantContribution } from "@/lib/contribution-types";
-import { SupportStatus, MerchantCategory } from "@/lib/schema";
 import { AlertTriangle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { merchantCategoryOptions } from "@/lib/constants";
 import { AliasInput, SupportStatusSelect } from "./dialog-shared";
 import { isValidUrl } from "@/lib/utils";
+import { Merchant } from "@/db/schema/merchants";
+import { SupportStatus } from "@/db/schema/support";
 
 // ============================================================================
 // Delete Mode Content Component
@@ -81,8 +82,8 @@ function DeleteModeContent({
 // ============================================================================
 
 interface CategorySelectProps {
-  value: MerchantCategory;
-  onChange: (value: MerchantCategory) => void;
+  value: Merchant["category"];
+  onChange: (value: Merchant["category"]) => void;
 }
 
 function CategorySelect({ value, onChange }: CategorySelectProps) {
@@ -93,7 +94,7 @@ function CategorySelect({ value, onChange }: CategorySelectProps) {
       </Label>
       <Select
         value={value}
-        onValueChange={(v) => onChange(v as MerchantCategory)}
+        onValueChange={(v) => onChange(v as Merchant["category"])}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select category" />
@@ -126,8 +127,8 @@ interface MerchantFormContentProps {
   onWebsiteChange: (value: string) => void;
   logoUrl: string;
   onLogoUrlChange: (value: string) => void;
-  category: MerchantCategory;
-  onCategoryChange: (value: MerchantCategory) => void;
+  category: Merchant["category"];
+  onCategoryChange: (value: Merchant["category"]) => void;
   weroSupport: SupportStatus;
   onWeroSupportChange: (value: SupportStatus) => void;
   notes: string;
@@ -279,7 +280,7 @@ export function MerchantDialog() {
   const [aliasInput, setAliasInput] = useState("");
   const [website, setWebsite] = useState("");
   const [logoUrl, setLogoUrl] = useState("");
-  const [category, setCategory] = useState<MerchantCategory>("other");
+  const [category, setCategory] = useState<Merchant["category"]>("other");
   const [weroSupport, setWeroSupport] = useState<SupportStatus>("unknown");
   const [notes, setNotes] = useState("");
   const [reason, setReason] = useState("");

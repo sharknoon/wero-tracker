@@ -1,4 +1,5 @@
-import { MerchantCategory, SupportStatus } from "@/lib/schema";
+import { Merchant } from "@/db/schema/merchants";
+import { SupportStatus } from "@/db/schema/support";
 import { CircleCheck, CircleQuestionMark, CircleX, Clock } from "lucide-react";
 
 // List of all eu countries
@@ -74,7 +75,7 @@ export const supportStatusOptions: {
 export const merchantCategoryOptions: {
   emoji: string;
   color: string;
-  value: MerchantCategory;
+  value: Merchant["category"];
   label: string;
 }[] = [
   {

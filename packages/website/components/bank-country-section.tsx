@@ -10,19 +10,17 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { BankBrand, Data } from "@/lib/schema";
+import { WeroData } from "@/app/page";
 
 interface BankCountrySectionProps {
   countryCode: string;
-  brands: BankBrand[];
-  weroApp: Data["banks"]["standaloneAppResource"];
+  brands: WeroData["bankBrands"];
   defaultExpanded?: boolean;
 }
 
 export function BankCountrySection({
   countryCode,
   brands,
-  weroApp,
   defaultExpanded = true,
 }: BankCountrySectionProps) {
   const [isOpen, setIsOpen] = useState(defaultExpanded);
@@ -67,7 +65,7 @@ export function BankCountrySection({
         <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
           <div className="grid gap-4 mt-4 md:grid-cols-2 lg:grid-cols-3">
             {brands.map((brand) => (
-              <BankBrandItem key={brand.id} brand={brand} weroApp={weroApp} />
+              <BankBrandItem key={brand.id} brand={brand} />
             ))}
           </div>
         </CollapsibleContent>

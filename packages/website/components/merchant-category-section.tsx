@@ -9,12 +9,12 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { MerchantBrand, MerchantCategory } from "@/lib/schema";
 import { merchantCategoryOptions } from "@/lib/constants";
+import { Merchant } from "@/db/schema/merchants";
 
 interface MerchantCategorySectionProps {
-  category: MerchantCategory;
-  merchants: MerchantBrand[];
+  category: Merchant["category"];
+  merchants: Merchant[];
   defaultExpanded?: boolean;
 }
 

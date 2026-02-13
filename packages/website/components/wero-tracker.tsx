@@ -16,7 +16,6 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MerchantCategory, SupportStatus, Data } from "@/lib/schema";
 import { Landmark, Plus, SearchX, Store } from "lucide-react";
 import { Button } from "./ui/button";
 import {
@@ -26,11 +25,14 @@ import {
 import { euCountries } from "@/lib/constants";
 import { BankBrandDialog } from "./bank-brand-dialog";
 import { MerchantDialog } from "./merchant-dialog";
+import { Merchant } from "@/db/schema/merchants";
+import { SupportStatus } from "@/db/schema/support";
+import { WeroData } from "@/app/page";
 
 type ViewType = "banks" | "merchants";
 
 interface WeroTrackerProps {
-  data: Data;
+  data: WeroData;
 }
 
 export function WeroTracker({ data }: WeroTrackerProps) {
@@ -50,91 +52,84 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
   const [selectedStatuses, setSelectedStatuses] = useState<SupportStatus[]>([]);
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
 
-  // This site will be prerendered, so we can use a fixed date for "last updated"
-  const lastUpdated = new Date();
-
-  const sourceRepository =
-    process.env.NEXT_PUBLIC_WEBSITE_SOURCE_REPOSITORY ?? "#";
+  const sourceRepository = "https://github.com/sharknoon/wero-tracker";
+  const ownerGitHub = "https://github.com/sharknoon";
   const contributionGuidelines =
-    process.env.NEXT_PUBLIC_WEBSITE_CONTRIBUTION_GUIDELINES ?? "#";
-  const officialWeroWebsite =
-    process.env.NEXT_PUBLIC_WEBSITE_OFFICIAL_WERO_WEBSITE ?? "#";
+    "https://github.com/sharknoon/wero-tracker/blob/main/README.md#contribution";
+  const officialWeroWebsite = "https://wero-wallet.eu";
 
-  const filteredData = useMemo(() => {
+  const filteredData: WeroData = useMemo(() => {
     if (activeView === "banks") {
       return {
-        banks: {
-          brands: data.banks.brands.filter((brand) => {
-            // Search filter
-            if (searchQuery) {
-              const query = searchQuery.toLowerCase();
-              const brandNames = [
-                brand.name.toLowerCase(),
-                ...brand.aliases.map((a) => a.toLowerCase()),
-              ];
-              const matchesName = brandNames.some((name) =>
-                name.includes(query),
-              );
-              if (!matchesName) {
-                return false;
-              }
-            }
-            // Status filter
-            if (
-              selectedStatuses.length > 0 &&
-              !selectedStatuses.includes(brand.weroSupport)
-            ) {
+        bankBrands: data.bankBrands.filter((brand) => {
+          // Search filter
+          if (searchQuery) {
+            const query = searchQuery.toLowerCase();
+            const brandNames = [
+              brand.name.toLowerCase(),
+              ...brand.aliases.map((a) => a.toLowerCase()),
+            ];
+            const matchesName = brandNames.some((name) => name.includes(query));
+            if (!matchesName) {
               return false;
             }
-            // Country filter
-            if (selectedCountries.length > 0) {
-              const hasCountry = brand.countries.some((country) =>
-                selectedCountries.includes(country),
-              );
-              if (!hasCountry) {
-                return false;
-              }
+          }
+          // Status filter
+          if (
+            selectedStatuses.length > 0 &&
+            !selectedStatuses.includes(brand.weroSupport)
+          ) {
+            return false;
+          }
+          // Country filter
+          if (selectedCountries.length > 0) {
+            const hasCountry = brand.countries.some((country) =>
+              selectedCountries.includes(country),
+            );
+            if (!hasCountry) {
+              return false;
             }
-            return true;
-          }),
-        },
-        merchants: { brands: [] },
+          }
+          return true;
+        }),
+        merchants: [],
+        lastUpdated: data.lastUpdated,
       };
     } else {
       return {
-        banks: { brands: [] },
-        merchants: {
-          brands: data.merchants.brands.filter((merchant) => {
-            // Search filter
-            if (searchQuery) {
-              const query = searchQuery.toLowerCase();
-              const merchantNames = [
-                merchant.name.toLowerCase(),
-                ...merchant.aliases.map((a) => a.toLowerCase()),
-              ];
-              const matchesName = merchantNames.some((name) =>
-                name.includes(query),
-              );
-              if (!matchesName) {
-                return false;
-              }
-            }
-            // Status filter
-            if (
-              selectedStatuses.length > 0 &&
-              !selectedStatuses.includes(merchant.weroSupport)
-            ) {
+        bankBrands: [],
+        merchants: data.merchants.filter((merchant) => {
+          // Search filter
+          if (searchQuery) {
+            const query = searchQuery.toLowerCase();
+            const merchantNames = [
+              merchant.name.toLowerCase(),
+              ...merchant.aliases.map((a) => a.toLowerCase()),
+            ];
+            const matchesName = merchantNames.some((name) =>
+              name.includes(query),
+            );
+            if (!matchesName) {
               return false;
             }
-            return true;
-          }),
-        },
+          }
+          // Status filter
+          if (
+            selectedStatuses.length > 0 &&
+            !selectedStatuses.includes(merchant.weroSupport)
+          ) {
+            return false;
+          }
+          return true;
+        }),
+        lastUpdated: data.lastUpdated,
       };
     }
   }, [
     activeView,
-    data.banks.brands,
-    data.merchants.brands,
+    data.bankBrands,
+    data.lastUpdated,
+    data.merchants,
     searchQuery,
     selectedStatuses,
     selectedCountries,
@@ -145,12 +140,12 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
     if (activeView !== "banks") {
       return [];
     }
-    const countries = data.banks.brands.flatMap((brand) => brand.countries);
+    const countries = data.bankBrands.flatMap((brand) => brand.countries);
     const filteredCountries = countries.filter((code) =>
       euCountries.includes(code),
     );
     return Array.from(new Set(filteredCountries)).sort();
-  }, [activeView, data.banks.brands]);
+  }, [activeView, data.bankBrands]);
 
   // Get user's country from browser locale (using useSyncExternalStore to avoid hydration mismatch)
   const userCountry = useSyncExternalStore(
@@ -173,9 +168,9 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
 
   // Group banks by country
   const filteredBankCountries = useMemo(() => {
-    const countryMap = new Map<string, typeof data.banks.brands>();
+    const countryMap = new Map<string, WeroData["bankBrands"][number][]>();
 
-    filteredData.banks.brands.forEach((brand) => {
+    filteredData.bankBrands.forEach((brand) => {
       brand.countries
         .filter(
           (code) =>
@@ -192,16 +187,13 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
     });
 
     return countryMap;
-  }, [data, filteredData.banks.brands, selectedCountries]);
+  }, [filteredData.bankBrands, selectedCountries]);
 
   // Group merchants by category
   const filteredMerchantCategories = useMemo(() => {
-    const categoryMap = new Map<
-      MerchantCategory,
-      typeof data.merchants.brands
-    >();
+    const categoryMap = new Map<Merchant["category"], Merchant[]>();
 
-    filteredData.merchants.brands.forEach((merchant) => {
+    filteredData.merchants.forEach((merchant) => {
       if (!categoryMap.has(merchant.category)) {
         categoryMap.set(merchant.category, []);
       }
@@ -209,10 +201,10 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
     });
 
     return categoryMap;
-  }, [data, filteredData.merchants.brands]);
+  }, [filteredData.merchants]);
 
   // Category order for display
-  const categoryOrder: MerchantCategory[] = [
+  const categoryOrder: Merchant["category"][] = [
     "fashion",
     "electronics",
     "food-delivery",
@@ -236,7 +228,7 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
       <Header
         sourceRepository={sourceRepository}
         contributionGuidelines={contributionGuidelines}
-        lastUpdated={lastUpdated}
+        lastUpdated={data.lastUpdated}
       />
 
       <main className="container mx-auto px-4 py-8 space-y-8">
@@ -273,7 +265,7 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
           </div>
 
           <TabsContent value="banks" className="space-y-6">
-            {filteredData.banks.brands.length === 0 ? (
+            {filteredData.bankBrands.length === 0 ? (
               <Empty className="border">
                 <EmptyHeader>
                   <EmptyMedia variant="icon">
@@ -308,7 +300,6 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
                     key={code}
                     countryCode={code}
                     brands={brands}
-                    weroApp={data.banks.standaloneAppResource}
                     defaultExpanded={code === userCountry}
                   />
                 ))
@@ -316,7 +307,7 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
           </TabsContent>
 
           <TabsContent value="merchants" className="space-y-6">
-            {filteredData.merchants.brands.length === 0 ? (
+            {filteredData.merchants.length === 0 ? (
               <Empty className="border">
                 <EmptyHeader>
                   <EmptyMedia variant="icon">
@@ -353,13 +344,13 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
 
         {/* Footer */}
         <footer className="border-t border-border pt-8 pb-4">
-          <div className="flex flex-col items-center gap-4 text-center">
-            <p className="text-sm text-muted-foreground max-w-2xl">
+          <div className="flex flex-col items-center gap-4 text-center text-muted-foreground">
+            <p className="text-sm max-w-2xl">
               This tracker is community-driven. Data is sourced from official
-              bank announcements, Wero press releases, and verified user
-              reports. Help us keep it accurate by contributing via GitHub.
+              announcements, verified user reports, and public sources. Help us
+              keep it accurate by contributing to the project!
             </p>
-            <div className="flex gap-4 text-xs text-muted-foreground">
+            <div className="flex gap-4 text-xs">
               <a
                 href={officialWeroWebsite}
                 target="_blank"
@@ -378,6 +369,17 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
                 GitHub
               </a>
             </div>
+            <p className="text-sm mt-8">
+              Made with ❤️ by{" "}
+              <a
+                href={ownerGitHub}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-primary transition-colors"
+              >
+                Sharknoon
+              </a>
+            </p>
           </div>
         </footer>
       </main>

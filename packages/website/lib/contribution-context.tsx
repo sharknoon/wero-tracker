@@ -6,7 +6,8 @@ import {
   ContributionAction,
   ContributionPayload,
 } from "@/lib/contribution-types";
-import { BankBrand, MerchantBrand } from "@/lib/schema";
+import { BankBrand } from "@/db/schema/banks";
+import { Merchant } from "@/db/schema/merchants";
 
 interface ContributionContextState {
   // Dialog state
@@ -16,7 +17,7 @@ interface ContributionContextState {
 
   // Existing entity data for edit/delete
   existingBankBrand: BankBrand | null;
-  existingMerchant: MerchantBrand | null;
+  existingMerchant: Merchant | null;
 }
 
 interface ContributionContextActions {
@@ -26,8 +27,8 @@ interface ContributionContextActions {
   openDeleteBankBrandDialog: (brand: BankBrand) => void;
 
   openAddMerchantDialog: () => void;
-  openEditMerchantDialog: (merchant: MerchantBrand) => void;
-  openDeleteMerchantDialog: (merchant: MerchantBrand) => void;
+  openEditMerchantDialog: (merchant: Merchant) => void;
+  openDeleteMerchantDialog: (merchant: Merchant) => void;
 
   // Close dialog
   closeDialog: () => void;
@@ -102,7 +103,7 @@ export function ContributionProvider({
     }));
   }, []);
 
-  const openEditMerchantDialog = useCallback((merchant: MerchantBrand) => {
+  const openEditMerchantDialog = useCallback((merchant: Merchant) => {
     setState((prev) => ({
       ...prev,
       isDialogOpen: true,
@@ -113,7 +114,7 @@ export function ContributionProvider({
     }));
   }, []);
 
-  const openDeleteMerchantDialog = useCallback((merchant: MerchantBrand) => {
+  const openDeleteMerchantDialog = useCallback((merchant: Merchant) => {
     setState((prev) => ({
       ...prev,
       isDialogOpen: true,
@@ -147,9 +148,7 @@ export function ContributionProvider({
     const issueTitle = generateIssueTitle(contribution);
     const issueBody = generateIssueBody(payload);
 
-    const repoUrl =
-      process.env.NEXT_PUBLIC_WEBSITE_SOURCE_REPOSITORY ||
-      "https://github.com/user/repo";
+    const repoUrl = "https://github.com/sharknoon/wero-tracker";
     const issueUrl = `${repoUrl}/issues/new?title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(issueBody)}&labels=contribution`;
 
     // Open the issue creation page in a new tab
