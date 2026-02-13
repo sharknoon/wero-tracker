@@ -2954,9 +2954,16 @@
           "name": "LCL",
           "website": "https://www.lcl.fr/",
           "appIds": [
-            "9eb9bb0d-7796-4e3e-8d0d-e423d7a49504"
+            "9eb9bb0d-7796-4e3e-8d0d-e423d7a49504",
+            "d0902ec1-341c-42d2-a374-4846bcb376e9"
           ],
-          "aliases": [],
+          "aliases": [
+            "Le Crédit Lyonnais"
+          ],
+          "countries": [
+            "FR"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/699eb17d-463b-541b-a471-5bb84021a24f-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
           "eCommercePaymentsSupport": "unsupported",
@@ -2969,6 +2976,14 @@
           "name": "LCL Mes Comptes",
           "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/699eb17d-463b-541b-a471-5bb84021a24f-xs.png",
           "universalLink": "https://s.lcl.fr/SVi2/wero",
+          "supportsDesktop": true,
+          "weroSupport": "supported"
+        },
+        {
+          "id": "d0902ec1-341c-42d2-a374-4846bcb376e9",
+          "name": "LCL Mes Comptes QR Code",
+          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/699eb17d-463b-541b-a471-5bb84021a24f-xs.png",
+          "universalLink": "https://www.lcl.fr/paiement-mobile/wero",
           "supportsDesktop": false,
           "weroSupport": "supported"
         }
