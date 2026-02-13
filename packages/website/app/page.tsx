@@ -40,7 +40,7 @@ async function getWeroData() {
       )
       .then((r) => new Date(r.rows[0].latest)),
   ]);
-  console.log(typeof lastUpdated, lastUpdated);
+
   return {
     bankBrands: bankBrandsData,
     merchants: merchantsData,

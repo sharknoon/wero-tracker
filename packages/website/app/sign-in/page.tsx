@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { SiGithub, SiGoogle } from "@icons-pack/react-simple-icons";
 import { Loader2 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
@@ -18,6 +18,8 @@ import { Separator } from "@/components/ui/separator";
 type Provider = "google" | "github";
 
 export default function SignInPage() {
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") || "/";
   const [loadingProvider, setLoadingProvider] = useState<Provider | null>(null);
 
   const handleSignIn = async (provider: Provider) => {
@@ -25,7 +27,7 @@ export default function SignInPage() {
     try {
       await authClient.signIn.social({
         provider,
-        callbackURL: "/",
+        callbackURL: redirect,
       });
     } catch {
       setLoadingProvider(null);
@@ -33,22 +35,14 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="flex min-h-svh items-center justify-center bg-background p-4">
+    <div className="grid min-h-svh place-items-center bg-background p-4">
       {/* Subtle radial gradient behind the card */}
-      <div className="pointer-events-none fixed inset-0 flex items-center justify-center">
-        <div className="h-150 w-150 rounded-full bg-primary/3 blur-3xl" />
+      <div className="fixed inset-0 grid place-items-center">
+        <div className="size-150 rounded-full bg-primary/3 blur-3xl" />
       </div>
 
-      <Card className="relative w-full max-w-sm border-border/60 bg-card/80 backdrop-blur-sm">
+      <Card className="w-full max-w-sm border-border/60 bg-card/80 backdrop-blur-sm">
         <CardHeader className="items-center text-center">
-          <Image
-            src="/logos/wero.svg"
-            alt="Wero Logo"
-            width={96}
-            height={30}
-            className="mb-2"
-            priority
-          />
           <CardTitle className="text-xl">Welcome back</CardTitle>
           <CardDescription>
             Sign in to contribute to the Wero Adoption Tracker
@@ -94,8 +88,8 @@ export default function SignInPage() {
           </div>
 
           <p className="text-center text-xs text-muted-foreground">
-            By signing in, you agree to help track Wero&apos;s adoption across
-            Europe&apos;s banks and merchants.
+            Help users discover which banks and online shops support Wero.
+            Thanks for contributing!
           </p>
         </CardContent>
       </Card>
