@@ -4621,7 +4621,6 @@
           "name": "Sparkasse",
           "website": "https://www.sparkasse.de/",
           "appIds": [
-            "d1796889-152f-48ba-8a08-58b6f7734141",
             "bc3abb31-8878-4324-9ac4-57b89089c7a4"
           ],
           "aliases": [],
@@ -4636,14 +4635,6 @@
         }
       ],
       "apps": [
-        {
-          "id": "d1796889-152f-48ba-8a08-58b6f7734141",
-          "name": "Sparkasse Ihre mobile Filiale",
-          "iconUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/7f4e9855-31c9-567d-9bb1-1e3212252d8a-xs.png",
-          "universalLink": "https://www.sparkasse.de/_deeplink/wero-consent?wero-consent={consentId}",
-          "supportsDesktop": false,
-          "weroSupport": "supported"
-        },
         {
           "id": "bc3abb31-8878-4324-9ac4-57b89089c7a4",
           "name": "Sparkasse Ihre mobile Filiale",
@@ -6395,7 +6386,6 @@
             "Mertingen",
             "Donauwörth-Parkstadt",
             "Tapfheim",
-            "Oberndorf",
             "Donauwörth-Berg",
             "Donauwörth-Nordheim",
             "Rain/Lech",
@@ -8050,7 +8040,6 @@
             "Straßlach-Dingharting",
             "Königsdorf",
             "Geretsried",
-            "Gelting",
             "Baierbrunn",
             "GENODEF1HHS"
           ],
@@ -12267,7 +12256,6 @@
             "Stödtlen",
             "Feuchtwangen",
             "Polsingen",
-            "Raitenbuch",
             "Ettenstatt",
             "Nennslingen",
             "Windsbach",
@@ -16301,11 +16289,12 @@
             "Landsberg",
             "Nebra",
             "Bad Bibra",
+            "Halle Saale",
             "Freyburg",
-            "Wettin-Löbejün",
             "Hettstedt",
             "Salzatal",
             "Laucha",
+            "Wettin-Löbejün",
             "Sangerhausen",
             "Kabelsketal",
             "Mansfeld",
