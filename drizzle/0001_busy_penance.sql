@@ -1,0 +1,1 @@
+ALTER TABLE "contributions" ADD COLUMN "previous_data" json;

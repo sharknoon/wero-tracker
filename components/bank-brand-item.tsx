@@ -1,0 +1,301 @@
+"use client";
+
+import { authClient } from "@/lib/auth-client";
+import { useState } from "react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { StatusBadge, StatusDot } from "./status-badge";
+import { NotesText } from "./notes-text";
+import {
+  Check,
+  ChevronDown,
+  ExternalLink,
+  Landmark,
+  MoreVertical,
+  Pencil,
+  Trash2,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useContribution } from "@/lib/contribution-context";
+import { Bank } from "@/db/schema/banks";
+import { WeroData } from "@/app/page";
+import { SupportStatus } from "@/db/schema/support";
+import { redirect, usePathname, useSearchParams } from "next/navigation";
+import { ContributionAction } from "@/db/schema/contributions";
+
+interface BankBrandItemProps {
+  brand: WeroData["bankBrands"][number];
+}
+
+export function BankBrandItem({ brand }: BankBrandItemProps) {
+  const [selectedBank, setSelectedBank] = useState<
+    (typeof brand.banks)[number]
+  >(brand.banks[0]);
+  const { openContributionDialog } = useContribution();
+  const { data: session } = authClient.useSession();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  function handleEditOrDelete(type: Exclude<ContributionAction, "add">) {
+    if (!session?.user) {
+      redirect(
+        `/sign-in?redirect=${encodeURIComponent(pathname + "?" + searchParams)}`,
+      );
+    }
+
+    openContributionDialog({
+      type: "bank-brand",
+      action: type,
+      entity: brand,
+    });
+  }
+
+  return (
+    <Card className="bg-transparent py-4">
+      <CardHeader className="px-4">
+        <div className="flex items-start gap-3 overflow-hidden">
+          <Avatar className="size-10 rounded-lg">
+            <AvatarImage
+              src={selectedBank.logoUrl ?? brand.logoUrl}
+              className="bg-white p-1 object-contain"
+            />
+            <AvatarFallback className="rounded-lg">
+              {brand.name.substring(0, 2).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+
+          <div className="min-w-0 grow self-center">
+            <div className="flex items-center gap-2">
+              <h3
+                className="font-semibold text-foreground truncate"
+                title={brand.name}
+              >
+                {brand.name}
+              </h3>
+              {brand.notes && <NotesText notes={brand.notes} />}
+            </div>
+            {brand.banks.length > 1 && (
+              <BankSelectorComboBox
+                banks={brand.banks}
+                selectedBank={selectedBank.id}
+                setSelectedBank={(id) =>
+                  setSelectedBank(brand.banks.find((bank) => bank.id === id)!)
+                }
+              />
+            )}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <StatusBadge status={brand.weroSupport} showLabel />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                  aria-label="More options"
+                >
+                  <MoreVertical size={16} />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {selectedBank.website && (
+                  <DropdownMenuItem asChild>
+                    <a
+                      href={selectedBank.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <ExternalLink size={14} />
+                      Open Website
+                    </a>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem onClick={() => handleEditOrDelete("edit")}>
+                  <Pencil size={14} />
+                  Suggest Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleEditOrDelete("delete")}>
+                  <Trash2 size={14} />
+                  Suggest Deletion
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="px-4 space-y-4">
+        {/* Features Grid */}
+        <div className="space-y-2">
+          <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            Payment Features
+          </h4>
+          <div className="grid grid-cols-3 gap-2">
+            <FeatureItem label="P2P" status={selectedBank.posPaymentsSupport} />
+            <FeatureItem
+              label="eCommerce"
+              status={selectedBank.eCommercePaymentsSupport}
+            />
+            <FeatureItem label="POS" status={selectedBank.posPaymentsSupport} />
+          </div>
+        </div>
+
+        {/* App Availability */}
+        <div className="space-y-2">
+          <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            App Availability
+          </h4>
+          <div className="grid grid-cols-2 gap-3">
+            <AppBadge
+              iconUrl="/wero-app.png"
+              name="Wero"
+              status={selectedBank.standaloneAppSupport}
+              link="https://app.weropay.eu/"
+            />
+            {selectedBank.bankingAppsToBanks.map(({ bankingApp: app }) => (
+              <AppBadge
+                key={app.id}
+                iconUrl={app.iconUrl}
+                name={app.name}
+                status={app.weroSupport}
+                link={app.universalLink}
+              />
+            ))}
+            {selectedBank.bankingAppsToBanks.length === 0 && (
+              <div
+                className={cn(
+                  "flex items-center gap-2 rounded-lg px-3 py-2 text-sm flex-1 bg-secondary/50 text-muted-foreground",
+                )}
+              >
+                <div className="bg-white size-8 rounded-lg grid place-items-center">
+                  <Landmark size={20} />
+                </div>
+                <span className="text-xs">Banking App</span>
+                <StatusDot status={"unsupported"} />
+              </div>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function BankSelectorComboBox({
+  banks,
+  selectedBank,
+  setSelectedBank,
+}: {
+  banks: Bank[];
+  selectedBank: Bank["id"];
+  setSelectedBank: (id: Bank["id"]) => void;
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button className="flex gap-1 items-center justify-between text-sm text-muted-foreground hover:text-foreground transition-colors text-start">
+          {selectedBank
+            ? banks.find((bank) => bank.id === selectedBank)?.name
+            : "Select bank..."}
+          <ChevronDown className="opacity-50 size-4" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-64 sm:w-96 p-0">
+        <Command>
+          <CommandInput placeholder="Search bank..." className="h-9" />
+          <CommandList>
+            <CommandEmpty>No bank found.</CommandEmpty>
+            <CommandGroup>
+              {banks.map((bank) => (
+                <CommandItem
+                  key={bank.id}
+                  value={bank.id}
+                  keywords={[bank.name]}
+                  onSelect={(currentValue) => {
+                    setSelectedBank(currentValue);
+                    setOpen(false);
+                  }}
+                >
+                  {bank.name}
+                  <Check
+                    className={cn(
+                      "ml-auto",
+                      selectedBank === bank.id ? "opacity-100" : "opacity-0",
+                    )}
+                  />
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+function FeatureItem({
+  label,
+  status,
+}: {
+  label: string;
+  status: SupportStatus;
+}) {
+  return (
+    <div className="flex flex-col justify-between items-center gap-1.5 rounded-lg bg-secondary/50 p-2">
+      <span className="text-xs text-muted-foreground">{label}</span>
+      <StatusBadge status={status} size="sm" />
+    </div>
+  );
+}
+
+function AppBadge({
+  iconUrl,
+  name,
+  status,
+  link,
+}: {
+  iconUrl: string;
+  name: string;
+  status: SupportStatus;
+  link: string;
+}) {
+  return (
+    <a
+      className={cn(
+        "flex items-center gap-2 rounded-lg px-3 py-2 text-sm flex-1 bg-secondary/50 text-muted-foreground hover:bg-secondary transition-colors",
+      )}
+      href={link}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <Avatar className="size-8 rounded-lg shrink-0">
+        <AvatarImage src={iconUrl} className="bg-white object-contain" />
+        <AvatarFallback className="rounded-lg">
+          {name.substring(0, 2).toUpperCase()}
+        </AvatarFallback>
+      </Avatar>
+      <span className="text-xs truncate">{name}</span>
+      <StatusDot status={status} className="shrink-0" />
+    </a>
+  );
+}
