@@ -170,12 +170,12 @@ export async function createBankBrandContribution(
       }
       previousData = {
         brand,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         banks: existingBanks.map(
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           ({ createdAt, updatedAt, bankingAppsToBanks, ...rest }) => rest,
         ),
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         apps: [...allApps.values()].map(
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           ({ createdAt, updatedAt, ...rest }) => rest,
         ),
       };
