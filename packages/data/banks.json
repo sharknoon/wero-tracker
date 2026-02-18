@@ -325,6 +325,10 @@
             "Dinkelscherben",
             "ANHODE77XXX"
           ],
+          "countries": [
+            "DE"
+          ],
+          "logoUrl": "https://raw.githubusercontent.com/sharknoon/wero-tracker/refs/heads/main/packages/data/assets/b704f3ab-db0f-44db-88ad-8b2231792790-xs.png",
           "standaloneAppSupport": "unsupported",
           "P2PPaymentsSupport": "supported",
           "eCommercePaymentsSupport": "supported",
