@@ -8083,7 +8083,6 @@
           ],
           "aliases": [
             "Vogtsburg-Oberrotweil",
-            "Vogtsburg-Oberbergen",
             "GENODE61VOK"
           ],
           "standaloneAppSupport": "unsupported",
@@ -10618,10 +10617,10 @@
           ],
           "aliases": [
             "Eltville",
-            "Geisenheim",
             "Rüdesheim am Rhein",
             "Oestrich-Winkel",
             "Bad Schwalbach",
+            "Geisenheim",
             "Lorch",
             "Eltville-Rauenthal",
             "Walluf",
