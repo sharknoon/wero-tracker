@@ -10,17 +10,10 @@ import {
 import { relations } from "drizzle-orm";
 import { users } from "./auth";
 import { Merchant, NewMerchant } from "./merchants";
-import {
-  Bank,
-  BankBrand,
-  BankingApp,
-  NewBank,
-  NewBankBrand,
-  NewBankingApp,
-} from "./banks";
+import { Bank, BankingApp, NewBank, NewBankingApp } from "./banks";
 
 export const contributionTypes = pgEnum("contribution_types", [
-  "bank-brand",
+  "bank",
   "merchant",
 ]);
 export type ContributionType = (typeof contributionTypes.enumValues)[number];
@@ -41,31 +34,29 @@ export const contributionStatuses = pgEnum("contribution_statuses", [
 export type ContributionStatus =
   (typeof contributionStatuses.enumValues)[number];
 
-export type AddMerchantContribution = Omit<
+export type AddMerchantContributionData = Omit<
   NewMerchant,
   "id" | "createdAt" | "updatedAt"
 >;
-export type EditOrDeleteMerchantContribution = Omit<
+export type EditOrDeleteMerchantContributionData = Omit<
   Merchant,
   "createdAt" | "updatedAt"
 >;
-export type MerchantContribution =
-  | AddMerchantContribution
-  | EditOrDeleteMerchantContribution;
+export type MerchantContributionData =
+  | AddMerchantContributionData
+  | EditOrDeleteMerchantContributionData;
 
-export type AddBankBrandContribution = {
-  brand: Omit<NewBankBrand, "id" | "createdAt" | "updatedAt">;
-  banks: Omit<NewBank, "id" | "createdAt" | "updatedAt">[];
+export type AddBankContributionData = {
+  bank: Omit<NewBank, "id" | "createdAt" | "updatedAt">;
   apps: Omit<NewBankingApp, "id" | "createdAt" | "updatedAt">[];
 };
-export type EditOrDeleteBankBrandContribution = {
-  brand: Omit<BankBrand, "createdAt" | "updatedAt">;
-  banks: Omit<Bank, "createdAt" | "updatedAt">[];
+export type EditOrDeleteBankContributionData = {
+  bank: Omit<Bank, "createdAt" | "updatedAt">;
   apps: Omit<BankingApp, "createdAt" | "updatedAt">[];
 };
-export type BankBrandContribution =
-  | AddBankBrandContribution
-  | EditOrDeleteBankBrandContribution;
+export type BankContributionData =
+  | AddBankContributionData
+  | EditOrDeleteBankContributionData;
 
 export const contributions = pgTable(
   "contributions",
@@ -75,10 +66,10 @@ export const contributions = pgTable(
     action: contributionActions("action").notNull(),
     status: contributionStatuses("status").default("pending").notNull(),
     data: json("data")
-      .$type<BankBrandContribution | MerchantContribution>()
+      .$type<BankContributionData | MerchantContributionData>()
       .notNull(),
     previousData: json("previous_data").$type<
-      BankBrandContribution | MerchantContribution
+      BankContributionData | MerchantContributionData
     >(),
     reason: text("reason"),
     userId: text("user_id")

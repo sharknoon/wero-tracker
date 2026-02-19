@@ -112,7 +112,7 @@ const typeConfig: Record<
   ContributionType,
   { label: string; icon: React.ElementType }
 > = {
-  "bank-brand": {
+  bank: {
     label: "Bank",
     icon: Landmark,
   },

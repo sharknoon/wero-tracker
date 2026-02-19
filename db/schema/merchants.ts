@@ -5,6 +5,7 @@ import {
   pgTable,
   text,
   timestamp,
+  uuid,
 } from "drizzle-orm/pg-core";
 import { supportStatuses } from "./support";
 
@@ -23,7 +24,7 @@ export type MerchantCategory = (typeof categories.enumValues)[number];
 export const merchants = pgTable(
   "merchants",
   {
-    id: text("id").primaryKey(),
+    id: uuid("id").primaryKey().defaultRandom(),
     name: text("name").notNull(),
     aliases: json().$type<string[]>().default([]).notNull(),
     website: text("website").notNull(),

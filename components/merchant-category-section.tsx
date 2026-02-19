@@ -1,6 +1,6 @@
 "use client";
 
-import { MerchantBrandItem } from "./merchant-brand-item";
+import { MerchantItem } from "./merchant-item";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -59,7 +59,7 @@ export function MerchantCategorySection({
       <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
         <div className="grid gap-4 mt-4 md:grid-cols-2 lg:grid-cols-3">
           {merchants.map((merchant) => (
-            <MerchantBrandItem key={merchant.id} merchant={merchant} />
+            <MerchantItem key={merchant.id} merchant={merchant} />
           ))}
         </div>
       </CollapsibleContent>

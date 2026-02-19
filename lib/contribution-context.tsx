@@ -5,13 +5,13 @@ import { WeroData } from "@/app/page";
 
 type ContributionDialogOptions =
   | {
-      type: "bank-brand" | "merchant";
+      type: "bank" | "merchant";
       action: "add";
     }
   | {
-      type: "bank-brand";
+      type: "bank";
       action: "edit" | "delete";
-      entity: WeroData["bankBrands"][number];
+      entity: WeroData["banks"][number];
     }
   | {
       type: "merchant";

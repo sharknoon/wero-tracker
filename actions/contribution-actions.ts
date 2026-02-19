@@ -1,15 +1,21 @@
 "use server";
 
 import { db } from "@/db";
-import { bankBrands, bankingApps, banks } from "@/db/schema/banks";
+import { bankingApps, banks } from "@/db/schema/banks";
 import {
+  AddBankContributionData as AddBankContributionData,
+  AddMerchantContributionData,
+  Contribution,
   contributions,
   ContributionStatus,
   ContributionType,
+  EditOrDeleteBankContributionData,
+  EditOrDeleteMerchantContributionData,
   NewContribution,
 } from "@/db/schema/contributions";
 import { merchants } from "@/db/schema/merchants";
 import { auth } from "@/lib/auth";
+import { eq } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { headers } from "next/headers";
 import z from "zod";
@@ -17,7 +23,7 @@ import z from "zod";
 const merchantContributionSchema = z.discriminatedUnion("action", [
   z.strictObject({
     action: z.literal("add"),
-    data: createInsertSchema(merchants).omit({
+    data: createInsertSchema(merchants).strict().omit({
       id: true,
       createdAt: true,
       updatedAt: true,
@@ -25,7 +31,7 @@ const merchantContributionSchema = z.discriminatedUnion("action", [
   }),
   z.strictObject({
     action: z.union([z.literal("edit"), z.literal("delete")]),
-    data: createSelectSchema(merchants).omit({
+    data: createSelectSchema(merchants).strict().omit({
       createdAt: true,
       updatedAt: true,
     }),
@@ -46,7 +52,7 @@ export async function createMerchantContribution(
   if (!result.success) {
     return {
       success: false,
-      message: "Invalid contribution data: " + result.error.message,
+      message: "Invalid contribution data: " + z.prettifyError(result.error),
     };
   }
 
@@ -76,24 +82,17 @@ export async function createMerchantContribution(
   return { success: true, message: "Contribution submitted successfully" };
 }
 
-const bankBrandContributionSchema = z.discriminatedUnion("action", [
+const bankContributionSchema = z.discriminatedUnion("action", [
   z.strictObject({
     action: z.literal("add"),
     data: z.strictObject({
-      brand: createInsertSchema(bankBrands).omit({
+      bank: createInsertSchema(banks).strict().omit({
         id: true,
         createdAt: true,
         updatedAt: true,
       }),
-      banks: z.array(
-        createInsertSchema(banks).omit({
-          id: true,
-          createdAt: true,
-          updatedAt: true,
-        }),
-      ),
       apps: z.array(
-        createInsertSchema(bankingApps).omit({
+        createInsertSchema(bankingApps).strict().omit({
           id: true,
           createdAt: true,
           updatedAt: true,
@@ -104,18 +103,12 @@ const bankBrandContributionSchema = z.discriminatedUnion("action", [
   z.strictObject({
     action: z.union([z.literal("edit"), z.literal("delete")]),
     data: z.strictObject({
-      brand: createSelectSchema(bankBrands).omit({
+      bank: createSelectSchema(banks).strict().omit({
         createdAt: true,
         updatedAt: true,
       }),
-      banks: z.array(
-        createSelectSchema(banks).omit({
-          createdAt: true,
-          updatedAt: true,
-        }),
-      ),
       apps: z.array(
-        createSelectSchema(bankingApps).omit({
+        createSelectSchema(bankingApps).strict().omit({
           createdAt: true,
           updatedAt: true,
         }),
@@ -124,57 +117,39 @@ const bankBrandContributionSchema = z.discriminatedUnion("action", [
     reason: z.string().max(2000),
   }),
 ]);
-type BankBrandContribution = z.infer<typeof bankBrandContributionSchema>;
+type BankContribution = z.infer<typeof bankContributionSchema>;
 
-export async function createBankBrandContribution(
-  contribution: BankBrandContribution,
+export async function createBankContribution(
+  contribution: BankContribution,
 ): Promise<{ success: boolean; message: string }> {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) {
     return { success: false, message: "Unauthorized" };
   }
 
-  const result = bankBrandContributionSchema.safeParse(contribution);
+  const result = bankContributionSchema.safeParse(contribution);
   if (!result.success) {
     return {
       success: false,
-      message: "Invalid contribution data: " + result.error.message,
+      message: "Invalid contribution data: " + z.prettifyError(result.error),
     };
   }
 
   let previousData = null;
   if (contribution.action === "edit" || contribution.action === "delete") {
-    const existing = await db.query.bankBrands.findFirst({
-      where: (b, { eq }) => eq(b.id, contribution.data.brand.id),
+    const existing = await db.query.banks.findFirst({
+      where: (b, { eq }) => eq(b.id, contribution.data.bank.id),
       with: {
-        banks: {
-          with: {
-            bankingAppsToBanks: {
-              with: { bankingApp: true },
-            },
-          },
-        },
+        bankingApps: true,
       },
     });
     if (existing) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { createdAt, updatedAt, banks: existingBanks, ...brand } = existing;
-      const allApps = new Map<
-        string,
-        (typeof existingBanks)[number]["bankingAppsToBanks"][number]["bankingApp"]
-      >();
-      for (const bank of existingBanks) {
-        for (const link of bank.bankingAppsToBanks) {
-          allApps.set(link.bankingApp.id, link.bankingApp);
-        }
-      }
+      const { createdAt, updatedAt, ...bank } = existing;
+
       previousData = {
-        brand,
-        banks: existingBanks.map(
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          ({ createdAt, updatedAt, bankingAppsToBanks, ...rest }) => rest,
-        ),
-        apps: [...allApps.values()].map(
+        bank,
+        apps: existing.bankingApps.map(
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           ({ createdAt, updatedAt, ...rest }) => rest,
         ),
@@ -183,7 +158,7 @@ export async function createBankBrandContribution(
   }
 
   const newContribution: NewContribution = {
-    type: "bank-brand",
+    type: "bank",
     action: contribution.action,
     status: "pending",
     data: contribution.data,
@@ -228,4 +203,95 @@ export async function listContributions(
     },
     orderBy: (c, { desc }) => [desc(c.createdAt)],
   });
+}
+
+export async function rejectOrApproveContribution(
+  id: string,
+  action: Exclude<ContributionStatus, "pending">,
+  reviewNote: string,
+): Promise<{ success: boolean; message: string }> {
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (!session?.user || session.user.role !== "admin") {
+    return { success: false, message: "Unauthorized" };
+  }
+
+  const existing = await db.query.contributions.findFirst({
+    where: (c, { eq }) => eq(c.id, id),
+  });
+
+  if (!existing) {
+    return { success: false, message: "Contribution not found" };
+  }
+
+  if (existing.status !== "pending") {
+    return {
+      success: false,
+      message: "Only pending contributions can be approved or rejected",
+    };
+  }
+
+  await db.transaction(async (tx) => {
+    const updateData: Partial<Contribution> = {
+      status: action,
+      reviewNote,
+      reviewerId: session.user.id,
+    };
+
+    await tx
+      .update(contributions)
+      .set(updateData)
+      .where(eq(contributions.id, id));
+
+    if (action === "approved") {
+      if (existing.type === "merchant") {
+        if (existing.action === "add") {
+          const addData = existing.data as AddMerchantContributionData;
+          await tx.insert(merchants).values([addData]);
+        } else if (existing.action === "edit") {
+          const editData =
+            existing.data as EditOrDeleteMerchantContributionData;
+          await tx
+            .update(merchants)
+            .set(editData)
+            .where(eq(merchants.id, editData.id));
+        } else if (existing.action === "delete") {
+          const deleteData =
+            existing.data as EditOrDeleteMerchantContributionData;
+          await tx.delete(merchants).where(eq(merchants.id, deleteData.id));
+        }
+      } else if (existing.type === "bank") {
+        if (existing.action === "add") {
+          const addData = existing.data as AddBankContributionData;
+          await tx.insert(banks).values(addData.bank);
+          for (const app of addData.apps) {
+            await tx.insert(bankingApps).values(app);
+          }
+        } else if (existing.action === "edit") {
+          const editData = existing.data as EditOrDeleteBankContributionData;
+          await tx
+            .update(banks)
+            .set(editData.bank)
+            .where(eq(banks.id, editData.bank.id));
+          for (const app of editData.apps) {
+            await tx
+              .update(bankingApps)
+              .set(app)
+              .where(eq(bankingApps.id, app.id));
+          }
+        } else if (existing.action === "delete") {
+          const deleteData = existing.data as EditOrDeleteBankContributionData;
+          await tx.delete(banks).where(eq(banks.id, deleteData.bank.id));
+          await tx
+            .delete(bankingApps)
+            .where(eq(bankingApps.bankId, deleteData.bank.id));
+        }
+      }
+    }
+  });
+
+  return {
+    success: true,
+    message: `Contribution ${action} successfully`,
+  };
 }

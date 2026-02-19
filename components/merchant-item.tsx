@@ -20,11 +20,11 @@ import { useContribution } from "@/lib/contribution-context";
 import { merchantCategoryOptions } from "@/lib/constants";
 import { Merchant } from "@/db/schema/merchants";
 
-interface MerchantBrandItemProps {
+interface MerchantItemProps {
   merchant: Merchant;
 }
 
-export function MerchantBrandItem({ merchant }: MerchantBrandItemProps) {
+export function MerchantItem({ merchant }: MerchantItemProps) {
   const { openContributionDialog } = useContribution();
   const category = merchantCategoryOptions.find(
     (option) => option.value === merchant.category,

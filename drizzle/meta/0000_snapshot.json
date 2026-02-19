@@ -1,5 +1,5 @@
 {
-  "id": "c806abb3-9603-46ca-a433-97763003155d",
+  "id": "41b36a05-a7c8-4ee0-9d41-1371f18a9f17",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -366,95 +366,6 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.bank_brands": {
-      "name": "bank_brands",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "aliases": {
-          "name": "aliases",
-          "type": "json",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'[]'::json"
-        },
-        "wero_support": {
-          "name": "wero_support",
-          "type": "support_statuses",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "countries": {
-          "name": "countries",
-          "type": "json",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'[]'::json"
-        },
-        "logo_url": {
-          "name": "logo_url",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "notes": {
-          "name": "notes",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "bank_brands_updated_at_idx": {
-          "name": "bank_brands_updated_at_idx",
-          "columns": [
-            {
-              "expression": "updated_at",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.banking_apps": {
       "name": "banking_apps",
       "schema": "",
@@ -469,6 +380,12 @@
         "name": {
           "name": "name",
           "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bank_id": {
+          "name": "bank_id",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
@@ -529,35 +446,10 @@
           "with": {}
         }
       },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.banking_apps_to_banks": {
-      "name": "banking_apps_to_banks",
-      "schema": "",
-      "columns": {
-        "bank_id": {
-          "name": "bank_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "app_id": {
-          "name": "app_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
       "foreignKeys": {
-        "banking_apps_to_banks_bank_id_banks_id_fk": {
-          "name": "banking_apps_to_banks_bank_id_banks_id_fk",
-          "tableFrom": "banking_apps_to_banks",
+        "banking_apps_bank_id_banks_id_fk": {
+          "name": "banking_apps_bank_id_banks_id_fk",
+          "tableFrom": "banking_apps",
           "tableTo": "banks",
           "columnsFrom": [
             "bank_id"
@@ -567,30 +459,9 @@
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
-        },
-        "banking_apps_to_banks_app_id_banking_apps_id_fk": {
-          "name": "banking_apps_to_banks_app_id_banking_apps_id_fk",
-          "tableFrom": "banking_apps_to_banks",
-          "tableTo": "banking_apps",
-          "columnsFrom": [
-            "app_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "banking_apps_to_banks_bank_id_app_id_pk": {
-          "name": "banking_apps_to_banks_bank_id_app_id_pk",
-          "columns": [
-            "bank_id",
-            "app_id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
@@ -613,11 +484,12 @@
           "primaryKey": false,
           "notNull": true
         },
-        "brand_id": {
-          "name": "brand_id",
-          "type": "uuid",
+        "aliases": {
+          "name": "aliases",
+          "type": "json",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "'[]'::json"
         },
         "website": {
           "name": "website",
@@ -625,18 +497,12 @@
           "primaryKey": false,
           "notNull": true
         },
-        "bank_context": {
-          "name": "bank_context",
-          "type": "text",
+        "wero_support": {
+          "name": "wero_support",
+          "type": "support_statuses",
+          "typeSchema": "public",
           "primaryKey": false,
-          "notNull": false
-        },
-        "aliases": {
-          "name": "aliases",
-          "type": "json",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'[]'::json"
+          "notNull": true
         },
         "countries": {
           "name": "countries",
@@ -648,13 +514,6 @@
         "logo_url": {
           "name": "logo_url",
           "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "standalone_app_support": {
-          "name": "standalone_app_support",
-          "type": "support_statuses",
-          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
         },
@@ -679,6 +538,19 @@
           "primaryKey": false,
           "notNull": true
         },
+        "standalone_app_support": {
+          "name": "standalone_app_support",
+          "type": "support_statuses",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -695,21 +567,6 @@
         }
       },
       "indexes": {
-        "banks_brandId_idx": {
-          "name": "banks_brandId_idx",
-          "columns": [
-            {
-              "expression": "brand_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
         "banks_updated_at_idx": {
           "name": "banks_updated_at_idx",
           "columns": [
@@ -726,21 +583,7 @@
           "with": {}
         }
       },
-      "foreignKeys": {
-        "banks_brand_id_bank_brands_id_fk": {
-          "name": "banks_brand_id_bank_brands_id_fk",
-          "tableFrom": "banks",
-          "tableTo": "bank_brands",
-          "columnsFrom": [
-            "brand_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -785,6 +628,12 @@
           "type": "json",
           "primaryKey": false,
           "notNull": true
+        },
+        "previous_data": {
+          "name": "previous_data",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false
         },
         "reason": {
           "name": "reason",
@@ -927,9 +776,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "name": {
           "name": "name",
@@ -1039,7 +889,7 @@
       "name": "contribution_types",
       "schema": "public",
       "values": [
-        "bank-brand",
+        "bank",
         "merchant"
       ]
     },

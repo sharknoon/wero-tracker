@@ -1,6 +1,6 @@
 "use client";
 
-import { BankBrandItem } from "./bank-brand-item";
+import { Bankitem } from "./bank-item";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -14,13 +14,13 @@ import { WeroData } from "@/app/page";
 
 interface BankCountrySectionProps {
   countryCode: string;
-  brands: WeroData["bankBrands"];
+  banks: WeroData["banks"];
   defaultExpanded?: boolean;
 }
 
 export function BankCountrySection({
   countryCode,
-  brands,
+  banks,
   defaultExpanded = true,
 }: BankCountrySectionProps) {
   const [isOpen, setIsOpen] = useState(defaultExpanded);
@@ -29,10 +29,10 @@ export function BankCountrySection({
     setIsOpen(defaultExpanded);
   }, [defaultExpanded]);
 
-  const supportedCount = brands.filter(
+  const supportedCount = banks.filter(
     (b) => b.weroSupport === "supported",
   ).length;
-  const announcedCount = brands.filter(
+  const announcedCount = banks.filter(
     (b) => b.weroSupport === "announced",
   ).length;
 
@@ -49,7 +49,7 @@ export function BankCountrySection({
                 )}
               </h2>
               <p className="text-xs text-muted-foreground">
-                {brands.length} banks • {supportedCount} supported •{" "}
+                {banks.length} banks • {supportedCount} supported •{" "}
                 {announcedCount} announced
               </p>
             </div>
@@ -64,8 +64,8 @@ export function BankCountrySection({
         </CollapsibleTrigger>
         <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
           <div className="grid gap-4 mt-4 md:grid-cols-2 lg:grid-cols-3">
-            {brands.map((brand) => (
-              <BankBrandItem key={brand.id} brand={brand} />
+            {banks.map((bank) => (
+              <Bankitem key={bank.id} bank={bank} />
             ))}
           </div>
         </CollapsibleContent>

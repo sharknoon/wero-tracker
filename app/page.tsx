@@ -1,6 +1,6 @@
 import { WeroTracker } from "@/components/wero-tracker";
 import { db } from "@/db";
-import { bankBrands, bankingApps, banks } from "@/db/schema/banks";
+import { bankingApps, banks } from "@/db/schema/banks";
 import { merchants } from "@/db/schema/merchants";
 import { asc, sql } from "drizzle-orm";
 import { cacheLife } from "next/cache";
@@ -9,20 +9,12 @@ async function getWeroData() {
   "use cache";
   cacheLife("hours");
 
-  const [bankBrandsData, merchantsData, lastUpdated] = await Promise.all([
-    db.query.bankBrands.findMany({
+  const [banksData, merchantsData, lastUpdated] = await Promise.all([
+    db.query.banks.findMany({
       with: {
-        banks: {
-          with: {
-            bankingAppsToBanks: {
-              with: {
-                bankingApp: true,
-              },
-            },
-          },
-        },
+        bankingApps: true,
       },
-      orderBy: (bb) => [asc(bb.name)],
+      orderBy: (b) => [asc(b.name)],
     }),
     db.query.merchants.findMany({
       orderBy: (m) => [asc(m.name)],
@@ -31,7 +23,6 @@ async function getWeroData() {
       .execute<{ latest: string }>(
         sql`
           SELECT greatest(
-            (SELECT max(${bankBrands.updatedAt}) FROM ${bankBrands}),
             (SELECT max(${banks.updatedAt}) FROM ${banks}),
             (SELECT max(${bankingApps.updatedAt}) FROM ${bankingApps}),
             (SELECT max(${merchants.updatedAt}) FROM ${merchants})
@@ -42,7 +33,7 @@ async function getWeroData() {
   ]);
 
   return {
-    bankBrands: bankBrandsData,
+    banks: banksData,
     merchants: merchantsData,
     lastUpdated,
   };

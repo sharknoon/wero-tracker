@@ -1,14 +1,11 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
-import { useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { StatusBadge, StatusDot } from "./status-badge";
 import { NotesText } from "./notes-text";
 import {
-  Check,
-  ChevronDown,
   ExternalLink,
   Landmark,
   MoreVertical,
@@ -17,39 +14,22 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useContribution } from "@/lib/contribution-context";
-import { Bank } from "@/db/schema/banks";
 import { WeroData } from "@/app/page";
 import { SupportStatus } from "@/db/schema/support";
 import { redirect, usePathname, useSearchParams } from "next/navigation";
 import { ContributionAction } from "@/db/schema/contributions";
 
-interface BankBrandItemProps {
-  brand: WeroData["bankBrands"][number];
+interface BankItemProps {
+  bank: WeroData["banks"][number];
 }
 
-export function BankBrandItem({ brand }: BankBrandItemProps) {
-  const [selectedBank, setSelectedBank] = useState<
-    (typeof brand.banks)[number]
-  >(brand.banks[0]);
+export function Bankitem({ bank }: BankItemProps) {
   const { openContributionDialog } = useContribution();
   const { data: session } = authClient.useSession();
   const pathname = usePathname();
@@ -63,9 +43,9 @@ export function BankBrandItem({ brand }: BankBrandItemProps) {
     }
 
     openContributionDialog({
-      type: "bank-brand",
+      type: "bank",
       action: type,
-      entity: brand,
+      entity: bank,
     });
   }
 
@@ -75,11 +55,11 @@ export function BankBrandItem({ brand }: BankBrandItemProps) {
         <div className="flex items-start gap-3 overflow-hidden">
           <Avatar className="size-10 rounded-lg">
             <AvatarImage
-              src={selectedBank.logoUrl ?? brand.logoUrl}
+              src={bank.logoUrl}
               className="bg-white p-1 object-contain"
             />
             <AvatarFallback className="rounded-lg">
-              {brand.name.substring(0, 2).toUpperCase()}
+              {bank.name.substring(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
 
@@ -87,25 +67,16 @@ export function BankBrandItem({ brand }: BankBrandItemProps) {
             <div className="flex items-center gap-2">
               <h3
                 className="font-semibold text-foreground truncate"
-                title={brand.name}
+                title={bank.name}
               >
-                {brand.name}
+                {bank.name}
               </h3>
-              {brand.notes && <NotesText notes={brand.notes} />}
+              {bank.notes && <NotesText notes={bank.notes} />}
             </div>
-            {brand.banks.length > 1 && (
-              <BankSelectorComboBox
-                banks={brand.banks}
-                selectedBank={selectedBank.id}
-                setSelectedBank={(id) =>
-                  setSelectedBank(brand.banks.find((bank) => bank.id === id)!)
-                }
-              />
-            )}
           </div>
 
           <div className="flex items-center gap-2">
-            <StatusBadge status={brand.weroSupport} showLabel />
+            <StatusBadge status={bank.weroSupport} showLabel />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
@@ -117,18 +88,16 @@ export function BankBrandItem({ brand }: BankBrandItemProps) {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                {selectedBank.website && (
-                  <DropdownMenuItem asChild>
-                    <a
-                      href={selectedBank.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <ExternalLink size={14} />
-                      Open Website
-                    </a>
-                  </DropdownMenuItem>
-                )}
+                <DropdownMenuItem asChild>
+                  <a
+                    href={bank.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <ExternalLink size={14} />
+                    Open Website
+                  </a>
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleEditOrDelete("edit")}>
                   <Pencil size={14} />
                   Suggest Edit
@@ -149,12 +118,12 @@ export function BankBrandItem({ brand }: BankBrandItemProps) {
             Payment Features
           </h4>
           <div className="grid grid-cols-3 gap-2">
-            <FeatureItem label="P2P" status={selectedBank.posPaymentsSupport} />
+            <FeatureItem label="P2P" status={bank.p2pPaymentsSupport} />
             <FeatureItem
               label="eCommerce"
-              status={selectedBank.eCommercePaymentsSupport}
+              status={bank.eCommercePaymentsSupport}
             />
-            <FeatureItem label="POS" status={selectedBank.posPaymentsSupport} />
+            <FeatureItem label="POS" status={bank.posPaymentsSupport} />
           </div>
         </div>
 
@@ -167,19 +136,19 @@ export function BankBrandItem({ brand }: BankBrandItemProps) {
             <AppBadge
               iconUrl="/wero-app.png"
               name="Wero"
-              status={selectedBank.standaloneAppSupport}
+              status={bank.standaloneAppSupport}
               link="https://app.weropay.eu/"
             />
-            {selectedBank.bankingAppsToBanks.map(({ bankingApp: app }) => (
+            {bank.bankingApps.map((bankingApp) => (
               <AppBadge
-                key={app.id}
-                iconUrl={app.iconUrl}
-                name={app.name}
-                status={app.weroSupport}
-                link={app.universalLink}
+                key={bankingApp.id}
+                iconUrl={bankingApp.iconUrl}
+                name={bankingApp.name}
+                status={bankingApp.weroSupport}
+                link={bankingApp.universalLink}
               />
             ))}
-            {selectedBank.bankingAppsToBanks.length === 0 && (
+            {bank.bankingApps.length === 0 && (
               <div
                 className={cn(
                   "flex items-center gap-2 rounded-lg px-3 py-2 text-sm flex-1 bg-secondary/50 text-muted-foreground",
@@ -196,60 +165,6 @@ export function BankBrandItem({ brand }: BankBrandItemProps) {
         </div>
       </CardContent>
     </Card>
-  );
-}
-
-function BankSelectorComboBox({
-  banks,
-  selectedBank,
-  setSelectedBank,
-}: {
-  banks: Bank[];
-  selectedBank: Bank["id"];
-  setSelectedBank: (id: Bank["id"]) => void;
-}) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <button className="flex gap-1 items-center justify-between text-sm text-muted-foreground hover:text-foreground transition-colors text-start">
-          {selectedBank
-            ? banks.find((bank) => bank.id === selectedBank)?.name
-            : "Select bank..."}
-          <ChevronDown className="opacity-50 size-4" />
-        </button>
-      </PopoverTrigger>
-      <PopoverContent className="w-64 sm:w-96 p-0">
-        <Command>
-          <CommandInput placeholder="Search bank..." className="h-9" />
-          <CommandList>
-            <CommandEmpty>No bank found.</CommandEmpty>
-            <CommandGroup>
-              {banks.map((bank) => (
-                <CommandItem
-                  key={bank.id}
-                  value={bank.id}
-                  keywords={[bank.name]}
-                  onSelect={(currentValue) => {
-                    setSelectedBank(currentValue);
-                    setOpen(false);
-                  }}
-                >
-                  {bank.name}
-                  <Check
-                    className={cn(
-                      "ml-auto",
-                      selectedBank === bank.id ? "opacity-100" : "opacity-0",
-                    )}
-                  />
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
   );
 }
 

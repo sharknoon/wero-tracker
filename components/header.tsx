@@ -70,7 +70,7 @@ function AddButton() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => handleAdd("bank-brand")}>
+        <DropdownMenuItem onClick={() => handleAdd("bank")}>
           <Landmark size={14} />
           Add missing bank
         </DropdownMenuItem>

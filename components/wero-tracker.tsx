@@ -30,8 +30,8 @@ import {
   useContribution,
 } from "@/lib/contribution-context";
 import { euCountries } from "@/lib/constants";
-import { BankBrandDialog } from "./bank-brand-dialog";
 import { MerchantDialog } from "./merchant-dialog";
+import { BankDialog } from "./bank-dialog";
 import { Merchant } from "@/db/schema/merchants";
 import { SupportStatus } from "@/db/schema/support";
 import { WeroData } from "@/app/page";
@@ -48,8 +48,8 @@ export function WeroTracker({ data }: WeroTrackerProps) {
       <Suspense fallback={<div className="text-center py-20">Loading...</div>}>
         <WeroTrackerContent data={data} />
       </Suspense>
-      <BankBrandDialog />
       <MerchantDialog />
+      <BankDialog />
     </ContributionProvider>
   );
 }
@@ -87,15 +87,15 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
   const filteredData: WeroData = useMemo(() => {
     if (activeView === "banks") {
       return {
-        bankBrands: data.bankBrands.filter((brand) => {
+        banks: data.banks.filter((bank) => {
           // Search filter
           if (searchQuery) {
             const query = searchQuery.toLowerCase();
-            const brandNames = [
-              brand.name.toLowerCase(),
-              ...brand.aliases.map((a) => a.toLowerCase()),
+            const bankNames = [
+              bank.name.toLowerCase(),
+              ...bank.aliases.map((a) => a.toLowerCase()),
             ];
-            const matchesName = brandNames.some((name) => name.includes(query));
+            const matchesName = bankNames.some((name) => name.includes(query));
             if (!matchesName) {
               return false;
             }
@@ -103,13 +103,13 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
           // Status filter
           if (
             selectedStatuses.length > 0 &&
-            !selectedStatuses.includes(brand.weroSupport)
+            !selectedStatuses.includes(bank.weroSupport)
           ) {
             return false;
           }
           // Country filter
           if (selectedCountries.length > 0) {
-            const hasCountry = brand.countries.some((country) =>
+            const hasCountry = bank.countries.some((country) =>
               selectedCountries.includes(country),
             );
             if (!hasCountry) {
@@ -123,7 +123,7 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
       };
     } else {
       return {
-        bankBrands: [],
+        banks: [],
         merchants: data.merchants.filter((merchant) => {
           // Search filter
           if (searchQuery) {
@@ -153,7 +153,7 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
     }
   }, [
     activeView,
-    data.bankBrands,
+    data.banks,
     data.lastUpdated,
     data.merchants,
     searchQuery,
@@ -166,12 +166,12 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
     if (activeView !== "banks") {
       return [];
     }
-    const countries = data.bankBrands.flatMap((brand) => brand.countries);
+    const countries = data.banks.flatMap((bank) => bank.countries);
     const filteredCountries = countries.filter((code) =>
       euCountries.includes(code),
     );
     return Array.from(new Set(filteredCountries)).sort();
-  }, [activeView, data.bankBrands]);
+  }, [activeView, data.banks]);
 
   // Get user's country from browser locale (using useSyncExternalStore to avoid hydration mismatch)
   const userCountry = useSyncExternalStore(
@@ -194,10 +194,10 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
 
   // Group banks by country
   const filteredBankCountries = useMemo(() => {
-    const countryMap = new Map<string, WeroData["bankBrands"][number][]>();
+    const countryMap = new Map<string, WeroData["banks"][number][]>();
 
-    filteredData.bankBrands.forEach((brand) => {
-      brand.countries
+    filteredData.banks.forEach((bank) => {
+      bank.countries
         .filter(
           (code) =>
             (selectedCountries.length === 0 ||
@@ -208,12 +208,12 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
           if (!countryMap.has(countryCode)) {
             countryMap.set(countryCode, []);
           }
-          countryMap.get(countryCode)!.push(brand);
+          countryMap.get(countryCode)!.push(bank);
         });
     });
 
     return countryMap;
-  }, [filteredData.bankBrands, selectedCountries]);
+  }, [filteredData.banks, selectedCountries]);
 
   // Group merchants by category
   const filteredMerchantCategories = useMemo(() => {
@@ -291,7 +291,7 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
           </div>
 
           <TabsContent value="banks" className="space-y-6">
-            {filteredData.bankBrands.length === 0 ? (
+            {filteredData.banks.length === 0 ? (
               <Empty className="border">
                 <EmptyHeader>
                   <EmptyMedia variant="icon">
@@ -308,7 +308,7 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
                     <Button
                       onClick={() =>
                         openContributionDialog({
-                          type: "bank-brand",
+                          type: "bank",
                           action: "add",
                         })
                       }
@@ -328,11 +328,11 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
                   }
                   return a.localeCompare(b);
                 })
-                .map(([code, brands]) => (
+                .map(([code, banks]) => (
                   <BankCountrySection
                     key={code}
                     countryCode={code}
-                    brands={brands}
+                    banks={banks}
                     defaultExpanded={code === userCountry}
                   />
                 ))

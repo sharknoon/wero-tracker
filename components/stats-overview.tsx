@@ -11,11 +11,11 @@ interface StatsOverviewProps {
 export function StatsOverview({ data, activeView }: StatsOverviewProps) {
   const supportedBanks =
     activeView === "banks"
-      ? data.bankBrands.filter((b) => b.weroSupport === "supported")
+      ? data.banks.filter((b) => b.weroSupport === "supported")
       : [];
   const announcedBanks =
     activeView === "banks"
-      ? data.bankBrands.filter((b) => b.weroSupport === "announced")
+      ? data.banks.filter((b) => b.weroSupport === "announced")
       : [];
 
   const supportedMerchants =
@@ -29,16 +29,16 @@ export function StatsOverview({ data, activeView }: StatsOverviewProps) {
 
   const supportedBankCountries =
     activeView === "banks"
-      ? supportedBanks.reduce((acc, brand) => {
-          brand.countries.forEach((country) => acc.add(country));
+      ? supportedBanks.reduce((acc, bank) => {
+          bank.countries.forEach((country) => acc.add(country));
           return acc;
         }, new Set<string>())
       : new Set<string>();
 
   const announcedBankCountries =
     activeView === "banks"
-      ? announcedBanks.reduce((acc, brand) => {
-          brand.countries.forEach((country) => acc.add(country));
+      ? announcedBanks.reduce((acc, bank) => {
+          bank.countries.forEach((country) => acc.add(country));
           return acc;
         }, new Set<string>())
       : new Set<string>();
@@ -63,7 +63,7 @@ export function StatsOverview({ data, activeView }: StatsOverviewProps) {
     {
       label: "Supported Banks",
       value: numberOfSupportedBanks,
-      subtext: `${data.bankBrands.length > 0 ? Math.round((numberOfSupportedBanks / data.bankBrands.length) * 100) : 0}% of tracked banks (${data.bankBrands.length} total)`,
+      subtext: `${data.banks.length > 0 ? Math.round((numberOfSupportedBanks / data.banks.length) * 100) : 0}% of tracked banks (${data.banks.length} total)`,
       icon: CircleCheck,
       color: "text-status-supported",
     },
@@ -77,9 +77,7 @@ export function StatsOverview({ data, activeView }: StatsOverviewProps) {
     {
       label: "Unsupported Banks",
       value:
-        data.bankBrands.length -
-        numberOfSupportedBanks -
-        numberOfAnnouncedBanks,
+        data.banks.length - numberOfSupportedBanks - numberOfAnnouncedBanks,
       subtext: `that have not announced support yet`,
       icon: CircleX,
       color: "text-status-unsupported",

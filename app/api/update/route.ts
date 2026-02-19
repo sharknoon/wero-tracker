@@ -1,14 +1,5 @@
 import { db } from "@/db";
-import {
-  bankBrands,
-  bankingApps,
-  bankingAppsToBanks,
-  banks,
-  NewBank,
-  NewBankBrand,
-  NewBankingApp,
-  NewBankingAppsToBanks,
-} from "@/db/schema/banks";
+import { bankingApps, banks, NewBank, NewBankingApp } from "@/db/schema/banks";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -195,57 +186,34 @@ export async function GET() {
   const ecommerceData = ecommerceResult.data;
 
   await db.transaction(async (tx) => {
-    const brandsToUpsert: Map<string, NewBankBrand> = new Map();
     const appsToUpsert: Map<string, NewBankingApp> = new Map();
     const banksToUpsert: Map<string, NewBank> = new Map();
-    const appsToBankRelationsToUpsert: Map<string, NewBankingAppsToBanks> =
-      new Map();
 
     for (const brand of p2pData.brands) {
-      brandsToUpsert.set(brand.id, {
-        id: brand.id,
-        name: brand.name,
-        aliases: brand.aliases,
-        weroSupport: "supported",
-        countries: brand.countries,
-        logoUrl: await mirrorUrl(brand.logoUrl),
-      });
+      if (brand.banks.length > 0) {
+        const firstBank = brand.banks[0];
 
-      for (const app of brand.apps) {
-        appsToUpsert.set(app.id, {
-          id: app.id,
-          name: app.name,
-          iconUrl: await mirrorUrl(app.iconUrl),
-          universalLink: app.universalLink,
-          supportsDesktop: app.supportsDesktop,
-          weroSupport: "supported",
-        });
-      }
-
-      // Upsert banks for this brand
-      for (const bank of brand.banks) {
         // Find matching ecommerce bank data
         const ecommerceBankData = ecommerceData
-          .flatMap((brand) => brand.banks)
-          .find((bank) => bank.id === bank.id);
+          .flatMap((b) => b.banks)
+          .find((b) => b.id === firstBank.id);
 
         // Get existing bank data for preserving manual fields
         const existingBank = await tx.query.banks.findFirst({
-          where: eq(banks.id, bank.id),
+          where: eq(banks.id, brand.id),
         });
 
-        banksToUpsert.set(bank.id, {
-          id: bank.id,
-          name: bank.name,
-          brandId: brand.id,
+        banksToUpsert.set(brand.id, {
+          id: brand.id,
+          name: brand.name,
           website: existingBank?.website || "https://example.com",
-          bankContext: bank.bankContext,
-          aliases: bank.aliases,
-          countries: bank.countries,
-          logoUrl: bank.logoUrl ? await mirrorUrl(bank.logoUrl) : undefined,
-          standaloneAppSupport: bank.supportsStandaloneApp
+          aliases: brand.aliases,
+          countries: brand.countries,
+          logoUrl: await mirrorUrl(brand.logoUrl),
+          standaloneAppSupport: firstBank.supportsStandaloneApp
             ? "supported"
             : existingBank?.standaloneAppSupport || "unsupported",
+          weroSupport: "supported",
           p2pPaymentsSupport: "supported",
           eCommercePaymentsSupport:
             ecommerceBankData?.supportedPaymentUseCases.includes(
@@ -255,33 +223,20 @@ export async function GET() {
               : "unsupported",
           posPaymentsSupport: existingBank?.posPaymentsSupport || "unknown",
         });
+      }
 
-        for (const appId of bank.appIds) {
-          appsToBankRelationsToUpsert.set(`${bank.id}-${appId}`, {
-            bankId: bank.id,
-            appId: appId,
-          });
-        }
+      for (const app of brand.apps) {
+        appsToUpsert.set(app.id, {
+          id: app.id,
+          name: app.name,
+          bankId: brand.id,
+          iconUrl: await mirrorUrl(app.iconUrl),
+          universalLink: app.universalLink,
+          supportsDesktop: app.supportsDesktop,
+          weroSupport: "supported",
+        });
       }
     }
-
-    // Upsert the bank brand
-    await tx
-      .insert(bankBrands)
-      .values(Array.from(brandsToUpsert.values()))
-      .onConflictDoUpdate({
-        target: bankBrands.id,
-        set: buildConflictUpdateColumnsExcept(bankBrands, ["id"]),
-      });
-
-    // Upsert the banking apps
-    await tx
-      .insert(bankingApps)
-      .values(Array.from(appsToUpsert.values()))
-      .onConflictDoUpdate({
-        target: bankingApps.id,
-        set: buildConflictUpdateColumnsExcept(bankingApps, ["id"]),
-      });
 
     // Upsert the banks
     await tx
@@ -292,11 +247,14 @@ export async function GET() {
         set: buildConflictUpdateColumnsExcept(banks, ["id", "website"]),
       });
 
-    // Upsert the bankingAppsToBanks
+    // Upsert the banking apps
     await tx
-      .insert(bankingAppsToBanks)
-      .values(Array.from(appsToBankRelationsToUpsert.values()))
-      .onConflictDoNothing();
+      .insert(bankingApps)
+      .values(Array.from(appsToUpsert.values()))
+      .onConflictDoUpdate({
+        target: bankingApps.id,
+        set: buildConflictUpdateColumnsExcept(bankingApps, ["id"]),
+      });
   });
 
   return NextResponse.json({
