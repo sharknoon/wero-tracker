@@ -9,11 +9,12 @@ import {
 } from "drizzle-orm/pg-core";
 import { supportStatuses } from "./support";
 import { relations } from "drizzle-orm";
+import { createInsertSchema } from "drizzle-zod";
 
 export const banks = pgTable(
   "banks",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: uuid("id").primaryKey(),
     name: text("name").notNull(),
     aliases: json("aliases").$type<string[]>().default([]).notNull(),
     website: text("website").notNull(),
@@ -37,11 +38,12 @@ export const banks = pgTable(
 );
 export type Bank = typeof banks.$inferSelect;
 export type NewBank = typeof banks.$inferInsert;
+export const newBankSchema = createInsertSchema(banks);
 
 export const bankingApps = pgTable(
   "banking_apps",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: uuid("id").primaryKey(),
     name: text("name").notNull(),
     bankId: uuid("bank_id")
       .notNull()
@@ -60,6 +62,7 @@ export const bankingApps = pgTable(
 );
 export type BankingApp = typeof bankingApps.$inferSelect;
 export type NewBankingApp = typeof bankingApps.$inferInsert;
+export const newBankingAppSchema = createInsertSchema(bankingApps);
 
 export const banksRelations = relations(banks, ({ many }) => ({
   bankingApps: many(bankingApps),

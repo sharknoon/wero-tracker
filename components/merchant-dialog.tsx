@@ -126,8 +126,6 @@ interface MerchantFormContentProps {
   onRemoveAlias: (alias: string) => void;
   website: string;
   onWebsiteChange: (value: string) => void;
-  logoUrl: string;
-  onLogoUrlChange: (value: string) => void;
   category: Merchant["category"];
   onCategoryChange: (value: Merchant["category"]) => void;
   weroSupport: SupportStatus;
@@ -149,8 +147,6 @@ function MerchantFormContent({
   onRemoveAlias,
   website,
   onWebsiteChange,
-  logoUrl,
-  onLogoUrlChange,
   category,
   onCategoryChange,
   weroSupport,
@@ -197,23 +193,6 @@ function MerchantFormContent({
           onChange={(e) => onWebsiteChange(e.target.value)}
           required
         />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="logoUrl">
-          Logo URL <span className="text-destructive">*</span>
-        </Label>
-        <Input
-          id="logoUrl"
-          type="url"
-          placeholder="https://example.com/logo.png"
-          value={logoUrl}
-          onChange={(e) => onLogoUrlChange(e.target.value)}
-          required
-        />
-        <p className="text-xs text-muted-foreground">
-          Provide a direct link to the merchant&apos;s logo image
-        </p>
       </div>
 
       <CategorySelect value={category} onChange={onCategoryChange} />
@@ -278,7 +257,6 @@ export function MerchantDialog() {
   const [aliases, setAliases] = useState<string[]>([]);
   const [aliasInput, setAliasInput] = useState("");
   const [website, setWebsite] = useState("");
-  const [logoUrl, setLogoUrl] = useState("");
   const [category, setCategory] = useState<Merchant["category"]>("other");
   const [weroSupport, setWeroSupport] = useState<SupportStatus>("unknown");
   const [notes, setNotes] = useState("");
@@ -290,7 +268,6 @@ export function MerchantDialog() {
     setAliases([]);
     setAliasInput("");
     setWebsite("");
-    setLogoUrl("");
     setCategory("other");
     setWeroSupport("unknown");
     setNotes("");
@@ -319,7 +296,6 @@ export function MerchantDialog() {
       setName(existingMerchant.name);
       setAliases(existingMerchant.aliases);
       setWebsite(existingMerchant.website);
-      setLogoUrl(existingMerchant.logoUrl);
       setCategory(existingMerchant.category);
       setWeroSupport(existingMerchant.weroSupport);
       setNotes(existingMerchant.notes || "");
@@ -353,7 +329,6 @@ export function MerchantDialog() {
     const errors: string[] = [];
     if (!name.trim()) errors.push("Merchant name");
     if (!website.trim() || !isValidUrl(website.trim())) errors.push("Website");
-    if (!logoUrl.trim() || !isValidUrl(logoUrl.trim())) errors.push("Logo URL");
     if (action === "edit" && !reason.trim()) errors.push("Reason for changes");
 
     if (errors.length > 0) {
@@ -375,7 +350,7 @@ export function MerchantDialog() {
           name,
           aliases,
           website,
-          logoUrl,
+          logoUrl: `https://www.google.com/s2/favicons?domain=${new URL(website).hostname}&sz=64`,
           category,
           weroSupport,
           notes,
@@ -394,7 +369,7 @@ export function MerchantDialog() {
           name,
           aliases,
           website,
-          logoUrl,
+          logoUrl: existingMerchant!.logoUrl,
           category,
           weroSupport,
           notes,
@@ -450,8 +425,6 @@ export function MerchantDialog() {
                 onRemoveAlias={handleRemoveAlias}
                 website={website}
                 onWebsiteChange={setWebsite}
-                logoUrl={logoUrl}
-                onLogoUrlChange={setLogoUrl}
                 category={category}
                 onCategoryChange={setCategory}
                 weroSupport={weroSupport}

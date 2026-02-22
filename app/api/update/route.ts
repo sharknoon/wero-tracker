@@ -7,7 +7,7 @@ import z from "zod";
 import { PgTable } from "drizzle-orm/pg-core";
 import { getTableColumns, sql, type SQL } from "drizzle-orm";
 import { toSnakeCase } from "drizzle-orm/casing";
-import { put } from "@/lib/s3";
+import { mirrorUrl, put } from "@/lib/s3";
 
 /**
  * Builds an object mapping column names to their excluded values for upsert operations.
@@ -131,16 +131,6 @@ const ecommerceSchema = z.array(
   }),
 );
 
-async function mirrorUrl(url: string) {
-  const response = await fetch(url);
-  const blob = await response.blob();
-  const arrayBuffer = await blob.arrayBuffer();
-  const uint8Array = new Uint8Array(arrayBuffer);
-  return await put(url.split("/").pop()!, uint8Array, {
-    access: "public",
-  });
-}
-
 export async function GET() {
   const apiSecret = process.env.API_SECRET;
   const headersList = await headers();
@@ -209,7 +199,7 @@ export async function GET() {
           website: existingBank?.website || "https://example.com",
           aliases: brand.aliases,
           countries: brand.countries,
-          logoUrl: await mirrorUrl(brand.logoUrl),
+          logoUrl: await mirrorUrl(brand.logoUrl, brand.id),
           standaloneAppSupport: firstBank.supportsStandaloneApp
             ? "supported"
             : existingBank?.standaloneAppSupport || "unsupported",
@@ -230,7 +220,7 @@ export async function GET() {
           id: app.id,
           name: app.name,
           bankId: brand.id,
-          iconUrl: await mirrorUrl(app.iconUrl),
+          iconUrl: await mirrorUrl(app.iconUrl, app.id),
           universalLink: app.universalLink,
           supportsDesktop: app.supportsDesktop,
           weroSupport: "supported",

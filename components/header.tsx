@@ -5,6 +5,7 @@ import {
   Landmark,
   LogIn,
   LogOut,
+  Pencil,
   Plus,
   Store,
 } from "lucide-react";
@@ -136,6 +137,14 @@ function UserMenu() {
             Contributions
           </Link>
         </DropdownMenuItem>
+        {session.user.role === "admin" && (
+          <DropdownMenuItem asChild>
+            <Link href="/admin">
+              <Pencil size={14} />
+              Admin Editor
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           variant="destructive"

@@ -217,8 +217,6 @@ interface BankFormContentProps {
   onRemoveAlias: (alias: string) => void;
   website: string;
   onWebsiteChange: (value: string) => void;
-  logoUrl: string;
-  onLogoUrlChange: (value: string) => void;
   countries: string[];
   onToggleCountry: (country: string) => void;
   weroSupport: SupportStatus;
@@ -251,8 +249,6 @@ function BankFormContent({
   onRemoveAlias,
   website,
   onWebsiteChange,
-  logoUrl,
-  onLogoUrlChange,
   countries,
   onToggleCountry,
   weroSupport,
@@ -324,23 +320,6 @@ function BankFormContent({
           onChange={(e) => onWebsiteChange(e.target.value)}
           required
         />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="logoUrl">
-          Logo URL <span className="text-destructive">*</span>
-        </Label>
-        <Input
-          id="logoUrl"
-          type="url"
-          placeholder="https://example.com/logo.png"
-          value={logoUrl}
-          onChange={(e) => onLogoUrlChange(e.target.value)}
-          required
-        />
-        <p className="text-xs text-muted-foreground">
-          Provide a direct link to the bank&apos;s logo image
-        </p>
       </div>
 
       <CountrySelector
@@ -471,7 +450,6 @@ export function BankDialog() {
   const [aliases, setAliases] = useState<string[]>([]);
   const [aliasInput, setAliasInput] = useState("");
   const [website, setWebsite] = useState("");
-  const [logoUrl, setLogoUrl] = useState("");
   const [countries, setCountries] = useState<string[]>([]);
   const [weroSupport, setWeroSupport] = useState<SupportStatus>("unknown");
   const [p2pPaymentsSupport, setP2pPaymentsSupport] =
@@ -492,7 +470,6 @@ export function BankDialog() {
     setAliases([]);
     setAliasInput("");
     setWebsite("");
-    setLogoUrl("");
     setCountries([]);
     setWeroSupport("unknown");
     setP2pPaymentsSupport("unknown");
@@ -526,7 +503,6 @@ export function BankDialog() {
       setName(existingBank.name);
       setAliases(existingBank.aliases);
       setWebsite(existingBank.website);
-      setLogoUrl(existingBank.logoUrl);
       setCountries(existingBank.countries);
       setWeroSupport(existingBank.weroSupport);
       setP2pPaymentsSupport(existingBank.p2pPaymentsSupport);
@@ -583,7 +559,6 @@ export function BankDialog() {
     const errors: string[] = [];
     if (!name.trim()) errors.push("Bank name");
     if (!website.trim() || !isValidUrl(website.trim())) errors.push("Website");
-    if (!logoUrl.trim() || !isValidUrl(logoUrl.trim())) errors.push("Logo URL");
     if (countries.length === 0) errors.push("Countries");
     if (action === "edit" && !reason.trim()) errors.push("Reason for changes");
 
@@ -620,7 +595,7 @@ export function BankDialog() {
             name,
             aliases,
             website,
-            logoUrl,
+            logoUrl: `https://www.google.com/s2/favicons?domain=${new URL(website).hostname}&sz=64`,
             countries,
             weroSupport,
             p2pPaymentsSupport,
@@ -653,7 +628,7 @@ export function BankDialog() {
             name,
             aliases,
             website,
-            logoUrl,
+            logoUrl: existingBank!.logoUrl,
             countries,
             weroSupport,
             p2pPaymentsSupport,
@@ -722,8 +697,6 @@ export function BankDialog() {
                 onRemoveAlias={handleRemoveAlias}
                 website={website}
                 onWebsiteChange={setWebsite}
-                logoUrl={logoUrl}
-                onLogoUrlChange={setLogoUrl}
                 countries={countries}
                 onToggleCountry={handleToggleCountry}
                 weroSupport={weroSupport}

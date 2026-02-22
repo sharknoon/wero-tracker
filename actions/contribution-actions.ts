@@ -19,6 +19,13 @@ import { eq } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { headers } from "next/headers";
 import z from "zod";
+import { createBank, deleteBank, updateBank } from "./bank-actions";
+import {
+  createMerchant,
+  deleteMerchant,
+  updateMerchant,
+} from "./merchant-actions";
+import { requireAdmin, requireSession } from "./session-actions";
 
 const merchantContributionSchema = z.discriminatedUnion("action", [
   z.strictObject({
@@ -122,10 +129,7 @@ type BankContribution = z.infer<typeof bankContributionSchema>;
 export async function createBankContribution(
   contribution: BankContribution,
 ): Promise<{ success: boolean; message: string }> {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session?.user) {
-    return { success: false, message: "Unauthorized" };
-  }
+  const session = await requireSession();
 
   const result = bankContributionSchema.safeParse(contribution);
   if (!result.success) {
@@ -210,11 +214,7 @@ export async function rejectOrApproveContribution(
   action: Exclude<ContributionStatus, "pending">,
   reviewNote: string,
 ): Promise<{ success: boolean; message: string }> {
-  const session = await auth.api.getSession({ headers: await headers() });
-
-  if (!session?.user || session.user.role !== "admin") {
-    return { success: false, message: "Unauthorized" };
-  }
+  const session = await requireAdmin();
 
   const existing = await db.query.contributions.findFirst({
     where: (c, { eq }) => eq(c.id, id),
@@ -247,44 +247,26 @@ export async function rejectOrApproveContribution(
       if (existing.type === "merchant") {
         if (existing.action === "add") {
           const addData = existing.data as AddMerchantContributionData;
-          await tx.insert(merchants).values([addData]);
+          await createMerchant(addData);
         } else if (existing.action === "edit") {
           const editData =
             existing.data as EditOrDeleteMerchantContributionData;
-          await tx
-            .update(merchants)
-            .set(editData)
-            .where(eq(merchants.id, editData.id));
+          await updateMerchant(editData);
         } else if (existing.action === "delete") {
           const deleteData =
             existing.data as EditOrDeleteMerchantContributionData;
-          await tx.delete(merchants).where(eq(merchants.id, deleteData.id));
+          await deleteMerchant(deleteData.id);
         }
       } else if (existing.type === "bank") {
         if (existing.action === "add") {
           const addData = existing.data as AddBankContributionData;
-          await tx.insert(banks).values(addData.bank);
-          for (const app of addData.apps) {
-            await tx.insert(bankingApps).values(app);
-          }
+          await createBank(addData.bank, addData.apps);
         } else if (existing.action === "edit") {
           const editData = existing.data as EditOrDeleteBankContributionData;
-          await tx
-            .update(banks)
-            .set(editData.bank)
-            .where(eq(banks.id, editData.bank.id));
-          for (const app of editData.apps) {
-            await tx
-              .update(bankingApps)
-              .set(app)
-              .where(eq(bankingApps.id, app.id));
-          }
+          await updateBank(editData.bank, editData.apps);
         } else if (existing.action === "delete") {
           const deleteData = existing.data as EditOrDeleteBankContributionData;
-          await tx.delete(banks).where(eq(banks.id, deleteData.bank.id));
-          await tx
-            .delete(bankingApps)
-            .where(eq(bankingApps.bankId, deleteData.bank.id));
+          await deleteBank(deleteData.bank.id);
         }
       }
     }

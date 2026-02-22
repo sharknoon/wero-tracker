@@ -52,6 +52,7 @@ import type {
   ContributionStatus,
   ContributionType,
 } from "@/db/schema/contributions";
+import { rejectOrApproveContribution } from "@/actions/contribution-actions";
 
 // ============================================================================
 // Types
@@ -178,143 +179,34 @@ function TypeBadge({ type }: { type: ContributionType }) {
 }
 
 // ============================================================================
-// Data Preview
+// Logo Preview
 // ============================================================================
 
-function DiffViewer({
-  oldJson,
-  newJson,
-}: {
-  oldJson: string;
-  newJson: string;
-}) {
-  const changes = diffLines(oldJson, newJson);
-  let oldLine = 1;
-  let newLine = 1;
-
-  return (
-    <div className="rounded-lg border bg-muted/30 overflow-hidden text-xs font-mono min-w-0 max-w-full">
-      <div className="flex items-center gap-3 px-3 py-1.5 border-b bg-muted/50 text-muted-foreground text-[11px]">
-        <span className="inline-flex items-center gap-1">
-          <span className="inline-block size-2 rounded-full bg-red-400" />
-          Removed
-        </span>
-        <span className="inline-flex items-center gap-1">
-          <span className="inline-block size-2 rounded-full bg-green-400" />
-          Added
-        </span>
-      </div>
-      <pre className="overflow-x-auto min-w-0 max-w-full">
-        {changes.map((change, i) => {
-          const lines = change.value.replace(/\n$/, "").split("\n");
-          return lines.map((line, j) => {
-            let lineNum: string;
-            if (change.added) {
-              lineNum = String(newLine++).padStart(3, " ");
-            } else if (change.removed) {
-              lineNum = String(oldLine++).padStart(3, " ");
-            } else {
-              oldLine++;
-              lineNum = String(newLine++).padStart(3, " ");
-            }
-
-            return (
-              <div
-                key={`${i}-${j}`}
-                className={cn(
-                  "flex",
-                  change.added &&
-                    "bg-green-500/10 text-green-700 dark:text-green-400",
-                  change.removed &&
-                    "bg-red-500/10 text-red-700 dark:text-red-400",
-                )}
-              >
-                <span className="select-none w-10 shrink-0 text-right pr-2 text-muted-foreground/50 border-r border-border/50">
-                  {lineNum}
-                </span>
-                <span className="select-none w-5 shrink-0 text-center text-muted-foreground/60">
-                  {change.added ? "+" : change.removed ? "−" : " "}
-                </span>
-                <span className="px-1 whitespace-pre-wrap break-all min-w-0">
-                  {line}
-                </span>
-              </div>
-            );
-          });
-        })}
-      </pre>
-    </div>
-  );
-}
-
-function JsonBlock({
-  json,
-  variant,
-}: {
-  json: string;
-  variant: "add" | "delete";
-}) {
-  const lines = json.split("\n");
-  return (
-    <div className="rounded-lg border bg-muted/30 overflow-hidden text-xs font-mono min-w-0 max-w-full">
-      <div className="flex items-center gap-2 px-3 py-1.5 border-b bg-muted/50 text-muted-foreground text-[11px]">
-        <span className="inline-flex items-center gap-1">
-          <span
-            className={cn(
-              "inline-block size-2 rounded-full",
-              variant === "add" ? "bg-green-400" : "bg-red-400",
-            )}
-          />
-          {variant === "add" ? "New data" : "Data to remove"}
-        </span>
-      </div>
-      <pre className="overflow-x-auto min-w-0 max-w-full">
-        {lines.map((line, i) => (
-          <div
-            key={i}
-            className={cn(
-              "flex",
-              variant === "add"
-                ? "bg-green-500/5 text-green-700 dark:text-green-400"
-                : "bg-red-500/5 text-red-700 dark:text-red-400",
-            )}
-          >
-            <span className="select-none w-10 shrink-0 text-right pr-2 text-muted-foreground/50 border-r border-border/50">
-              {String(i + 1).padStart(3, " ")}
-            </span>
-            <span className="select-none w-5 shrink-0 text-center text-muted-foreground/60">
-              {variant === "add" ? "+" : "−"}
-            </span>
-            <span className="px-1 whitespace-pre-wrap break-all min-w-0">
-              {line}
-            </span>
-          </div>
-        ))}
-      </pre>
-    </div>
-  );
-}
-
-function DataPreview({
+function LogoPreview({
   contribution,
 }: {
   contribution: ContributionWithRelations;
 }) {
-  const data = contribution.data;
-  const previousData = contribution.previousData;
+  const data = contribution.data as Record<string, unknown> | null;
+  const logoUrl = data?.logoUrl as string | undefined;
 
-  const newJson = JSON.stringify(data, null, 2);
-
-  if (contribution.action === "edit" && previousData) {
-    const oldJson = JSON.stringify(previousData, null, 2);
-    return <DiffViewer oldJson={oldJson} newJson={newJson} />;
-  }
+  if (!logoUrl) return null;
 
   return (
-    <JsonBlock
-      json={newJson}
-      variant={contribution.action === "delete" ? "delete" : "add"}
-    />
+    <div className="space-y-1.5">
+      <Label className="text-muted-foreground text-xs">Logo Preview</Label>
+      <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={logoUrl}
+          alt="Logo preview"
+          className="size-12 rounded-md object-contain bg-white"
+        />
+        <span className="text-xs text-muted-foreground truncate min-w-0">
+          {logoUrl}
+        </span>
+      </div>
+    </div>
   );
 }
 
@@ -357,7 +249,8 @@ function ReviewDialog({
 
         <ScrollArea className="max-h-[60vh] pr-4 -mr-4">
           <div className="space-y-4 py-2">
-            <DataPreview contribution={contribution} />
+            {/* TODO add diff editor here */}
+            <LogoPreview contribution={contribution} />
 
             {contribution.reason && (
               <>
@@ -566,15 +459,13 @@ export function ContributionsPage({
   ) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/contributions/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status, reviewNote }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        alert(error.error || "Failed to update contribution");
+      const { success, message } = await rejectOrApproveContribution(
+        id,
+        status,
+        reviewNote,
+      );
+      if (!success) {
+        alert(message || "Failed to update contribution");
         return;
       }
 

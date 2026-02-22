@@ -8,6 +8,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import { supportStatuses } from "./support";
+import { createInsertSchema } from "drizzle-zod";
 
 export const categories = pgEnum("categories", [
   "fashion",
@@ -24,7 +25,7 @@ export type MerchantCategory = (typeof categories.enumValues)[number];
 export const merchants = pgTable(
   "merchants",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: uuid("id").primaryKey(),
     name: text("name").notNull(),
     aliases: json().$type<string[]>().default([]).notNull(),
     website: text("website").notNull(),
@@ -42,3 +43,4 @@ export const merchants = pgTable(
 );
 export type Merchant = typeof merchants.$inferSelect;
 export type NewMerchant = typeof merchants.$inferInsert;
+export const newMerchantSchema = createInsertSchema(merchants);
