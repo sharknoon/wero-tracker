@@ -4475,6 +4475,36 @@
           "POSPaymentsSupport": "unknown"
         },
         {
+          "id": "e028f7a2-275d-4bde-899c-14a723fc800f",
+          "name": "Sparda-Bank Nürnberg eG",
+          "website": "https://example.com",
+          "bankContext": "GENODEF1S06",
+          "appIds": [
+            "cd2de369-d3e3-444f-90de-6cefad8272f9"
+          ],
+          "aliases": [
+            "Nürnberg",
+            "Würzburg",
+            "Bayreuth",
+            "Aschaffenburg",
+            "Schweinfurt",
+            "Fürth",
+            "Bamberg",
+            "Erlangen",
+            "Lichtenfels",
+            "Roth",
+            "Ansbach",
+            "Coburg",
+            "Schwabach",
+            "Neumarkt",
+            "GENODEF1S06"
+          ],
+          "standaloneAppSupport": "unsupported",
+          "P2PPaymentsSupport": "supported",
+          "eCommercePaymentsSupport": "supported",
+          "POSPaymentsSupport": "unknown"
+        },
+        {
           "id": "72ee56c4-1481-4424-8da2-d84038eb4570",
           "name": "Sparda-Bank Ostbayern eG",
           "website": "https://www.sparda-ostbayern.de/",
