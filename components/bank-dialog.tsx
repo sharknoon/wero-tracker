@@ -638,7 +638,7 @@ export function BankDialog() {
             notes,
           },
           apps: apps.map((app) => ({
-            id: app.id ?? "",
+            id: app.id!,
             name: app.name,
             bankId: existingBank!.id,
             iconUrl: app.iconUrl,

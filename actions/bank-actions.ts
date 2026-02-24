@@ -14,18 +14,31 @@ import {
 import { del, mirrorUrl } from "@/lib/s3";
 import { requireAdmin } from "@/actions/session-actions";
 import { eq, asc } from "drizzle-orm";
+import { cacheLife, cacheTag, revalidateTag } from "next/cache";
+import z from "zod";
 
 export async function getAllBanks() {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("wero-data");
+
   return db.select().from(banksTable).orderBy(asc(banksTable.name));
 }
 
 export async function getAllBankingApps() {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("wero-data");
+
   return db.select().from(bankingAppsTable).orderBy(asc(bankingAppsTable.name));
 }
 
 export async function createBank(
   bank: Omit<NewBank, "id" | "createdAt" | "updatedAt">,
-  bankingApps: Omit<NewBankingApp, "id" | "createdAt" | "updatedAt">[],
+  bankingApps: Omit<
+    NewBankingApp,
+    "id" | "bankId" | "createdAt" | "updatedAt"
+  >[],
 ): Promise<{ bank: Bank; bankingApps: BankingApp[] }> {
   await requireAdmin();
 
@@ -37,16 +50,16 @@ export async function createBank(
       updatedAt: true,
     })
     .parse(bank);
-  newBankingAppSchema
-    .strict()
-    .omit({
+  z.array(
+    newBankingAppSchema.strict().omit({
       id: true,
+      bankId: true,
       createdAt: true,
       updatedAt: true,
-    })
-    .parse(bankingApps);
+    }),
+  ).parse(bankingApps);
 
-  return await db.transaction(async (tx) => {
+  const result = await db.transaction(async (tx) => {
     const id = crypto.randomUUID();
     const value: NewBank = {
       ...bank,
@@ -84,6 +97,10 @@ export async function createBank(
 
     return { bank: insertedBank, bankingApps: insertedBankingApps };
   });
+
+  revalidateTag("wero-data", "max");
+
+  return result;
 }
 
 export async function updateBank(
@@ -107,7 +124,7 @@ export async function updateBank(
     })
     .parse(bankingApps);
 
-  return await db.transaction(async (tx) => {
+  const result = await db.transaction(async (tx) => {
     const value: NewBank = {
       ...bank,
       logoUrl: bank.logoUrl.startsWith(process.env.S3_PUBLIC_ACCESS_ENDPOINT!)
@@ -117,17 +134,18 @@ export async function updateBank(
       updatedAt: new Date(),
     };
 
-    const insertedBank = await tx
-      .insert(banksTable)
-      .values(value)
+    const updatedBank = await tx
+      .update(banksTable)
+      .set(value)
+      .where(eq(banksTable.id, bank.id))
       .returning()
-      .then(([inserted]) => inserted);
+      .then(([updated]) => updated);
 
-    const insertedBankingApps = await Promise.all(
+    const updatedBankingApps = await Promise.all(
       bankingApps.map(async (app) => {
         const appValue: BankingApp = {
           ...app,
-          bankId: insertedBank.id,
+          bankId: updatedBank.id,
           iconUrl: app.iconUrl.startsWith(
             process.env.S3_PUBLIC_ACCESS_ENDPOINT!,
           )
@@ -138,15 +156,20 @@ export async function updateBank(
         };
 
         return tx
-          .insert(bankingAppsTable)
-          .values(appValue)
+          .update(bankingAppsTable)
+          .set(appValue)
+          .where(eq(bankingAppsTable.id, app.id))
           .returning()
           .then(([inserted]) => inserted);
       }),
     );
 
-    return { bank: insertedBank, bankingApps: insertedBankingApps };
+    return { bank: updatedBank, bankingApps: updatedBankingApps };
   });
+
+  revalidateTag("wero-data", "max");
+
+  return result;
 }
 
 export async function deleteBank(id: string): Promise<void> {
@@ -176,4 +199,6 @@ export async function deleteBank(id: string): Promise<void> {
       }
     }
   });
+
+  revalidateTag("wero-data", "max");
 }

@@ -1,5 +1,12 @@
 import { db } from "@/db";
-import { bankingApps, banks, NewBank, NewBankingApp } from "@/db/schema/banks";
+import {
+  Bank,
+  BankingApp,
+  bankingApps,
+  banks,
+  NewBank,
+  NewBankingApp,
+} from "@/db/schema/banks";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -7,7 +14,9 @@ import z from "zod";
 import { PgTable } from "drizzle-orm/pg-core";
 import { getTableColumns, sql, type SQL } from "drizzle-orm";
 import { toSnakeCase } from "drizzle-orm/casing";
-import { mirrorUrl, put } from "@/lib/s3";
+import { createBank, updateBank } from "@/actions/bank-actions";
+import { createBankContribution } from "@/actions/contribution-actions";
+import { deepEqual } from "@/lib/utils";
 
 /**
  * Builds an object mapping column names to their excluded values for upsert operations.
@@ -175,77 +184,111 @@ export async function GET() {
   const p2pData = p2pResult.data.data;
   const ecommerceData = ecommerceResult.data;
 
-  await db.transaction(async (tx) => {
-    const appsToUpsert: Map<string, NewBankingApp> = new Map();
-    const banksToUpsert: Map<string, NewBank> = new Map();
+  const appsToUpsert: Map<
+    string,
+    Omit<BankingApp, "createdAt" | "updatedAt">
+  > = new Map();
+  const banksToUpsert: Map<
+    string,
+    { existing: boolean; bank: Omit<Bank, "createdAt" | "updatedAt"> }
+  > = new Map();
 
-    for (const brand of p2pData.brands) {
-      if (brand.banks.length > 0) {
-        const firstBank = brand.banks[0];
+  for (const brand of p2pData.brands) {
+    if (brand.banks.length > 0) {
+      const firstBank = brand.banks[0];
 
-        // Find matching ecommerce bank data
-        const ecommerceBankData = ecommerceData
-          .flatMap((b) => b.banks)
-          .find((b) => b.id === firstBank.id);
+      // Find matching ecommerce bank data
+      const ecommerceBankData = ecommerceData
+        .flatMap((b) => b.banks)
+        .find((b) => b.id === firstBank.id);
 
-        // Get existing bank data for preserving manual fields
-        const existingBank = await tx.query.banks.findFirst({
-          where: eq(banks.id, brand.id),
-        });
+      // Get existing bank data for preserving manual fields
+      const existingBank = await db.query.banks.findFirst({
+        where: eq(banks.id, brand.id),
+      });
 
+      const possibleBankToUpsert = {
+        id: brand.id,
+        name: brand.name,
+        website: existingBank?.website || "https://example.com",
+        aliases: brand.aliases,
+        countries: brand.countries,
+        logoUrl: brand.logoUrl,
+        standaloneAppSupport: firstBank.supportsStandaloneApp
+          ? "supported"
+          : existingBank?.standaloneAppSupport || "unsupported",
+        weroSupport: "supported" as const,
+        p2pPaymentsSupport: "supported" as const,
+        eCommercePaymentsSupport:
+          ecommerceBankData?.supportedPaymentUseCases.includes(
+            "SingleImmediatePayments",
+          )
+            ? ("supported" as const)
+            : ("unsupported" as const),
+        posPaymentsSupport: existingBank?.posPaymentsSupport || "unknown",
+        notes: existingBank?.notes || "Automatically imported from Wero API",
+      };
+
+      if (!deepEqual(possibleBankToUpsert, existingBank)) {
         banksToUpsert.set(brand.id, {
-          id: brand.id,
-          name: brand.name,
-          website: existingBank?.website || "https://example.com",
-          aliases: brand.aliases,
-          countries: brand.countries,
-          logoUrl: await mirrorUrl(brand.logoUrl, brand.id),
-          standaloneAppSupport: firstBank.supportsStandaloneApp
-            ? "supported"
-            : existingBank?.standaloneAppSupport || "unsupported",
-          weroSupport: "supported",
-          p2pPaymentsSupport: "supported",
-          eCommercePaymentsSupport:
-            ecommerceBankData?.supportedPaymentUseCases.includes(
-              "SingleImmediatePayments",
-            )
-              ? "supported"
-              : "unsupported",
-          posPaymentsSupport: existingBank?.posPaymentsSupport || "unknown",
-        });
-      }
-
-      for (const app of brand.apps) {
-        appsToUpsert.set(app.id, {
-          id: app.id,
-          name: app.name,
-          bankId: brand.id,
-          iconUrl: await mirrorUrl(app.iconUrl, app.id),
-          universalLink: app.universalLink,
-          supportsDesktop: app.supportsDesktop,
-          weroSupport: "supported",
+          existing: !!existingBank,
+          bank: possibleBankToUpsert,
         });
       }
     }
 
-    // Upsert the banks
-    await tx
-      .insert(banks)
-      .values(Array.from(banksToUpsert.values()))
-      .onConflictDoUpdate({
-        target: banks.id,
-        set: buildConflictUpdateColumnsExcept(banks, ["id", "website"]),
+    for (const app of brand.apps) {
+      const existingBankingapp = await db.query.bankingApps.findFirst({
+        where: eq(bankingApps.id, app.id),
       });
 
-    // Upsert the banking apps
-    await tx
-      .insert(bankingApps)
-      .values(Array.from(appsToUpsert.values()))
-      .onConflictDoUpdate({
-        target: bankingApps.id,
-        set: buildConflictUpdateColumnsExcept(bankingApps, ["id"]),
-      });
-  });
+      const possibleAppToUpsert = {
+        id: app.id,
+        name: app.name,
+        bankId: brand.id,
+        iconUrl: app.iconUrl,
+        universalLink: app.universalLink,
+        supportsDesktop: app.supportsDesktop,
+        weroSupport: "supported" as const,
+      };
+
+      if (!deepEqual(possibleAppToUpsert, existingBankingapp)) {
+        appsToUpsert.set(app.id, possibleAppToUpsert);
+      }
+    }
+  }
+
+  for (const { existing, bank } of banksToUpsert.values()) {
+    if (existing) {
+      createBankContribution(
+        {
+          action: "edit",
+          data: {
+            bank,
+            apps: Array.from(appsToUpsert.values()).filter(
+              (app) => app.bankId === bank.id,
+            ),
+          },
+          reason: "Automated update from Wero API",
+        },
+        "system",
+      );
+    } else {
+      createBankContribution(
+        {
+          action: "add",
+          data: {
+            bank,
+            apps: Array.from(appsToUpsert.values()).filter(
+              (app) => app.bankId === bank.id,
+            ),
+          },
+          reason: "Automated addition from Wero API",
+        },
+        "system",
+      );
+    }
+  }
 
   return NextResponse.json({
     success: true,

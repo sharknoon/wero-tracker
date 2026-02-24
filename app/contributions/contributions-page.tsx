@@ -46,13 +46,18 @@ import {
 import { diffLines } from "diff";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import type { ContributionWithRelations } from "./page";
 import type {
+  BankContributionData,
   ContributionAction,
   ContributionStatus,
   ContributionType,
+  MerchantContributionData,
 } from "@/db/schema/contributions";
-import { rejectOrApproveContribution } from "@/actions/contribution-actions";
+import {
+  ContributionWithRelations,
+  rejectOrApproveContribution,
+} from "@/actions/contribution-actions";
+import stringify from "json-stable-stringify";
 
 // ============================================================================
 // Types
@@ -179,6 +184,147 @@ function TypeBadge({ type }: { type: ContributionType }) {
 }
 
 // ============================================================================
+// Data Preview
+// ============================================================================
+
+function DiffViewer({
+  oldJson,
+  newJson,
+}: {
+  oldJson: string;
+  newJson: string;
+}) {
+  const changes = diffLines(oldJson, newJson);
+  let oldLine = 1;
+  let newLine = 1;
+
+  return (
+    <div className="rounded-lg border bg-muted/30 overflow-hidden text-xs font-mono min-w-0 max-w-full">
+      <div className="flex items-center gap-3 px-3 py-1.5 border-b bg-muted/50 text-muted-foreground text-[11px]">
+        <span className="inline-flex items-center gap-1">
+          <span className="inline-block size-2 rounded-full bg-red-400" />
+          Removed
+        </span>
+        <span className="inline-flex items-center gap-1">
+          <span className="inline-block size-2 rounded-full bg-green-400" />
+          Added
+        </span>
+      </div>
+      <pre className="overflow-x-auto min-w-0 max-w-full">
+        {changes.map((change, i) => {
+          const lines = change.value.replace(/\n$/, "").split("\n");
+          return lines.map((line, j) => {
+            let lineNum: string;
+            if (change.added) {
+              lineNum = String(newLine++).padStart(3, " ");
+            } else if (change.removed) {
+              lineNum = String(oldLine++).padStart(3, " ");
+            } else {
+              oldLine++;
+              lineNum = String(newLine++).padStart(3, " ");
+            }
+
+            return (
+              <div
+                key={`${i}-${j}`}
+                className={cn(
+                  "flex",
+                  change.added &&
+                    "bg-green-500/10 text-green-700 dark:text-green-400",
+                  change.removed &&
+                    "bg-red-500/10 text-red-700 dark:text-red-400",
+                )}
+              >
+                <span className="select-none w-10 shrink-0 text-right pr-2 text-muted-foreground/50 border-r border-border/50">
+                  {lineNum}
+                </span>
+                <span className="select-none w-5 shrink-0 text-center text-muted-foreground/60">
+                  {change.added ? "+" : change.removed ? "−" : " "}
+                </span>
+                <span className="px-1 whitespace-pre-wrap break-all min-w-0">
+                  {line}
+                </span>
+              </div>
+            );
+          });
+        })}
+      </pre>
+    </div>
+  );
+}
+
+function JsonBlock({
+  json,
+  variant,
+}: {
+  json: string;
+  variant: "add" | "delete";
+}) {
+  const lines = json.split("\n");
+  return (
+    <div className="rounded-lg border bg-muted/30 overflow-hidden text-xs font-mono min-w-0 max-w-full">
+      <div className="flex items-center gap-2 px-3 py-1.5 border-b bg-muted/50 text-muted-foreground text-[11px]">
+        <span className="inline-flex items-center gap-1">
+          <span
+            className={cn(
+              "inline-block size-2 rounded-full",
+              variant === "add" ? "bg-green-400" : "bg-red-400",
+            )}
+          />
+          {variant === "add" ? "New data" : "Data to remove"}
+        </span>
+      </div>
+      <pre className="overflow-x-auto min-w-0 max-w-full">
+        {lines.map((line, i) => (
+          <div
+            key={i}
+            className={cn(
+              "flex",
+              variant === "add"
+                ? "bg-green-500/5 text-green-700 dark:text-green-400"
+                : "bg-red-500/5 text-red-700 dark:text-red-400",
+            )}
+          >
+            <span className="select-none w-10 shrink-0 text-right pr-2 text-muted-foreground/50 border-r border-border/50">
+              {String(i + 1).padStart(3, " ")}
+            </span>
+            <span className="select-none w-5 shrink-0 text-center text-muted-foreground/60">
+              {variant === "add" ? "+" : "−"}
+            </span>
+            <span className="px-1 whitespace-pre-wrap break-all min-w-0">
+              {line}
+            </span>
+          </div>
+        ))}
+      </pre>
+    </div>
+  );
+}
+
+function DataPreview({
+  contribution,
+}: {
+  contribution: ContributionWithRelations;
+}) {
+  const data = contribution.data;
+  const previousData = contribution.previousData;
+
+  const newJson = stringify(data, { space: "  " }) ?? "";
+
+  if (contribution.action === "edit" && previousData) {
+    const oldJson = stringify(previousData, { space: "  " }) ?? "";
+    return <DiffViewer oldJson={oldJson} newJson={newJson} />;
+  }
+
+  return (
+    <JsonBlock
+      json={newJson}
+      variant={contribution.action === "delete" ? "delete" : "add"}
+    />
+  );
+}
+
+// ============================================================================
 // Logo Preview
 // ============================================================================
 
@@ -233,8 +379,9 @@ function ReviewDialog({
 }) {
   const [reviewNote, setReviewNote] = useState("");
   const entityName =
-    ((contribution.data as Record<string, unknown>)?.name as string) ??
-    "Unknown";
+    contribution.type === "bank"
+      ? (contribution.data as BankContributionData).bank.name
+      : (contribution.data as MerchantContributionData).name;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -249,7 +396,7 @@ function ReviewDialog({
 
         <ScrollArea className="max-h-[60vh] pr-4 -mr-4">
           <div className="space-y-4 py-2">
-            {/* TODO add diff editor here */}
+            <DataPreview contribution={contribution} />
             <LogoPreview contribution={contribution} />
 
             {contribution.reason && (
@@ -321,8 +468,9 @@ function ContributionCard({
   onReview: (c: ContributionWithRelations) => void;
 }) {
   const entityName =
-    ((contribution.data as Record<string, unknown>)?.name as string) ??
-    "Unknown";
+    contribution.type === "bank"
+      ? (contribution.data as BankContributionData).bank.name
+      : (contribution.data as MerchantContributionData).name;
 
   return (
     <Card className="py-0">

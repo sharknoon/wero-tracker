@@ -3,11 +3,12 @@ import { db } from "@/db";
 import { bankingApps, banks } from "@/db/schema/banks";
 import { merchants } from "@/db/schema/merchants";
 import { asc, sql } from "drizzle-orm";
-import { cacheLife } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 
 async function getWeroData() {
   "use cache";
   cacheLife("hours");
+  cacheTag("wero-data");
 
   const [banksData, merchantsData, lastUpdated] = await Promise.all([
     db.query.banks.findMany({

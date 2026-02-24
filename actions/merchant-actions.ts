@@ -10,8 +10,13 @@ import {
 import { del, mirrorUrl } from "@/lib/s3";
 import { requireAdmin } from "@/actions/session-actions";
 import { eq, asc } from "drizzle-orm";
+import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 
 export async function getAllMerchants() {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("wero-data");
+
   return db.select().from(merchantsTable).orderBy(asc(merchantsTable.name));
 }
 
@@ -38,11 +43,15 @@ export async function createMerchant(
     updatedAt: new Date(),
   };
 
-  return db
+  const result = await db
     .insert(merchantsTable)
     .values(value)
     .returning()
     .then(([inserted]) => inserted);
+
+  revalidateTag("wero-data", "max");
+
+  return result;
 }
 
 export async function updateMerchant(
@@ -67,11 +76,16 @@ export async function updateMerchant(
     updatedAt: new Date(),
   };
 
-  return db
-    .insert(merchantsTable)
-    .values(value)
+  const result = await db
+    .update(merchantsTable)
+    .set(value)
+    .where(eq(merchantsTable.id, merchant.id))
     .returning()
-    .then(([inserted]) => inserted);
+    .then(([updated]) => updated);
+
+  revalidateTag("wero-data", "max");
+
+  return result;
 }
 
 export async function deleteMerchant(id: string): Promise<void> {
@@ -87,4 +101,6 @@ export async function deleteMerchant(id: string): Promise<void> {
       await del(merchant.logoUrl);
     }
   }
+
+  revalidateTag("wero-data", "max");
 }

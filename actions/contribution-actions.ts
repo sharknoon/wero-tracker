@@ -19,6 +19,7 @@ import { eq } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { headers } from "next/headers";
 import z from "zod";
+import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 import { createBank, deleteBank, updateBank } from "./bank-actions";
 import {
   createMerchant,
@@ -86,6 +87,8 @@ export async function createMerchantContribution(
   };
   await db.insert(contributions).values(newContribution);
 
+  revalidateTag("contributions", "max");
+
   return { success: true, message: "Contribution submitted successfully" };
 }
 
@@ -101,11 +104,13 @@ const bankContributionSchema = z.discriminatedUnion("action", [
       apps: z.array(
         createInsertSchema(bankingApps).strict().omit({
           id: true,
+          bankId: true,
           createdAt: true,
           updatedAt: true,
         }),
       ),
     }),
+    reason: z.string().max(2000).optional(),
   }),
   z.strictObject({
     action: z.union([z.literal("edit"), z.literal("delete")]),
@@ -128,8 +133,12 @@ type BankContribution = z.infer<typeof bankContributionSchema>;
 
 export async function createBankContribution(
   contribution: BankContribution,
+  userId?: string,
 ): Promise<{ success: boolean; message: string }> {
-  const session = await requireSession();
+  if (!userId) {
+    const session = await requireSession();
+    userId = session.user.id;
+  }
 
   const result = bankContributionSchema.safeParse(contribution);
   if (!result.success) {
@@ -149,11 +158,11 @@ export async function createBankContribution(
     });
     if (existing) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { createdAt, updatedAt, ...bank } = existing;
+      const { createdAt, updatedAt, bankingApps, ...bank } = existing;
 
       previousData = {
         bank,
-        apps: existing.bankingApps.map(
+        apps: bankingApps.map(
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           ({ createdAt, updatedAt, ...rest }) => rest,
         ),
@@ -167,17 +176,27 @@ export async function createBankContribution(
     status: "pending",
     data: contribution.data,
     previousData,
-    reason: "reason" in contribution ? contribution.reason : null,
-    userId: session.user.id,
+    reason: contribution.reason || null,
+    userId,
   };
   await db.insert(contributions).values(newContribution);
+
+  revalidateTag("contributions", "max");
+
   return { success: true, message: "Contribution submitted successfully" };
 }
 
-export async function listContributions(
+export type ContributionWithRelations = Awaited<
+  ReturnType<typeof getAllContributions>
+>[number];
+export async function getAllContributions(
   status?: ContributionStatus,
   type?: ContributionType,
 ) {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("contributions");
+
   return await db.query.contributions.findMany({
     where: (c, { and, eq }) => {
       const conditions = [];
@@ -271,6 +290,8 @@ export async function rejectOrApproveContribution(
       }
     }
   });
+
+  revalidateTag("contributions", "max");
 
   return {
     success: true,

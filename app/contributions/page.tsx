@@ -1,4 +1,4 @@
-import { db } from "@/db";
+import { getAllContributions } from "@/actions/contribution-actions";
 import { ContributionsPage } from "./contributions-page";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
@@ -8,28 +8,6 @@ export const metadata = {
   title: "Contributions - Wero Tracker",
   description: "Review and manage community contributions to the Wero Tracker.",
 };
-
-async function getContributions() {
-  return db.query.contributions.findMany({
-    with: {
-      user: {
-        columns: {
-          id: true,
-          name: true,
-          image: true,
-        },
-      },
-      reviewer: {
-        columns: {
-          id: true,
-          name: true,
-          image: true,
-        },
-      },
-    },
-    orderBy: (c, { desc }) => [desc(c.createdAt)],
-  });
-}
 
 async function getCurrentUserRole() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -41,13 +19,9 @@ async function getCurrentUserRole() {
   };
 }
 
-export type ContributionWithRelations = Awaited<
-  ReturnType<typeof getContributions>
->[number];
-
 async function ContributionsRoute() {
   const [contributions, currentUser] = await Promise.all([
-    getContributions(),
+    getAllContributions(),
     getCurrentUserRole(),
   ]);
 
