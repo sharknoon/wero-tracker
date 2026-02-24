@@ -1,8 +1,8 @@
 import zod from "zod";
 import { db } from "./db";
 import { merchants } from "./db/schema/merchants";
-import { mirrorUrl, put } from "./lib/s3";
-import { bankingApps, banks } from "./db/schema/banks";
+import { mirrorUrl } from "./lib/s3";
+import { banks } from "./db/schema/banks";
 
 const banksUnverified = {
   brands: [
@@ -19880,24 +19880,18 @@ for (const brand of banksData.brands) {
     p2pPaymentsSupport: brand.banks[0]?.P2PPaymentsSupport ?? "unknown",
     posPaymentsSupport: brand.banks[0]?.POSPaymentsSupport ?? "unknown",
     standaloneAppSupport: brand.banks[0]?.standaloneAppSupport ?? "unknown",
+    bankingApps: await Promise.all(
+      brand.apps.map(async (app) => ({
+        id: app.id,
+        name: app.name,
+        bankId: brand.id,
+        iconUrl: await mirrorUrl(app.iconUrl, app.id),
+        universalLink: app.universalLink,
+        supportsDesktop: app.supportsDesktop,
+        weroSupport: app.weroSupport,
+      })),
+    ),
   });
-
-  await db
-    .insert(bankingApps)
-    .values(
-      await Promise.all(
-        brand.apps.map(async (app) => ({
-          id: app.id,
-          name: app.name,
-          bankId: brand.id,
-          iconUrl: await mirrorUrl(app.iconUrl, app.id),
-          universalLink: app.universalLink,
-          supportsDesktop: app.supportsDesktop,
-          weroSupport: app.weroSupport,
-        })),
-      ),
-    )
-    .onConflictDoNothing();
 }
 
 await db.insert(merchants).values(
