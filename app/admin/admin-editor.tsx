@@ -45,7 +45,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
-import { Bank, BankingApp } from "@/db/schema/banks";
+import { Bank } from "@/db/schema/banks";
 import { updateBank } from "@/actions/bank-actions";
 import { updateMerchant } from "@/actions/merchant-actions";
 
@@ -53,17 +53,7 @@ import { updateMerchant } from "@/actions/merchant-actions";
 // Bank Editor
 // ============================================================================
 
-type BankingAppState = Omit<BankingApp, "createdAt" | "updatedAt">;
-
-function BankEditor({
-  bank,
-  bankingApps,
-  onDone,
-}: {
-  bank: Bank;
-  bankingApps: BankingApp[];
-  onDone: () => void;
-}) {
+function BankEditor({ bank, onDone }: { bank: Bank; onDone: () => void }) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const [name, setName] = useState(bank.name);
@@ -86,9 +76,8 @@ function BankEditor({
   const [standaloneAppSupport, setStandaloneAppSupport] =
     useState<SupportStatus>(bank.standaloneAppSupport);
   const [notes, setNotes] = useState(bank.notes ?? "");
-  const [appStates, setAppStates] = useState<BankingAppState[]>(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    bankingApps.map(({ createdAt, updatedAt, ...rest }) => rest),
+  const [bankingApps, setBankingApps] = useState<Bank["bankingApps"]>(
+    bank.bankingApps,
   );
 
   function handleAddAlias() {
@@ -99,8 +88,11 @@ function BankEditor({
     }
   }
 
-  function updateApp(appId: string, patch: Partial<BankingAppState>) {
-    setAppStates((prev) =>
+  function updateApp(
+    appId: string,
+    patch: Partial<Bank["bankingApps"][number]>,
+  ) {
+    setBankingApps((prev) =>
       prev.map((a) => (a.id === appId ? { ...a, ...patch } : a)),
     );
   }
@@ -108,23 +100,21 @@ function BankEditor({
   function handleSave() {
     startTransition(async () => {
       try {
-        await updateBank(
-          {
-            id: bank.id,
-            name,
-            aliases,
-            website,
-            logoUrl,
-            countries,
-            weroSupport,
-            p2pPaymentsSupport,
-            eCommercePaymentsSupport,
-            posPaymentsSupport,
-            standaloneAppSupport,
-            notes: notes || null,
-          },
-          appStates,
-        );
+        await updateBank({
+          id: bank.id,
+          name,
+          aliases,
+          website,
+          logoUrl,
+          countries,
+          weroSupport,
+          p2pPaymentsSupport,
+          eCommercePaymentsSupport,
+          posPaymentsSupport,
+          standaloneAppSupport,
+          bankingApps,
+          notes: notes || null,
+        });
         router.refresh();
         onDone();
       } catch (error) {
@@ -239,12 +229,12 @@ function BankEditor({
             />
           </div>
 
-          {appStates.length > 0 && (
+          {bankingApps.length > 0 && (
             <>
               <Separator />
               <h4 className="font-semibold">Banking Apps</h4>
               <div className="space-y-3">
-                {appStates.map((app) => (
+                {bankingApps.map((app) => (
                   <BankingAppEditor
                     key={app.id}
                     app={app}
@@ -281,8 +271,8 @@ function BankingAppEditor({
   app,
   onChange,
 }: {
-  app: BankingAppState;
-  onChange: (patch: Partial<BankingAppState>) => void;
+  app: Bank["bankingApps"][number];
+  onChange: (patch: Partial<Bank["bankingApps"][number]>) => void;
 }) {
   return (
     <Card>
@@ -530,15 +520,7 @@ function MerchantEditor({
 // List Items
 // ============================================================================
 
-function BankListItem({
-  bank,
-  bankingApps,
-  onEdit,
-}: {
-  bank: Bank;
-  bankingApps: BankingApp[];
-  onEdit: () => void;
-}) {
+function BankListItem({ bank, onEdit }: { bank: Bank; onEdit: () => void }) {
   const statusOption = supportStatusOptions.find(
     (o) => o.value === bank.weroSupport,
   );
@@ -565,8 +547,8 @@ function BankListItem({
               </span>
             )}
             <span>
-              {bankingApps.length} app
-              {bankingApps.length !== 1 ? "s" : ""}
+              {bank.bankingApps.length} app
+              {bank.bankingApps.length !== 1 ? "s" : ""}
             </span>
           </div>
         </div>
@@ -636,15 +618,10 @@ function MerchantListItem({
 
 interface AdminEditorProps {
   banks: Bank[];
-  bankingApps: BankingApp[];
   merchants: Merchant[];
 }
 
-export function AdminEditor({
-  banks,
-  bankingApps,
-  merchants,
-}: AdminEditorProps) {
+export function AdminEditor({ banks, merchants }: AdminEditorProps) {
   const [editingBank, setEditingBank] = useState<Bank | null>(null);
   const [editingMerchant, setEditingMerchant] = useState<Merchant | null>(null);
   const [bankSearch, setBankSearch] = useState("");
@@ -727,9 +704,6 @@ export function AdminEditor({
                           <BankListItem
                             key={bank.id}
                             bank={bank}
-                            bankingApps={bankingApps.filter(
-                              (app) => app.bankId === bank.id,
-                            )}
                             onEdit={() => setEditingBank(bank)}
                           />
                         ))}
@@ -749,9 +723,6 @@ export function AdminEditor({
               <BankEditor
                 key={editingBank.id}
                 bank={editingBank}
-                bankingApps={bankingApps.filter(
-                  (app) => app.bankId === editingBank.id,
-                )}
                 onDone={() => setEditingBank(null)}
               />
             )}

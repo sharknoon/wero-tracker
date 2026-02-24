@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { AdminEditor } from "./admin-editor";
-import { getAllBankingApps, getAllBanks } from "@/actions/bank-actions";
+import { getAllBanks } from "@/actions/bank-actions";
 import { getAllMerchants } from "@/actions/merchant-actions";
 import { Suspense } from "react";
 
@@ -18,19 +18,12 @@ export async function AdminRoute() {
     redirect("/");
   }
 
-  const [banks, bankingApps, merchants] = await Promise.all([
+  const [banks, merchants] = await Promise.all([
     getAllBanks(),
-    getAllBankingApps(),
     getAllMerchants(),
   ]);
 
-  return (
-    <AdminEditor
-      banks={banks}
-      bankingApps={bankingApps}
-      merchants={merchants}
-    />
-  );
+  return <AdminEditor banks={banks} merchants={merchants} />;
 }
 
 export default function AdminPage() {
