@@ -10,7 +10,7 @@ import {
 import { relations } from "drizzle-orm";
 import { users } from "./auth";
 import { Merchant, NewMerchant } from "./merchants";
-import { Bank, BankingApp, NewBank, NewBankingApp } from "./banks";
+import { Bank, NewBank } from "./banks";
 
 export const contributionTypes = pgEnum("contribution_types", [
   "bank",
@@ -46,14 +46,14 @@ export type MerchantContributionData =
   | AddMerchantContributionData
   | EditOrDeleteMerchantContributionData;
 
-export type AddBankContributionData = {
-  bank: Omit<NewBank, "id" | "createdAt" | "updatedAt">;
-  apps: Omit<NewBankingApp, "id" | "bankId" | "createdAt" | "updatedAt">[];
-};
-export type EditOrDeleteBankContributionData = {
-  bank: Omit<Bank, "createdAt" | "updatedAt">;
-  apps: Omit<BankingApp, "createdAt" | "updatedAt">[];
-};
+export type AddBankContributionData = Omit<
+  NewBank,
+  "id" | "createdAt" | "updatedAt"
+>;
+export type EditOrDeleteBankContributionData = Omit<
+  Bank,
+  "createdAt" | "updatedAt"
+>;
 export type BankContributionData =
   | AddBankContributionData
   | EditOrDeleteBankContributionData;

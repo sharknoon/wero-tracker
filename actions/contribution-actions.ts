@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { bankingApps, banks } from "@/db/schema/banks";
+import { banks } from "@/db/schema/banks";
 import {
   AddBankContributionData as AddBankContributionData,
   AddMerchantContributionData,
@@ -95,36 +95,18 @@ export async function createMerchantContribution(
 const bankContributionSchema = z.discriminatedUnion("action", [
   z.strictObject({
     action: z.literal("add"),
-    data: z.strictObject({
-      bank: createInsertSchema(banks).strict().omit({
-        id: true,
-        createdAt: true,
-        updatedAt: true,
-      }),
-      apps: z.array(
-        createInsertSchema(bankingApps).strict().omit({
-          id: true,
-          bankId: true,
-          createdAt: true,
-          updatedAt: true,
-        }),
-      ),
+    data: createInsertSchema(banks).strict().omit({
+      id: true,
+      createdAt: true,
+      updatedAt: true,
     }),
     reason: z.string().max(2000).optional(),
   }),
   z.strictObject({
     action: z.union([z.literal("edit"), z.literal("delete")]),
-    data: z.strictObject({
-      bank: createSelectSchema(banks).strict().omit({
-        createdAt: true,
-        updatedAt: true,
-      }),
-      apps: z.array(
-        createSelectSchema(bankingApps).strict().omit({
-          createdAt: true,
-          updatedAt: true,
-        }),
-      ),
+    data: createSelectSchema(banks).strict().omit({
+      createdAt: true,
+      updatedAt: true,
     }),
     reason: z.string().max(2000),
   }),
@@ -151,22 +133,13 @@ export async function createBankContribution(
   let previousData = null;
   if (contribution.action === "edit" || contribution.action === "delete") {
     const existing = await db.query.banks.findFirst({
-      where: (b, { eq }) => eq(b.id, contribution.data.bank.id),
-      with: {
-        bankingApps: true,
-      },
+      where: (b, { eq }) => eq(b.id, contribution.data.id),
     });
     if (existing) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { createdAt, updatedAt, bankingApps, ...bank } = existing;
+      const { createdAt, updatedAt, ...bank } = existing;
 
-      previousData = {
-        bank,
-        apps: bankingApps.map(
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          ({ createdAt, updatedAt, ...rest }) => rest,
-        ),
-      };
+      previousData = bank;
     }
   }
 
@@ -279,13 +252,13 @@ export async function rejectOrApproveContribution(
       } else if (existing.type === "bank") {
         if (existing.action === "add") {
           const addData = existing.data as AddBankContributionData;
-          await createBank(addData.bank, addData.apps);
+          await createBank(addData);
         } else if (existing.action === "edit") {
           const editData = existing.data as EditOrDeleteBankContributionData;
-          await updateBank(editData.bank, editData.apps);
+          await updateBank(editData);
         } else if (existing.action === "delete") {
           const deleteData = existing.data as EditOrDeleteBankContributionData;
-          await deleteBank(deleteData.bank.id);
+          await deleteBank(deleteData.id);
         }
       }
     }

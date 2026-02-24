@@ -52,20 +52,8 @@ CREATE TABLE "verifications" (
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "banking_apps" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"name" text NOT NULL,
-	"bank_id" uuid NOT NULL,
-	"icon_url" text NOT NULL,
-	"universal_link" text NOT NULL,
-	"supports_desktop" boolean NOT NULL,
-	"wero_support" "support_statuses" NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL
-);
---> statement-breakpoint
 CREATE TABLE "banks" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"id" uuid PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
 	"aliases" json DEFAULT '[]'::json NOT NULL,
 	"website" text NOT NULL,
@@ -76,6 +64,7 @@ CREATE TABLE "banks" (
 	"e_commerce_payments_support" "support_statuses" NOT NULL,
 	"pos_payments_support" "support_statuses" NOT NULL,
 	"standalone_app_support" "support_statuses" NOT NULL,
+	"banking_apps" json DEFAULT '[]'::json NOT NULL,
 	"notes" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
@@ -97,7 +86,7 @@ CREATE TABLE "contributions" (
 );
 --> statement-breakpoint
 CREATE TABLE "merchants" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"id" uuid PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
 	"aliases" json DEFAULT '[]'::json NOT NULL,
 	"website" text NOT NULL,
@@ -111,13 +100,11 @@ CREATE TABLE "merchants" (
 --> statement-breakpoint
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "banking_apps" ADD CONSTRAINT "banking_apps_bank_id_banks_id_fk" FOREIGN KEY ("bank_id") REFERENCES "public"."banks"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "contributions" ADD CONSTRAINT "contributions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "contributions" ADD CONSTRAINT "contributions_reviewer_id_users_id_fk" FOREIGN KEY ("reviewer_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "accounts_userId_idx" ON "accounts" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "sessions_userId_idx" ON "sessions" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "verifications_identifier_idx" ON "verifications" USING btree ("identifier");--> statement-breakpoint
-CREATE INDEX "banking_apps_updated_at_idx" ON "banking_apps" USING btree ("updated_at");--> statement-breakpoint
 CREATE INDEX "banks_updated_at_idx" ON "banks" USING btree ("updated_at");--> statement-breakpoint
 CREATE INDEX "contributions_status_idx" ON "contributions" USING btree ("status");--> statement-breakpoint
 CREATE INDEX "contributions_type_idx" ON "contributions" USING btree ("type");--> statement-breakpoint

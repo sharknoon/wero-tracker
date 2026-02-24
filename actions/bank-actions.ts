@@ -3,19 +3,14 @@
 import { db } from "@/db";
 import {
   Bank,
-  BankingApp,
-  bankingApps as bankingAppsTable,
   banks as banksTable,
   NewBank,
-  NewBankingApp,
-  newBankingAppSchema,
   newBankSchema,
 } from "@/db/schema/banks";
 import { del, mirrorUrl } from "@/lib/s3";
 import { requireAdmin } from "@/actions/session-actions";
 import { eq, asc } from "drizzle-orm";
 import { cacheLife, cacheTag, revalidateTag } from "next/cache";
-import z from "zod";
 
 export async function getAllBanks() {
   "use cache";
@@ -25,21 +20,9 @@ export async function getAllBanks() {
   return db.select().from(banksTable).orderBy(asc(banksTable.name));
 }
 
-export async function getAllBankingApps() {
-  "use cache";
-  cacheLife("minutes");
-  cacheTag("wero-data");
-
-  return db.select().from(bankingAppsTable).orderBy(asc(bankingAppsTable.name));
-}
-
 export async function createBank(
   bank: Omit<NewBank, "id" | "createdAt" | "updatedAt">,
-  bankingApps: Omit<
-    NewBankingApp,
-    "id" | "bankId" | "createdAt" | "updatedAt"
-  >[],
-): Promise<{ bank: Bank; bankingApps: BankingApp[] }> {
+): Promise<Bank> {
   await requireAdmin();
 
   newBankSchema
@@ -50,53 +33,21 @@ export async function createBank(
       updatedAt: true,
     })
     .parse(bank);
-  z.array(
-    newBankingAppSchema.strict().omit({
-      id: true,
-      bankId: true,
-      createdAt: true,
-      updatedAt: true,
-    }),
-  ).parse(bankingApps);
 
-  const result = await db.transaction(async (tx) => {
-    const id = crypto.randomUUID();
-    const value: NewBank = {
-      ...bank,
-      id,
-      logoUrl: await mirrorUrl(bank.logoUrl, id),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+  const id = crypto.randomUUID();
+  const value: NewBank = {
+    ...bank,
+    id,
+    logoUrl: await mirrorUrl(bank.logoUrl, id),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
 
-    const insertedBank = await tx
-      .insert(banksTable)
-      .values(value)
-      .returning()
-      .then(([inserted]) => inserted);
-
-    const insertedBankingApps = await Promise.all(
-      bankingApps.map(async (app) => {
-        const appId = crypto.randomUUID();
-        const appValue: BankingApp = {
-          ...app,
-          id: appId,
-          bankId: insertedBank.id,
-          iconUrl: await mirrorUrl(app.iconUrl, appId),
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-
-        return tx
-          .insert(bankingAppsTable)
-          .values(appValue)
-          .returning()
-          .then(([inserted]) => inserted);
-      }),
-    );
-
-    return { bank: insertedBank, bankingApps: insertedBankingApps };
-  });
+  const result = await db
+    .insert(banksTable)
+    .values(value)
+    .returning()
+    .then(([inserted]) => inserted);
 
   revalidateTag("wero-data", "max");
 
@@ -105,8 +56,7 @@ export async function createBank(
 
 export async function updateBank(
   bank: Omit<NewBank, "createdAt" | "updatedAt">,
-  bankingApps: Omit<NewBankingApp, "createdAt" | "updatedAt">[],
-): Promise<{ bank: Bank; bankingApps: BankingApp[] }> {
+): Promise<Bank> {
   await requireAdmin();
 
   newBankSchema
@@ -116,56 +66,22 @@ export async function updateBank(
       updatedAt: true,
     })
     .parse(bank);
-  newBankingAppSchema
-    .strict()
-    .omit({
-      createdAt: true,
-      updatedAt: true,
-    })
-    .parse(bankingApps);
 
-  const result = await db.transaction(async (tx) => {
-    const value: NewBank = {
-      ...bank,
-      logoUrl: bank.logoUrl.startsWith(process.env.S3_PUBLIC_ACCESS_ENDPOINT!)
-        ? bank.logoUrl
-        : await mirrorUrl(bank.logoUrl, bank.id),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+  const value: NewBank = {
+    ...bank,
+    logoUrl: bank.logoUrl.startsWith(process.env.S3_PUBLIC_ACCESS_ENDPOINT!)
+      ? bank.logoUrl
+      : await mirrorUrl(bank.logoUrl, bank.id),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
 
-    const updatedBank = await tx
-      .update(banksTable)
-      .set(value)
-      .where(eq(banksTable.id, bank.id))
-      .returning()
-      .then(([updated]) => updated);
-
-    const updatedBankingApps = await Promise.all(
-      bankingApps.map(async (app) => {
-        const appValue: BankingApp = {
-          ...app,
-          bankId: updatedBank.id,
-          iconUrl: app.iconUrl.startsWith(
-            process.env.S3_PUBLIC_ACCESS_ENDPOINT!,
-          )
-            ? app.iconUrl
-            : await mirrorUrl(app.iconUrl, app.id),
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-
-        return tx
-          .update(bankingAppsTable)
-          .set(appValue)
-          .where(eq(bankingAppsTable.id, app.id))
-          .returning()
-          .then(([inserted]) => inserted);
-      }),
-    );
-
-    return { bank: updatedBank, bankingApps: updatedBankingApps };
-  });
+  const result = await db
+    .update(banksTable)
+    .set(value)
+    .where(eq(banksTable.id, bank.id))
+    .returning()
+    .then(([updated]) => updated);
 
   revalidateTag("wero-data", "max");
 
@@ -175,30 +91,16 @@ export async function updateBank(
 export async function deleteBank(id: string): Promise<void> {
   await requireAdmin();
 
-  await db.transaction(async (tx) => {
-    const deletedBankingApps = await tx
-      .delete(bankingAppsTable)
-      .where(eq(bankingAppsTable.bankId, id))
-      .returning({
-        id: bankingAppsTable.id,
-        iconUrl: bankingAppsTable.iconUrl,
-      });
-    const deletedBanks = await tx
-      .delete(banksTable)
-      .where(eq(banksTable.id, id))
-      .returning({ id: banksTable.id, logoUrl: banksTable.logoUrl });
+  const deletedBanks = await db
+    .delete(banksTable)
+    .where(eq(banksTable.id, id))
+    .returning({ id: banksTable.id, logoUrl: banksTable.logoUrl });
 
-    for (const app of deletedBankingApps) {
-      if (app.iconUrl) {
-        await del(app.iconUrl);
-      }
+  for (const bank of deletedBanks) {
+    if (bank.logoUrl) {
+      await del(bank.logoUrl);
     }
-    for (const bank of deletedBanks) {
-      if (bank.logoUrl) {
-        await del(bank.logoUrl);
-      }
-    }
-  });
+  }
 
   revalidateTag("wero-data", "max");
 }

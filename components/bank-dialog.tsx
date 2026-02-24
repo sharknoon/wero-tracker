@@ -34,19 +34,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 type BankEntity = WeroData["banks"][number];
 
 type AppFormData = {
-  id?: string;
+  id: string;
   name: string;
-  bankId: string;
   iconUrl: string;
   universalLink: string;
   supportsDesktop: boolean;
   weroSupport: SupportStatus;
 };
 
-function createEmptyApp(bankId: string): AppFormData {
+function createEmptyApp(): AppFormData {
   return {
+    id: crypto.randomUUID(),
     name: "",
-    bankId,
     iconUrl: "",
     universalLink: "",
     supportsDesktop: false,
@@ -233,7 +232,6 @@ interface BankFormContentProps {
   onNotesChange: (value: string) => void;
   apps: AppFormData[];
   onAppsChange: (apps: AppFormData[]) => void;
-  bankId: string;
   isEdit: boolean;
   reason: string;
   onReasonChange: (value: string) => void;
@@ -265,7 +263,6 @@ function BankFormContent({
   onNotesChange,
   apps,
   onAppsChange,
-  bankId,
   isEdit,
   reason,
   onReasonChange,
@@ -281,7 +278,7 @@ function BankFormContent({
   };
 
   const handleAddApp = () => {
-    onAppsChange([...apps, createEmptyApp(bankId)]);
+    onAppsChange([...apps, createEmptyApp()]);
   };
 
   return (
@@ -510,17 +507,7 @@ export function BankDialog() {
       setPosPaymentsSupport(existingBank.posPaymentsSupport);
       setStandaloneAppSupport(existingBank.standaloneAppSupport);
       setNotes(existingBank.notes || "");
-      setApps(
-        existingBank.bankingApps.map((app) => ({
-          id: app.id,
-          name: app.name,
-          bankId: app.bankId,
-          iconUrl: app.iconUrl,
-          universalLink: app.universalLink,
-          supportsDesktop: app.supportsDesktop,
-          weroSupport: app.weroSupport,
-        })),
-      );
+      setApps(existingBank.bankingApps);
     }
   }, [open, existingBank, action]);
 
@@ -581,9 +568,6 @@ export function BankDialog() {
 
   const validation = getSubmitValidation();
 
-  // Use a stable bankId for new apps — empty string for "add", actual id for edit
-  const bankId = existingBank?.id ?? "";
-
   const handleSubmit = async () => {
     if (!validation.valid) return;
 
@@ -591,27 +575,18 @@ export function BankDialog() {
       const { success, message } = await createBankContribution({
         action,
         data: {
-          bank: {
-            name,
-            aliases,
-            website,
-            logoUrl: `https://www.google.com/s2/favicons?domain=${new URL(website).hostname}&sz=64`,
-            countries,
-            weroSupport,
-            p2pPaymentsSupport,
-            eCommercePaymentsSupport,
-            posPaymentsSupport,
-            standaloneAppSupport,
-            notes,
-          },
-          apps: apps.map((app) => ({
-            name: app.name,
-            bankId: app.bankId,
-            iconUrl: app.iconUrl,
-            universalLink: app.universalLink,
-            supportsDesktop: app.supportsDesktop,
-            weroSupport: app.weroSupport,
-          })),
+          name,
+          aliases,
+          website,
+          logoUrl: `https://www.google.com/s2/favicons?domain=${new URL(website).hostname}&sz=64`,
+          countries,
+          weroSupport,
+          p2pPaymentsSupport,
+          eCommercePaymentsSupport,
+          posPaymentsSupport,
+          standaloneAppSupport,
+          bankingApps: apps,
+          notes,
         },
       });
       if (!success) {
@@ -623,29 +598,19 @@ export function BankDialog() {
       const { success, message } = await createBankContribution({
         action,
         data: {
-          bank: {
-            id: existingBank!.id,
-            name,
-            aliases,
-            website,
-            logoUrl: existingBank!.logoUrl,
-            countries,
-            weroSupport,
-            p2pPaymentsSupport,
-            eCommercePaymentsSupport,
-            posPaymentsSupport,
-            standaloneAppSupport,
-            notes,
-          },
-          apps: apps.map((app) => ({
-            id: app.id!,
-            name: app.name,
-            bankId: existingBank!.id,
-            iconUrl: app.iconUrl,
-            universalLink: app.universalLink,
-            supportsDesktop: app.supportsDesktop,
-            weroSupport: app.weroSupport,
-          })),
+          id: existingBank!.id,
+          name,
+          aliases,
+          website,
+          logoUrl: existingBank!.logoUrl,
+          countries,
+          weroSupport,
+          p2pPaymentsSupport,
+          eCommercePaymentsSupport,
+          posPaymentsSupport,
+          standaloneAppSupport,
+          bankingApps: apps,
+          notes,
         },
         reason,
       });
@@ -713,7 +678,6 @@ export function BankDialog() {
                 onNotesChange={setNotes}
                 apps={apps}
                 onAppsChange={setApps}
-                bankId={bankId}
                 isEdit={action === "edit"}
                 reason={reason}
                 onReasonChange={setReason}

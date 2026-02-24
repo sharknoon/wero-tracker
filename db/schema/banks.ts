@@ -1,5 +1,4 @@
 import {
-  boolean,
   index,
   json,
   pgTable,
@@ -7,9 +6,13 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
-import { supportStatuses } from "./support";
-import { relations } from "drizzle-orm";
+import {
+  SupportStatus,
+  supportStatuses,
+  supportStatusesSchema,
+} from "@/db/schema/support";
 import { createInsertSchema } from "drizzle-zod";
+import z from "zod";
 
 export const banks = pgTable(
   "banks",
@@ -27,6 +30,19 @@ export const banks = pgTable(
     ).notNull(),
     posPaymentsSupport: supportStatuses("pos_payments_support").notNull(),
     standaloneAppSupport: supportStatuses("standalone_app_support").notNull(),
+    bankingApps: json("banking_apps")
+      .$type<
+        {
+          id: string;
+          name: string;
+          iconUrl: string;
+          universalLink: string;
+          supportsDesktop: boolean;
+          weroSupport: SupportStatus;
+        }[]
+      >()
+      .default([])
+      .notNull(),
     notes: text("notes"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
@@ -38,39 +54,15 @@ export const banks = pgTable(
 );
 export type Bank = typeof banks.$inferSelect;
 export type NewBank = typeof banks.$inferInsert;
-export const newBankSchema = createInsertSchema(banks);
-
-export const bankingApps = pgTable(
-  "banking_apps",
-  {
-    id: uuid("id").primaryKey(),
-    name: text("name").notNull(),
-    bankId: uuid("bank_id")
-      .notNull()
-      .references(() => banks.id, { onDelete: "cascade" }),
-    iconUrl: text("icon_url").notNull(),
-    universalLink: text("universal_link").notNull(),
-    supportsDesktop: boolean("supports_desktop").notNull(),
-    weroSupport: supportStatuses("wero_support").notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at")
-      .defaultNow()
-      .$onUpdate(() => new Date())
-      .notNull(),
-  },
-  (table) => [index("banking_apps_updated_at_idx").on(table.updatedAt)],
-);
-export type BankingApp = typeof bankingApps.$inferSelect;
-export type NewBankingApp = typeof bankingApps.$inferInsert;
-export const newBankingAppSchema = createInsertSchema(bankingApps);
-
-export const banksRelations = relations(banks, ({ many }) => ({
-  bankingApps: many(bankingApps),
-}));
-
-export const bankingAppsRelations = relations(bankingApps, ({ one }) => ({
-  bank: one(banks, {
-    fields: [bankingApps.bankId],
-    references: [banks.id],
-  }),
-}));
+export const newBankSchema = createInsertSchema(banks).extend({
+  bankingApps: z.array(
+    z.strictObject({
+      id: z.string(),
+      name: z.string(),
+      iconUrl: z.url(),
+      universalLink: z.url(),
+      supportsDesktop: z.boolean(),
+      weroSupport: supportStatusesSchema,
+    }),
+  ),
+});

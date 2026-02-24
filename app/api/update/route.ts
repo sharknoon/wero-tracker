@@ -1,12 +1,5 @@
 import { db } from "@/db";
-import {
-  Bank,
-  BankingApp,
-  bankingApps,
-  banks,
-  NewBank,
-  NewBankingApp,
-} from "@/db/schema/banks";
+import { Bank, banks } from "@/db/schema/banks";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -14,7 +7,6 @@ import z from "zod";
 import { PgTable } from "drizzle-orm/pg-core";
 import { getTableColumns, sql, type SQL } from "drizzle-orm";
 import { toSnakeCase } from "drizzle-orm/casing";
-import { createBank, updateBank } from "@/actions/bank-actions";
 import { createBankContribution } from "@/actions/contribution-actions";
 import { deepEqual } from "@/lib/utils";
 
@@ -184,10 +176,6 @@ export async function GET() {
   const p2pData = p2pResult.data.data;
   const ecommerceData = ecommerceResult.data;
 
-  const appsToUpsert: Map<
-    string,
-    Omit<BankingApp, "createdAt" | "updatedAt">
-  > = new Map();
   const banksToUpsert: Map<
     string,
     { existing: boolean; bank: Omit<Bank, "createdAt" | "updatedAt"> }
@@ -206,6 +194,23 @@ export async function GET() {
       const existingBank = await db.query.banks.findFirst({
         where: eq(banks.id, brand.id),
       });
+
+      // Merge apps, preserving existing ones and adding new ones from both sources
+      const existingApps = existingBank?.bankingApps || [];
+      const newApps = brand.apps.map((app) => ({
+        id: app.id,
+        name: app.name,
+        iconUrl: app.iconUrl,
+        universalLink: app.universalLink,
+        supportsDesktop: app.supportsDesktop,
+        weroSupport: "supported" as const,
+      }));
+
+      const existingAppIds = new Set(existingApps.map((app) => app.id));
+      const mergedApps = [
+        ...existingApps,
+        ...newApps.filter((app) => !existingAppIds.has(app.id)),
+      ];
 
       const possibleBankToUpsert = {
         id: brand.id,
@@ -226,6 +231,7 @@ export async function GET() {
             ? ("supported" as const)
             : ("unsupported" as const),
         posPaymentsSupport: existingBank?.posPaymentsSupport || "unknown",
+        bankingApps: mergedApps,
         notes: existingBank?.notes || "Automatically imported from Wero API",
       };
 
@@ -236,26 +242,6 @@ export async function GET() {
         });
       }
     }
-
-    for (const app of brand.apps) {
-      const existingBankingapp = await db.query.bankingApps.findFirst({
-        where: eq(bankingApps.id, app.id),
-      });
-
-      const possibleAppToUpsert = {
-        id: app.id,
-        name: app.name,
-        bankId: brand.id,
-        iconUrl: app.iconUrl,
-        universalLink: app.universalLink,
-        supportsDesktop: app.supportsDesktop,
-        weroSupport: "supported" as const,
-      };
-
-      if (!deepEqual(possibleAppToUpsert, existingBankingapp)) {
-        appsToUpsert.set(app.id, possibleAppToUpsert);
-      }
-    }
   }
 
   for (const { existing, bank } of banksToUpsert.values()) {
@@ -263,12 +249,7 @@ export async function GET() {
       createBankContribution(
         {
           action: "edit",
-          data: {
-            bank,
-            apps: Array.from(appsToUpsert.values()).filter(
-              (app) => app.bankId === bank.id,
-            ),
-          },
+          data: bank,
           reason: "Automated update from Wero API",
         },
         "system",
@@ -277,12 +258,7 @@ export async function GET() {
       createBankContribution(
         {
           action: "add",
-          data: {
-            bank,
-            apps: Array.from(appsToUpsert.values()).filter(
-              (app) => app.bankId === bank.id,
-            ),
-          },
+          data: bank,
           reason: "Automated addition from Wero API",
         },
         "system",

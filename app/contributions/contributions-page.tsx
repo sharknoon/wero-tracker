@@ -380,7 +380,7 @@ function ReviewDialog({
   const [reviewNote, setReviewNote] = useState("");
   const entityName =
     contribution.type === "bank"
-      ? (contribution.data as BankContributionData).bank.name
+      ? (contribution.data as BankContributionData).name
       : (contribution.data as MerchantContributionData).name;
 
   return (
@@ -469,7 +469,7 @@ function ContributionCard({
 }) {
   const entityName =
     contribution.type === "bank"
-      ? (contribution.data as BankContributionData).bank.name
+      ? (contribution.data as BankContributionData).name
       : (contribution.data as MerchantContributionData).name;
 
   return (

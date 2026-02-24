@@ -1,5 +1,5 @@
 {
-  "id": "41b36a05-a7c8-4ee0-9d41-1371f18a9f17",
+  "id": "bfed134c-fbbe-49fc-8034-cfae135b0556",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -366,107 +366,6 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.banking_apps": {
-      "name": "banking_apps",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "bank_id": {
-          "name": "bank_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "icon_url": {
-          "name": "icon_url",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "universal_link": {
-          "name": "universal_link",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "supports_desktop": {
-          "name": "supports_desktop",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "wero_support": {
-          "name": "wero_support",
-          "type": "support_statuses",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "banking_apps_updated_at_idx": {
-          "name": "banking_apps_updated_at_idx",
-          "columns": [
-            {
-              "expression": "updated_at",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "banking_apps_bank_id_banks_id_fk": {
-          "name": "banking_apps_bank_id_banks_id_fk",
-          "tableFrom": "banking_apps",
-          "tableTo": "banks",
-          "columnsFrom": [
-            "bank_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.banks": {
       "name": "banks",
       "schema": "",
@@ -475,8 +374,7 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "name": {
           "name": "name",
@@ -544,6 +442,13 @@
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
+        },
+        "banking_apps": {
+          "name": "banking_apps",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::json"
         },
         "notes": {
           "name": "notes",
@@ -778,8 +683,7 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "name": {
           "name": "name",

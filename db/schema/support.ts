@@ -1,4 +1,5 @@
 import { pgEnum } from "drizzle-orm/pg-core";
+import z from "zod";
 
 export const supportStatuses = pgEnum("support_statuses", [
   "supported",
@@ -7,3 +8,4 @@ export const supportStatuses = pgEnum("support_statuses", [
   "unknown",
 ]);
 export type SupportStatus = (typeof supportStatuses.enumValues)[number];
+export const supportStatusesSchema = z.enum(supportStatuses.enumValues);
