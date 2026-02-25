@@ -55,7 +55,7 @@ function AddButton() {
   function handleAdd(type: ContributionType) {
     if (!session?.user) {
       redirect(
-        `/sign-in?redirect=${encodeURIComponent(pathname + "?" + searchParams)}`,
+        `/sign-in?redirect=${encodeURIComponent(pathname + (searchParams ? "?" + searchParams.toString() : ""))}`,
       );
     }
 
@@ -97,7 +97,7 @@ function UserMenu() {
     return (
       <Button variant="outline" size="sm" asChild>
         <Link
-          href={`/sign-in?redirect=${encodeURIComponent(pathname + "?" + searchParams)}`}
+          href={`/sign-in?redirect=${encodeURIComponent(pathname + (searchParams ? "?" + searchParams.toString() : ""))}`}
         >
           <LogIn size={16} />
           <span className="hidden sm:inline">Sign in</span>
