@@ -27,6 +27,7 @@ import {
   updateMerchant,
 } from "./merchant-actions";
 import { requireAdmin, requireSession } from "./session-actions";
+import { downloadFile } from "@/lib/download";
 
 const merchantContributionSchema = z.discriminatedUnion("action", [
   z.strictObject({
@@ -66,6 +67,10 @@ export async function createMerchantContribution(
 
   let previousData = null;
   if (contribution.action === "edit" || contribution.action === "delete") {
+    // Recalculate checksum for logo to detect changes
+    const { checksum } = await downloadFile(contribution.data.logoUrl);
+    contribution.data.logoChecksum = checksum;
+
     const existing = await db.query.merchants.findFirst({
       where: (m, { eq }) => eq(m.id, contribution.data.id),
     });
@@ -132,6 +137,14 @@ export async function createBankContribution(
 
   let previousData = null;
   if (contribution.action === "edit" || contribution.action === "delete") {
+    // Recalculate checksum for logo to detect changes
+    const { checksum } = await downloadFile(contribution.data.logoUrl);
+    contribution.data.logoChecksum = checksum;
+    for (const app of contribution.data.bankingApps) {
+      const { checksum: appIconChecksum } = await downloadFile(app.iconUrl);
+      app.iconChecksum = appIconChecksum;
+    }
+
     const existing = await db.query.banks.findFirst({
       where: (b, { eq }) => eq(b.id, contribution.data.id),
     });

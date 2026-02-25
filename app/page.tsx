@@ -2,6 +2,7 @@ import { WeroTracker } from "@/components/wero-tracker";
 import { db } from "@/db";
 import { banks } from "@/db/schema/banks";
 import { merchants } from "@/db/schema/merchants";
+import { calculateWeroSupport } from "@/lib/bank-helper";
 import { asc, sql } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 
@@ -30,7 +31,10 @@ async function getWeroData() {
   ]);
 
   return {
-    banks: banksData,
+    banks: banksData.map((bank) => ({
+      ...bank,
+      weroSupport: calculateWeroSupport(bank),
+    })),
     merchants: merchantsData,
     lastUpdated,
   };

@@ -277,13 +277,13 @@ export function MerchantDialog() {
   useEffect(() => {
     onOpenContributionDialog((options) => {
       if (options.type === "merchant") {
+        resetForm();
         setOpen(true);
         setAction(options.action);
         if (options.action === "edit" || options.action === "delete") {
           setExistingMerchant(options.entity);
         } else {
           setExistingMerchant(null);
-          resetForm();
         }
       }
     });
@@ -351,6 +351,7 @@ export function MerchantDialog() {
           aliases,
           website,
           logoUrl: `https://www.google.com/s2/favicons?domain=${new URL(website).hostname}&sz=64`,
+          logoChecksum: "WILL BE CALCULATED ON REVIEW",
           category,
           weroSupport,
           notes,
@@ -370,6 +371,7 @@ export function MerchantDialog() {
           aliases,
           website,
           logoUrl: existingMerchant!.logoUrl,
+          logoChecksum: existingMerchant!.logoChecksum,
           category,
           weroSupport,
           notes,

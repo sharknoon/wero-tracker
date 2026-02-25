@@ -21,9 +21,9 @@ export const banks = pgTable(
     name: text("name").notNull(),
     aliases: json("aliases").$type<string[]>().default([]).notNull(),
     website: text("website").notNull(),
-    weroSupport: supportStatuses("wero_support").notNull(),
     countries: json("countries").$type<string[]>().default([]).notNull(),
     logoUrl: text("logo_url").notNull(),
+    logoChecksum: text("logo_checksum").notNull(),
     p2pPaymentsSupport: supportStatuses("p2p_payments_support").notNull(),
     eCommercePaymentsSupport: supportStatuses(
       "e_commerce_payments_support",
@@ -36,6 +36,7 @@ export const banks = pgTable(
           id: string;
           name: string;
           iconUrl: string;
+          iconChecksum: string;
           universalLink: string;
           supportsDesktop: boolean;
           weroSupport: SupportStatus;
@@ -60,6 +61,7 @@ export const newBankSchema = createInsertSchema(banks).extend({
       id: z.string(),
       name: z.string(),
       iconUrl: z.url(),
+      iconChecksum: z.string(),
       universalLink: z.url(),
       supportsDesktop: z.boolean(),
       weroSupport: supportStatusesSchema,

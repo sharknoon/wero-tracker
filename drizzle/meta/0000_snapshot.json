@@ -1,5 +1,5 @@
 {
-  "id": "bfed134c-fbbe-49fc-8034-cfae135b0556",
+  "id": "60504c29-7489-4307-86e5-ea4d0778f180",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -110,8 +110,12 @@
           "name": "accounts_user_id_users_id_fk",
           "tableFrom": "accounts",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -198,8 +202,12 @@
           "name": "sessions_user_id_users_id_fk",
           "tableFrom": "sessions",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -209,7 +217,9 @@
         "sessions_token_unique": {
           "name": "sessions_token_unique",
           "nullsNotDistinct": false,
-          "columns": ["token"]
+          "columns": [
+            "token"
+          ]
         }
       },
       "policies": {},
@@ -280,7 +290,9 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": ["email"]
+          "columns": [
+            "email"
+          ]
         }
       },
       "policies": {},
@@ -383,13 +395,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "wero_support": {
-          "name": "wero_support",
-          "type": "support_statuses",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
         "countries": {
           "name": "countries",
           "type": "json",
@@ -399,6 +404,12 @@
         },
         "logo_url": {
           "name": "logo_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "logo_checksum": {
+          "name": "logo_checksum",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -634,8 +645,12 @@
           "name": "contributions_user_id_users_id_fk",
           "tableFrom": "contributions",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -643,8 +658,12 @@
           "name": "contributions_reviewer_id_users_id_fk",
           "tableFrom": "contributions",
           "tableTo": "users",
-          "columnsFrom": ["reviewer_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "reviewer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -686,6 +705,12 @@
         },
         "logo_url": {
           "name": "logo_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "logo_checksum": {
+          "name": "logo_checksum",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -754,17 +779,28 @@
     "public.contribution_actions": {
       "name": "contribution_actions",
       "schema": "public",
-      "values": ["add", "edit", "delete"]
+      "values": [
+        "add",
+        "edit",
+        "delete"
+      ]
     },
     "public.contribution_statuses": {
       "name": "contribution_statuses",
       "schema": "public",
-      "values": ["pending", "approved", "rejected"]
+      "values": [
+        "pending",
+        "approved",
+        "rejected"
+      ]
     },
     "public.contribution_types": {
       "name": "contribution_types",
       "schema": "public",
-      "values": ["bank", "merchant"]
+      "values": [
+        "bank",
+        "merchant"
+      ]
     },
     "public.categories": {
       "name": "categories",
@@ -783,7 +819,12 @@
     "public.support_statuses": {
       "name": "support_statuses",
       "schema": "public",
-      "values": ["supported", "announced", "unsupported", "unknown"]
+      "values": [
+        "supported",
+        "announced",
+        "unsupported",
+        "unknown"
+      ]
     }
   },
   "schemas": {},

@@ -9,6 +9,7 @@ import { getTableColumns, sql, type SQL } from "drizzle-orm";
 import { toSnakeCase } from "drizzle-orm/casing";
 import { createBankContribution } from "@/actions/contribution-actions";
 import { deepEqual } from "@/lib/utils";
+import { downloadFile } from "@/lib/download";
 
 /**
  * Builds an object mapping column names to their excluded values for upsert operations.
@@ -178,7 +179,10 @@ export async function GET() {
 
   const banksToUpsert: Map<
     string,
-    { existing: boolean; bank: Omit<Bank, "createdAt" | "updatedAt"> }
+    {
+      existing: boolean;
+      bank: Omit<Bank, "createdAt" | "updatedAt">;
+    }
   > = new Map();
 
   for (const brand of p2pData.brands) {
@@ -193,18 +197,37 @@ export async function GET() {
       // Get existing bank data for preserving manual fields
       const existingBank = await db.query.banks.findFirst({
         where: eq(banks.id, brand.id),
+        columns: {
+          createdAt: false,
+          updatedAt: false,
+        },
       });
 
-      // Merge apps, preserving existing ones and adding new ones from both sources
+      // Merge apps
       const existingApps = existingBank?.bankingApps || [];
-      const newApps = brand.apps.map((app) => ({
-        id: app.id,
-        name: app.name,
-        iconUrl: app.iconUrl,
-        universalLink: app.universalLink,
-        supportsDesktop: app.supportsDesktop,
-        weroSupport: "supported" as const,
-      }));
+      const newApps = await Promise.all(
+        brand.apps.map(async (app) => {
+          const existingApp = existingApps.find((a) => a.id === app.id);
+
+          const newIconChecksum = (await downloadFile(app.iconUrl)).checksum;
+          const existingIconChecksum = existingApp?.iconChecksum;
+          const iconChanged = newIconChecksum !== existingIconChecksum;
+
+          return {
+            id: app.id,
+            name: app.name,
+            iconUrl: iconChanged
+              ? app.iconUrl
+              : (existingApp?.iconUrl ?? app.iconUrl),
+            iconChecksum: iconChanged
+              ? newIconChecksum
+              : (existingApp?.iconChecksum ?? newIconChecksum),
+            universalLink: app.universalLink,
+            supportsDesktop: app.supportsDesktop,
+            weroSupport: "supported" as const,
+          };
+        }),
+      );
 
       const existingAppIds = new Set(existingApps.map((app) => app.id));
       const mergedApps = [
@@ -212,17 +235,25 @@ export async function GET() {
         ...newApps.filter((app) => !existingAppIds.has(app.id)),
       ];
 
-      const possibleBankToUpsert = {
+      const newLogoChecksum = (await downloadFile(brand.logoUrl)).checksum;
+      const oldLogoChecksum = existingBank?.logoChecksum;
+      const logoChanged = newLogoChecksum !== oldLogoChecksum;
+
+      const possibleBankToUpsert: Omit<Bank, "createdAt" | "updatedAt"> = {
         id: brand.id,
         name: brand.name,
         website: existingBank?.website || "https://example.com",
         aliases: brand.aliases,
         countries: brand.countries,
-        logoUrl: brand.logoUrl,
+        logoUrl: logoChanged
+          ? brand.logoUrl
+          : (existingBank?.logoUrl ?? brand.logoUrl),
+        logoChecksum: logoChanged
+          ? newLogoChecksum
+          : (existingBank?.logoChecksum ?? newLogoChecksum),
         standaloneAppSupport: firstBank.supportsStandaloneApp
           ? "supported"
           : existingBank?.standaloneAppSupport || "unsupported",
-        weroSupport: "supported" as const,
         p2pPaymentsSupport: "supported" as const,
         eCommercePaymentsSupport:
           ecommerceBankData?.supportedPaymentUseCases.includes(
@@ -244,9 +275,10 @@ export async function GET() {
     }
   }
 
+  const errors: string[] = [];
   for (const { existing, bank } of banksToUpsert.values()) {
     if (existing) {
-      createBankContribution(
+      const { success, message } = await createBankContribution(
         {
           action: "edit",
           data: bank,
@@ -254,8 +286,13 @@ export async function GET() {
         },
         "system",
       );
+      if (!success) {
+        errors.push(
+          `Failed to create contribution for bank ${bank.name}: ${message}`,
+        );
+      }
     } else {
-      createBankContribution(
+      const { success, message } = await createBankContribution(
         {
           action: "add",
           data: bank,
@@ -263,7 +300,23 @@ export async function GET() {
         },
         "system",
       );
+      if (!success) {
+        errors.push(
+          `Failed to create contribution for bank ${bank.name}: ${message}`,
+        );
+      }
     }
+  }
+
+  if (errors.length > 0) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Some contributions failed to create",
+        errors,
+      },
+      { status: 500 },
+    );
   }
 
   return NextResponse.json({

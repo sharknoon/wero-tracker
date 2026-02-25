@@ -8,6 +8,7 @@ import {
 import mime from "mime-types";
 import crypto from "node:crypto";
 import { Readable } from "node:stream";
+import { downloadFile } from "./download";
 
 const S3_REGION = process.env.S3_REGION as string;
 const S3_ENDPOINT = process.env.S3_ENDPOINT as string;
@@ -75,14 +76,10 @@ export const mirrorUrl = async (
   url: string,
   basename?: string,
   options?: { access: "public" | "private" },
-) => {
-  const response = await fetch(url);
-  const contentType =
-    response.headers.get("Content-Type") || "application/octet-stream";
+): Promise<{ url: string; checksum: string }> => {
+  const { data, checksum, contentType } = await downloadFile(url);
   const ext = mime.extension(contentType) || "bin";
-  const blob = await response.blob();
-  const arrayBuffer = await blob.arrayBuffer();
-  const uint8Array = new Uint8Array(arrayBuffer);
   const key = (basename || crypto.randomUUID()) + "." + ext;
-  return await put(key, uint8Array, options);
+  const resultUrl = await put(key, data, options);
+  return { url: resultUrl, checksum };
 };

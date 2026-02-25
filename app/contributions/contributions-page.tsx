@@ -57,7 +57,7 @@ import {
   ContributionWithRelations,
   rejectOrApproveContribution,
 } from "@/actions/contribution-actions";
-import stringify from "json-stable-stringify";
+import stableStringify from "json-stable-stringify";
 
 // ============================================================================
 // Types
@@ -309,10 +309,10 @@ function DataPreview({
   const data = contribution.data;
   const previousData = contribution.previousData;
 
-  const newJson = stringify(data, { space: "  " }) ?? "";
+  const newJson = stableStringify(data, { space: "  " }) ?? "";
 
   if (contribution.action === "edit" && previousData) {
-    const oldJson = stringify(previousData, { space: "  " }) ?? "";
+    const oldJson = stableStringify(previousData, { space: "  " }) ?? "";
     return <DiffViewer oldJson={oldJson} newJson={newJson} />;
   }
 
@@ -366,6 +366,7 @@ function ReviewDialog({
   onOpenChange,
   onAction,
   isLoading,
+  canReview,
 }: {
   contribution: ContributionWithRelations;
   open: boolean;
@@ -376,6 +377,7 @@ function ReviewDialog({
     reviewNote: string,
   ) => void;
   isLoading: boolean;
+  canReview: boolean;
 }) {
   const [reviewNote, setReviewNote] = useState("");
   const entityName =
@@ -436,14 +438,14 @@ function ReviewDialog({
           <Button
             variant="destructive"
             onClick={() => onAction(contribution.id, "rejected", reviewNote)}
-            disabled={isLoading}
+            disabled={!canReview || isLoading}
           >
             {isLoading ? <Loader2 className="animate-spin" size={16} /> : null}
             Reject
           </Button>
           <Button
             onClick={() => onAction(contribution.id, "approved", reviewNote)}
-            disabled={isLoading}
+            disabled={!canReview || isLoading}
           >
             {isLoading ? <Loader2 className="animate-spin" size={16} /> : null}
             Approve
@@ -460,11 +462,9 @@ function ReviewDialog({
 
 function ContributionCard({
   contribution,
-  canReview,
   onReview,
 }: {
   contribution: ContributionWithRelations;
-  canReview: boolean;
   onReview: (c: ContributionWithRelations) => void;
 }) {
   const entityName =
@@ -530,7 +530,7 @@ function ContributionCard({
           </div>
 
           {/* Actions */}
-          {canReview && contribution.status === "pending" && (
+          {contribution.status === "pending" && (
             <Button
               variant="outline"
               size="sm"
@@ -721,7 +721,6 @@ export function ContributionsPage({
               <ContributionCard
                 key={contribution.id}
                 contribution={contribution}
-                canReview={canReview}
                 onReview={setReviewTarget}
               />
             ))
@@ -739,6 +738,7 @@ export function ContributionsPage({
           }}
           onAction={handleReviewAction}
           isLoading={isLoading}
+          canReview={canReview}
         />
       )}
     </div>

@@ -30,6 +30,7 @@ export const merchants = pgTable(
     aliases: json().$type<string[]>().default([]).notNull(),
     website: text("website").notNull(),
     logoUrl: text("logo_url").notNull(),
+    logoChecksum: text("logo_checksum").notNull(),
     category: categories("category").notNull(),
     weroSupport: supportStatuses("wero_support").notNull(),
     notes: text("notes"),

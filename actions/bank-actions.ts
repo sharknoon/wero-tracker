@@ -11,6 +11,7 @@ import { del, mirrorUrl } from "@/lib/s3";
 import { requireAdmin } from "@/actions/session-actions";
 import { eq, asc } from "drizzle-orm";
 import { cacheLife, cacheTag, revalidateTag } from "next/cache";
+import { downloadFile } from "@/lib/download";
 
 export async function getAllBanks() {
   "use cache";
@@ -35,12 +36,24 @@ export async function createBank(
     .parse(bank);
 
   const id = crypto.randomUUID();
+  const mirroredLogo = await mirrorUrl(bank.logoUrl, id);
   const value: NewBank = {
     ...bank,
     id,
-    logoUrl: await mirrorUrl(bank.logoUrl, id),
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    logoUrl: mirroredLogo.url,
+    logoChecksum: mirroredLogo.checksum,
+    bankingApps: bank.bankingApps
+      ? await Promise.all(
+          bank.bankingApps.map(async (app) => {
+            const mirroredIcon = await mirrorUrl(app.iconUrl, app.id);
+            return {
+              ...app,
+              iconUrl: mirroredIcon.url,
+              iconChecksum: mirroredIcon.checksum,
+            };
+          }),
+        )
+      : undefined,
   };
 
   const result = await db
@@ -67,13 +80,60 @@ export async function updateBank(
     })
     .parse(bank);
 
+  // Fetch existing bank to detect removed banking apps and changed logos
+  const existingBank = await db
+    .select()
+    .from(banksTable)
+    .where(eq(banksTable.id, bank.id))
+    .then(([b]) => b);
+
+  // Delete S3 logos for removed banking apps
+  if (existingBank.bankingApps) {
+    const newAppIds = new Set(bank.bankingApps?.map((app) => app.id) ?? []);
+    for (const oldApp of existingBank.bankingApps) {
+      if (!newAppIds.has(oldApp.id) && oldApp.iconUrl) {
+        await del(oldApp.iconUrl);
+      }
+    }
+  }
+
+  const existingLogoChecksum = existingBank.logoChecksum;
+  const { checksum: newLogoChecksum } = await downloadFile(bank.logoUrl);
+  const mirroredLogo =
+    existingLogoChecksum !== newLogoChecksum
+      ? await mirrorUrl(bank.logoUrl, bank.id)
+      : { url: existingBank.logoUrl, checksum: existingBank.logoChecksum };
+
   const value: NewBank = {
     ...bank,
-    logoUrl: bank.logoUrl.startsWith(process.env.S3_PUBLIC_ACCESS_ENDPOINT!)
-      ? bank.logoUrl
-      : await mirrorUrl(bank.logoUrl, bank.id),
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    logoUrl: mirroredLogo.url,
+    logoChecksum: mirroredLogo.checksum,
+    bankingApps: bank.bankingApps
+      ? await Promise.all(
+          bank.bankingApps.map(async (app) => {
+            const existingApp = existingBank.bankingApps.find(
+              (a) => a.id === app.id,
+            );
+            const existingIconChecksum = existingApp?.iconChecksum;
+            const { checksum: newIconChecksum } = await downloadFile(
+              app.iconUrl,
+            );
+            const mirroredIcon =
+              existingIconChecksum !== newIconChecksum
+                ? await mirrorUrl(app.iconUrl, app.id)
+                : {
+                    url: existingApp!.iconUrl,
+                    checksum: existingApp!.iconChecksum,
+                  };
+
+            return {
+              ...app,
+              iconUrl: mirroredIcon.url,
+              iconChecksum: mirroredIcon.checksum,
+            };
+          }),
+        )
+      : undefined,
   };
 
   const result = await db

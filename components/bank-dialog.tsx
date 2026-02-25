@@ -218,8 +218,6 @@ interface BankFormContentProps {
   onWebsiteChange: (value: string) => void;
   countries: string[];
   onToggleCountry: (country: string) => void;
-  weroSupport: SupportStatus;
-  onWeroSupportChange: (value: SupportStatus) => void;
   p2pPaymentsSupport: SupportStatus;
   onP2pPaymentsSupportChange: (value: SupportStatus) => void;
   eCommercePaymentsSupport: SupportStatus;
@@ -249,8 +247,6 @@ function BankFormContent({
   onWebsiteChange,
   countries,
   onToggleCountry,
-  weroSupport,
-  onWeroSupportChange,
   p2pPaymentsSupport,
   onP2pPaymentsSupportChange,
   eCommercePaymentsSupport,
@@ -328,13 +324,6 @@ function BankFormContent({
       <Separator />
 
       <SupportStatusSelect
-        label="Wero Support Status"
-        value={weroSupport}
-        onChange={onWeroSupportChange}
-        required
-      />
-
-      <SupportStatusSelect
         label="P2P Payments Support"
         value={p2pPaymentsSupport}
         onChange={onP2pPaymentsSupportChange}
@@ -356,7 +345,7 @@ function BankFormContent({
       />
 
       <SupportStatusSelect
-        label="Standalone App Support"
+        label="Standalone Wero App Support"
         value={standaloneAppSupport}
         onChange={onStandaloneAppSupportChange}
         required
@@ -448,7 +437,6 @@ export function BankDialog() {
   const [aliasInput, setAliasInput] = useState("");
   const [website, setWebsite] = useState("");
   const [countries, setCountries] = useState<string[]>([]);
-  const [weroSupport, setWeroSupport] = useState<SupportStatus>("unknown");
   const [p2pPaymentsSupport, setP2pPaymentsSupport] =
     useState<SupportStatus>("unknown");
   const [eCommercePaymentsSupport, setECommercePaymentsSupport] =
@@ -468,7 +456,6 @@ export function BankDialog() {
     setAliasInput("");
     setWebsite("");
     setCountries([]);
-    setWeroSupport("unknown");
     setP2pPaymentsSupport("unknown");
     setECommercePaymentsSupport("unknown");
     setPosPaymentsSupport("unknown");
@@ -481,13 +468,13 @@ export function BankDialog() {
   useEffect(() => {
     onOpenContributionDialog((options) => {
       if (options.type === "bank") {
+        resetForm();
         setOpen(true);
         setAction(options.action);
         if (options.action === "edit" || options.action === "delete") {
           setExistingBank(options.entity);
         } else {
           setExistingBank(null);
-          resetForm();
         }
       }
     });
@@ -501,7 +488,6 @@ export function BankDialog() {
       setAliases(existingBank.aliases);
       setWebsite(existingBank.website);
       setCountries(existingBank.countries);
-      setWeroSupport(existingBank.weroSupport);
       setP2pPaymentsSupport(existingBank.p2pPaymentsSupport);
       setECommercePaymentsSupport(existingBank.eCommercePaymentsSupport);
       setPosPaymentsSupport(existingBank.posPaymentsSupport);
@@ -579,13 +565,16 @@ export function BankDialog() {
           aliases,
           website,
           logoUrl: `https://www.google.com/s2/favicons?domain=${new URL(website).hostname}&sz=64`,
+          logoChecksum: "WILL BE CALCULATED ON REVIEW",
           countries,
-          weroSupport,
           p2pPaymentsSupport,
           eCommercePaymentsSupport,
           posPaymentsSupport,
           standaloneAppSupport,
-          bankingApps: apps,
+          bankingApps: apps.map((app) => ({
+            ...app,
+            iconChecksum: "WILL BE CALCULATED ON REVIEW",
+          })),
           notes,
         },
       });
@@ -603,13 +592,18 @@ export function BankDialog() {
           aliases,
           website,
           logoUrl: existingBank!.logoUrl,
+          logoChecksum: existingBank!.logoChecksum,
           countries,
-          weroSupport,
           p2pPaymentsSupport,
           eCommercePaymentsSupport,
           posPaymentsSupport,
           standaloneAppSupport,
-          bankingApps: apps,
+          bankingApps: apps.map((app) => ({
+            ...app,
+            iconChecksum:
+              existingBank!.bankingApps.find((a) => a.id === app.id)
+                ?.iconChecksum || "WILL BE CALCULATED ON REVIEW",
+          })),
           notes,
         },
         reason,
@@ -664,8 +658,6 @@ export function BankDialog() {
                 onWebsiteChange={setWebsite}
                 countries={countries}
                 onToggleCountry={handleToggleCountry}
-                weroSupport={weroSupport}
-                onWeroSupportChange={setWeroSupport}
                 p2pPaymentsSupport={p2pPaymentsSupport}
                 onP2pPaymentsSupportChange={setP2pPaymentsSupport}
                 eCommercePaymentsSupport={eCommercePaymentsSupport}

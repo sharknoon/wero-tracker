@@ -19866,13 +19866,14 @@ const banksData = bankBrandsSchema.parse(banksUnverified);
 const merchantsData = merchantBrandsSchema.parse(merchantsUnverified);
 
 for (const brand of banksData.brands) {
+  const mirroredLogoUrl = await mirrorUrl(brand.logoUrl, brand.id);
   await db.insert(banks).values({
     id: brand.id,
     name: brand.name,
     aliases: brand.aliases,
     website: brand.banks[0]?.website ?? "https://example.com",
-    logoUrl: await mirrorUrl(brand.logoUrl, brand.id),
-    weroSupport: brand.weroSupport,
+    logoUrl: mirroredLogoUrl.url,
+    logoChecksum: mirroredLogoUrl.checksum,
     countries: brand.countries,
     notes: brand.notes,
     eCommercePaymentsSupport:
@@ -19881,30 +19882,37 @@ for (const brand of banksData.brands) {
     posPaymentsSupport: brand.banks[0]?.POSPaymentsSupport ?? "unknown",
     standaloneAppSupport: brand.banks[0]?.standaloneAppSupport ?? "unknown",
     bankingApps: await Promise.all(
-      brand.apps.map(async (app) => ({
-        id: app.id,
-        name: app.name,
-        bankId: brand.id,
-        iconUrl: await mirrorUrl(app.iconUrl, app.id),
-        universalLink: app.universalLink,
-        supportsDesktop: app.supportsDesktop,
-        weroSupport: app.weroSupport,
-      })),
+      brand.apps.map(async (app) => {
+        const mirroredIconUrl = await mirrorUrl(app.iconUrl, app.id);
+        return {
+          id: app.id,
+          name: app.name,
+          iconUrl: mirroredIconUrl.url,
+          iconChecksum: mirroredIconUrl.checksum,
+          universalLink: app.universalLink,
+          supportsDesktop: app.supportsDesktop,
+          weroSupport: app.weroSupport,
+        };
+      }),
     ),
   });
 }
 
 await db.insert(merchants).values(
   await Promise.all(
-    merchantsData.brands.map(async (data) => ({
-      id: data.id,
-      name: data.name,
-      aliases: data.aliases,
-      website: data.website,
-      logoUrl: await mirrorUrl(data.logoUrl, data.id),
-      category: data.category,
-      weroSupport: data.weroSupport,
-      notes: data.notes,
-    })),
+    merchantsData.brands.map(async (data) => {
+      const mirroredLogoUrl = await mirrorUrl(data.logoUrl, data.id);
+      return {
+        id: data.id,
+        name: data.name,
+        aliases: data.aliases,
+        website: data.website,
+        logoUrl: mirroredLogoUrl.url,
+        logoChecksum: mirroredLogoUrl.checksum,
+        category: data.category,
+        weroSupport: data.weroSupport,
+        notes: data.notes,
+      };
+    }),
   ),
 );

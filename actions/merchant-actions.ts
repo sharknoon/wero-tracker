@@ -11,6 +11,7 @@ import { del, mirrorUrl } from "@/lib/s3";
 import { requireAdmin } from "@/actions/session-actions";
 import { eq, asc } from "drizzle-orm";
 import { cacheLife, cacheTag, revalidateTag } from "next/cache";
+import { downloadFile } from "@/lib/download";
 
 export async function getAllMerchants() {
   "use cache";
@@ -35,12 +36,12 @@ export async function createMerchant(
     .parse(merchant);
 
   const id = crypto.randomUUID();
+  const mirroredLogo = await mirrorUrl(merchant.logoUrl, id);
   const value: NewMerchant = {
     ...merchant,
     id,
-    logoUrl: await mirrorUrl(merchant.logoUrl, id),
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    logoUrl: mirroredLogo.url,
+    logoChecksum: mirroredLogo.checksum,
   };
 
   const result = await db
@@ -67,13 +68,27 @@ export async function updateMerchant(
     })
     .parse(merchant);
 
+  // Fetch existing merchant to detect changed logos
+  const existingMerchant = await db
+    .select()
+    .from(merchantsTable)
+    .where(eq(merchantsTable.id, merchant.id))
+    .then(([m]) => m);
+
+  const existingLogoChecksum = existingMerchant.logoChecksum;
+  const { checksum: newLogoChecksum } = await downloadFile(merchant.logoUrl);
+  const mirroredLogo =
+    existingLogoChecksum !== newLogoChecksum
+      ? await mirrorUrl(merchant.logoUrl, merchant.id)
+      : {
+          url: existingMerchant.logoUrl,
+          checksum: existingMerchant.logoChecksum,
+        };
+
   const value: NewMerchant = {
     ...merchant,
-    logoUrl: merchant.logoUrl.startsWith(process.env.S3_PUBLIC_ACCESS_ENDPOINT!)
-      ? merchant.logoUrl
-      : await mirrorUrl(merchant.logoUrl, merchant.id),
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    logoUrl: mirroredLogo.url,
+    logoChecksum: mirroredLogo.checksum,
   };
 
   const result = await db

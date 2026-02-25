@@ -48,6 +48,7 @@ import { Separator } from "@/components/ui/separator";
 import { Bank } from "@/db/schema/banks";
 import { updateBank } from "@/actions/bank-actions";
 import { updateMerchant } from "@/actions/merchant-actions";
+import { calculateWeroSupport } from "@/lib/bank-helper";
 
 // ============================================================================
 // Bank Editor
@@ -62,9 +63,6 @@ function BankEditor({ bank, onDone }: { bank: Bank; onDone: () => void }) {
   const [website, setWebsite] = useState(bank.website);
   const [logoUrl, setLogoUrl] = useState(bank.logoUrl);
   const [countries, setCountries] = useState<string[]>(bank.countries);
-  const [weroSupport, setWeroSupport] = useState<SupportStatus>(
-    bank.weroSupport,
-  );
   const [p2pPaymentsSupport, setP2pPaymentsSupport] = useState<SupportStatus>(
     bank.p2pPaymentsSupport,
   );
@@ -106,8 +104,8 @@ function BankEditor({ bank, onDone }: { bank: Bank; onDone: () => void }) {
           aliases,
           website,
           logoUrl,
+          logoChecksum: bank.logoChecksum,
           countries,
-          weroSupport,
           p2pPaymentsSupport,
           eCommercePaymentsSupport,
           posPaymentsSupport,
@@ -194,11 +192,6 @@ function BankEditor({ bank, onDone }: { bank: Bank; onDone: () => void }) {
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <SupportStatusSelect
-              label="Wero Support"
-              value={weroSupport}
-              onChange={setWeroSupport}
-            />
-            <SupportStatusSelect
               label="P2P Payments"
               value={p2pPaymentsSupport}
               onChange={setP2pPaymentsSupport}
@@ -214,7 +207,7 @@ function BankEditor({ bank, onDone }: { bank: Bank; onDone: () => void }) {
               onChange={setPosPaymentsSupport}
             />
             <SupportStatusSelect
-              label="Standalone App"
+              label="Standalone Wero App"
               value={standaloneAppSupport}
               onChange={setStandaloneAppSupport}
             />
@@ -393,6 +386,7 @@ function MerchantEditor({
           aliases,
           website,
           logoUrl,
+          logoChecksum: merchant.logoChecksum,
           category,
           weroSupport,
           notes: notes || null,
@@ -521,8 +515,9 @@ function MerchantEditor({
 // ============================================================================
 
 function BankListItem({ bank, onEdit }: { bank: Bank; onEdit: () => void }) {
+  const weroSupport = calculateWeroSupport(bank);
   const statusOption = supportStatusOptions.find(
-    (o) => o.value === bank.weroSupport,
+    (o) => o.value === weroSupport,
   );
 
   return (
