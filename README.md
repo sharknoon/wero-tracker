@@ -45,45 +45,6 @@ You can help this project in several ways:
 
 Thank you very much in advance 😀
 
-Also a MASSIVE thank you to all who haev already contributed to this project
-
-<!-- readme: contributors -start -->
-<table>
-	<tbody>
-		<tr>
-            <td align="center">
-                <a href="https://github.com/sharknoon">
-                    <img src="https://avatars.githubusercontent.com/u/16149608?v=4" width="100;" alt="sharknoon"/>
-                    <br />
-                    <sub><b>Josua Frank</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/armadillo11">
-                    <img src="https://avatars.githubusercontent.com/u/51116674?v=4" width="100;" alt="armadillo11"/>
-                    <br />
-                    <sub><b>Stefan Ruppert</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/qznc">
-                    <img src="https://avatars.githubusercontent.com/u/91316?v=4" width="100;" alt="qznc"/>
-                    <br />
-                    <sub><b>Andreas Zwinkau</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/bwildenhain">
-                    <img src="https://avatars.githubusercontent.com/u/3822886?v=4" width="100;" alt="bwildenhain"/>
-                    <br />
-                    <sub><b>Benedikt Wildenhain</b></sub>
-                </a>
-            </td>
-		</tr>
-	<tbody>
-</table>
-<!-- readme: contributors -end -->
-
 ## Development
 
 ### Setup
