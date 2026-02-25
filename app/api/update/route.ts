@@ -254,13 +254,13 @@ export async function GET() {
         standaloneAppSupport: firstBank.supportsStandaloneApp
           ? "supported"
           : existingBank?.standaloneAppSupport || "unsupported",
-        p2pPaymentsSupport: "supported" as const,
+        p2pPaymentsSupport: "supported",
         eCommercePaymentsSupport:
           ecommerceBankData?.supportedPaymentUseCases.includes(
             "SingleImmediatePayments",
           )
-            ? ("supported" as const)
-            : ("unsupported" as const),
+            ? "supported"
+            : existingBank?.eCommercePaymentsSupport || "unsupported",
         posPaymentsSupport: existingBank?.posPaymentsSupport || "unknown",
         bankingApps: mergedApps,
         notes: existingBank?.notes || "Automatically imported from Wero API",
