@@ -54,9 +54,10 @@ function AddButton() {
 
   function handleAdd(type: ContributionType) {
     if (!session?.user) {
-      redirect(
-        `/sign-in?redirect=${encodeURIComponent(pathname + (searchParams ? "?" + searchParams.toString() : ""))}`,
-      );
+      const target = searchParams?.size
+        ? `${pathname}?${searchParams}`
+        : pathname;
+      redirect(`/sign-in?redirect=${encodeURIComponent(target)}`);
     }
 
     openContributionDialog({ type, action: "add" });
@@ -94,11 +95,12 @@ function UserMenu() {
   }
 
   if (!session) {
+    const target = searchParams?.size
+      ? `${pathname}?${searchParams}`
+      : pathname;
     return (
       <Button variant="outline" size="sm" asChild>
-        <Link
-          href={`/sign-in?redirect=${encodeURIComponent(pathname + (searchParams ? "?" + searchParams.toString() : ""))}`}
-        >
+        <Link href={`/sign-in?redirect=${encodeURIComponent(target)}`}>
           <LogIn size={16} />
           <span className="hidden sm:inline">Sign in</span>
         </Link>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, useSyncExternalStore } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SiGithub, SiGoogle } from "@icons-pack/react-simple-icons";
 import { Loader2 } from "lucide-react";
@@ -18,26 +18,16 @@ import { Separator } from "@/components/ui/separator";
 type Provider = "google" | "github";
 
 function SignInPage() {
-  const [loadingProvider, setLoadingProvider] = useState<Provider | null>(null);
   const searchParams = useSearchParams();
-  const location = useSyncExternalStore(
-    () => () => {},
-    () => window.location || undefined,
-    () => undefined,
-  );
   const redirect = searchParams.get("redirect") || "/";
-
-  const callbackURL =
-    redirect && location
-      ? `${location.origin}${redirect}${location.hash ?? ""}`
-      : undefined;
+  const [loadingProvider, setLoadingProvider] = useState<Provider | null>(null);
 
   const handleSignIn = async (provider: Provider) => {
     setLoadingProvider(provider);
     try {
       await authClient.signIn.social({
         provider,
-        callbackURL,
+        callbackURL: redirect,
       });
     } catch {
       setLoadingProvider(null);

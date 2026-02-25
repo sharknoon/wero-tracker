@@ -37,9 +37,10 @@ export function Bankitem({ bank }: BankItemProps) {
 
   function handleEditOrDelete(type: Exclude<ContributionAction, "add">) {
     if (!session?.user) {
-      redirect(
-        `/sign-in?redirect=${encodeURIComponent(pathname + (searchParams ? "?" + searchParams.toString() : ""))}`,
-      );
+      const target = searchParams?.size
+        ? `${pathname}?${searchParams}`
+        : pathname;
+      redirect(`/sign-in?redirect=${encodeURIComponent(target)}`);
     }
 
     openContributionDialog({
