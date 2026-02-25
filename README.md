@@ -39,8 +39,8 @@ This project heavily relies on up-to-date informations about the current state o
 
 You can help this project in several ways:
 
-- Report missing banks [via an GitHub Issue](https://github.com/sharknoon/wero-tracker/issues/new?template=add-missing-bank.md)
-- Report missing, false or oudated data [via an GitHub Issue](https://github.com/sharknoon/wero-tracker/issues/new?template=correct-missing-false-or-outdated-data.md)
+- Report missing banks via the website
+- Report missing, false or oudated data via the website
 - Improve the website or change data directly by [forking it](https://github.com/sharknoon/wero-tracker/fork)
 
 Thank you very much in advance 😀
@@ -88,28 +88,18 @@ Also a MASSIVE thank you to all who haev already contributed to this project
 
 ### Setup
 
-After cloning the repository, run this command:
+After cloning the repository, install the npm dependencies:
 
 ```bash
 npm install
 ```
 
-### Adding a new bank or online shop
+Copy the `.env.example` to `.env` and fill out the environment variables.
+
+Now you can start the dev server:
 
 ```bash
-npm run add
-```
-
-### Updating the data for banks with existing Wero support directly from Wero
-
-```bash
-npm run update
-```
-
-### Linting for unused assets or missing websites
-
-```bash
-npm run lint
+npm run dev
 ```
 
 ## Legal

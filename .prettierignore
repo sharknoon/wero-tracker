@@ -1,4 +1,2 @@
-# Nested prettierignore files are not yet supported
-packages/data/banks.json
-packages/data/merchants.json
-packages/website/components/ui
+components/ui
+drizzle
