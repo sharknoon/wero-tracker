@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SiGithub, SiGoogle } from "@icons-pack/react-simple-icons";
 import { Loader2 } from "lucide-react";
@@ -17,7 +17,7 @@ import { Separator } from "@/components/ui/separator";
 
 type Provider = "google" | "github";
 
-export default function SignInPage() {
+function SignInPage() {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/";
   const [loadingProvider, setLoadingProvider] = useState<Provider | null>(null);
@@ -94,5 +94,13 @@ export default function SignInPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SignInPage />
+    </Suspense>
   );
 }
