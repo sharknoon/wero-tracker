@@ -134,12 +134,12 @@ const ecommerceSchema = z.array(
 );
 
 export async function GET() {
-  const apiSecret = process.env.API_SECRET;
+  const cronSecret = process.env.CRON_SECRET;
   const headersList = await headers();
   const authHeader = headersList.get("authorization");
   const providedSecret = authHeader?.replace(/Bearer\s+/i, "").trim();
 
-  if (!apiSecret || providedSecret !== apiSecret) {
+  if (!cronSecret || providedSecret !== cronSecret) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
