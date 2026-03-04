@@ -28,7 +28,7 @@ export async function AdminRoute() {
 
 export default function AdminPage() {
   return (
-    <Suspense fallback={<div>Loading contributions...</div>}>
+    <Suspense fallback={<div>Loading admin editor...</div>}>
       <AdminRoute />
     </Suspense>
   );

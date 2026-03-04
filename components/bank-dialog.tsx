@@ -30,6 +30,7 @@ import { createBankContribution } from "@/actions/contribution-actions";
 import { ContributionAction } from "@/db/schema/contributions";
 import { WeroData } from "@/app/page";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
 
 type BankEntity = WeroData["banks"][number];
 
@@ -582,6 +583,7 @@ export function BankDialog() {
         setSubmitError(message);
       } else {
         setOpen(false);
+        toast.success("Bank contribution submitted successfully!");
       }
     } else {
       const { success, message } = await createBankContribution({
@@ -612,6 +614,9 @@ export function BankDialog() {
         setSubmitError(message);
       } else {
         setOpen(false);
+        toast.success(
+          `Bank ${action === "edit" ? "edit" : "deletion"} contribution submitted successfully!`,
+        );
       }
     }
   };

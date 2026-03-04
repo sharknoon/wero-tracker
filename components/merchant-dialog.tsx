@@ -32,6 +32,7 @@ import { Merchant } from "@/db/schema/merchants";
 import { SupportStatus } from "@/db/schema/support";
 import { createMerchantContribution } from "@/actions/contribution-actions";
 import { ContributionAction } from "@/db/schema/contributions";
+import { toast } from "sonner";
 
 // ============================================================================
 // Delete Mode Content Component
@@ -361,6 +362,7 @@ export function MerchantDialog() {
         setSubmitError(message);
       } else {
         setOpen(false);
+        toast.success("Merchant contribution submitted successfully!");
       }
     } else {
       const { success, message } = await createMerchantContribution({
@@ -382,6 +384,9 @@ export function MerchantDialog() {
         setSubmitError(message);
       } else {
         setOpen(false);
+        toast.success(
+          `Merchant ${action === "edit" ? "edit" : "deletion"} contribution submitted successfully!`,
+        );
       }
     }
   };
