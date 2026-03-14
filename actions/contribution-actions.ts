@@ -19,7 +19,7 @@ import { eq } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { headers } from "next/headers";
 import z from "zod";
-import { cacheLife, cacheTag, revalidateTag } from "next/cache";
+import { cacheTag, updateTag } from "next/cache";
 import { createBank, deleteBank, updateBank } from "./bank-actions";
 import {
   createMerchant,
@@ -92,7 +92,7 @@ export async function createMerchantContribution(
   };
   await db.insert(contributions).values(newContribution);
 
-  revalidateTag("contributions", "max");
+  updateTag("contributions");
 
   return { success: true, message: "Contribution submitted successfully" };
 }
@@ -167,7 +167,7 @@ export async function createBankContribution(
   };
   await db.insert(contributions).values(newContribution);
 
-  revalidateTag("contributions", "max");
+  updateTag("contributions");
 
   return { success: true, message: "Contribution submitted successfully" };
 }
@@ -180,7 +180,6 @@ export async function getAllContributions(
   type?: ContributionType,
 ) {
   "use cache";
-  cacheLife("minutes");
   cacheTag("contributions");
 
   return await db.query.contributions.findMany({
@@ -277,7 +276,7 @@ export async function rejectOrApproveContribution(
     }
   });
 
-  revalidateTag("contributions", "max");
+  updateTag("contributions");
 
   return {
     success: true,
