@@ -98,7 +98,7 @@ export function FilterBar({
             )}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="bg-card border-border">
+        <DropdownMenuContent className="bg-card border-border w-40" align="end">
           <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {supportStatusOptions.map((status) => (

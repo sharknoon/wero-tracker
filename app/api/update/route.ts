@@ -8,7 +8,7 @@ import { PgTable } from "drizzle-orm/pg-core";
 import { getTableColumns, sql, type SQL } from "drizzle-orm";
 import { toSnakeCase } from "drizzle-orm/casing";
 import { createBankContribution } from "@/actions/contribution-actions";
-import { deepEqual } from "@/lib/utils";
+import { deepEqual } from "@/lib/myutils";
 import { downloadFile } from "@/lib/download";
 
 /**

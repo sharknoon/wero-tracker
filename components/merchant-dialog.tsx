@@ -27,7 +27,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { merchantCategoryOptions } from "@/lib/constants";
 import { AliasInput, SupportStatusSelect } from "./dialog-shared";
-import { isValidUrl } from "@/lib/utils";
+import { isValidUrl } from "@/lib/myutils";
 import { Merchant } from "@/db/schema/merchants";
 import { SupportStatus } from "@/db/schema/support";
 import { createMerchantContribution } from "@/actions/contribution-actions";
@@ -413,7 +413,7 @@ export function MerchantDialog() {
           <DialogDescription>{getDescription()}</DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="max-h-[70vh] pr-4 -mr-4 **:max-w-[calc(100vw-5rem)] sm:**:max-w-116">
+        <ScrollArea className="max-h-[70vh] pr-4 -mr-4 **:max-w-[calc(100vw-4rem)] sm:**:max-w-120">
           <div className="space-y-4 py-2">
             {action === "delete" ? (
               <DeleteModeContent

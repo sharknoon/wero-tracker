@@ -71,7 +71,7 @@ function AddButton() {
           <span className="hidden sm:inline">Add</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="w-52">
         <DropdownMenuItem onClick={() => handleAdd("bank")}>
           <Landmark size={14} />
           Add missing bank
@@ -111,7 +111,7 @@ function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="rounded-full">
+        <Button variant="ghost" className="rounded-full px-1">
           <Avatar size="sm">
             <AvatarImage
               src={session.user.image ?? undefined}

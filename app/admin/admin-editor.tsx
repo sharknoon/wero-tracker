@@ -42,12 +42,24 @@ import {
   Search,
   Smartphone,
   Store,
+  Trash2,
 } from "lucide-react";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { Bank } from "@/db/schema/banks";
-import { updateBank } from "@/actions/bank-actions";
-import { updateMerchant } from "@/actions/merchant-actions";
+import { updateBank, deleteBank } from "@/actions/bank-actions";
+import { updateMerchant, deleteMerchant } from "@/actions/merchant-actions";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { calculateWeroSupport } from "@/lib/bank-helper";
 
 // ============================================================================
@@ -514,7 +526,15 @@ function MerchantEditor({
 // List Items
 // ============================================================================
 
-function BankListItem({ bank, onEdit }: { bank: Bank; onEdit: () => void }) {
+function BankListItem({
+  bank,
+  onEdit,
+  onDelete,
+}: {
+  bank: Bank;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
   const weroSupport = calculateWeroSupport(bank);
   const statusOption = supportStatusOptions.find(
     (o) => o.value === weroSupport,
@@ -548,10 +568,35 @@ function BankListItem({ bank, onEdit }: { bank: Bank; onEdit: () => void }) {
           </div>
         </div>
       </div>
-      <Button variant="ghost" size="sm" onClick={onEdit}>
-        <Pencil size={14} />
-        Edit
-      </Button>
+      <div className="flex items-center gap-1">
+        <Button variant="ghost" size="sm" onClick={onEdit}>
+          <Pencil size={14} />
+          Edit
+        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+              <Trash2 size={14} />
+              Delete
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete {bank.name}?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the
+                bank and all associated data.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction variant="destructive" onClick={onDelete}>
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
     </div>
   );
 }
@@ -559,9 +604,11 @@ function BankListItem({ bank, onEdit }: { bank: Bank; onEdit: () => void }) {
 function MerchantListItem({
   merchant,
   onEdit,
+  onDelete,
 }: {
   merchant: Merchant;
   onEdit: () => void;
+  onDelete: () => void;
 }) {
   const statusOption = supportStatusOptions.find(
     (o) => o.value === merchant.weroSupport,
@@ -599,10 +646,35 @@ function MerchantListItem({
           </div>
         </div>
       </div>
-      <Button variant="ghost" size="sm" onClick={onEdit}>
-        <Pencil size={14} />
-        Edit
-      </Button>
+      <div className="flex items-center gap-1">
+        <Button variant="ghost" size="sm" onClick={onEdit}>
+          <Pencil size={14} />
+          Edit
+        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+              <Trash2 size={14} />
+              Delete
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete {merchant.name}?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the
+                merchant and all associated data.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction variant="destructive" onClick={onDelete}>
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
     </div>
   );
 }
@@ -617,10 +689,29 @@ interface AdminEditorProps {
 }
 
 export function AdminEditor({ banks, merchants }: AdminEditorProps) {
+  const router = useRouter();
   const [editingBank, setEditingBank] = useState<Bank | null>(null);
   const [editingMerchant, setEditingMerchant] = useState<Merchant | null>(null);
   const [bankSearch, setBankSearch] = useState("");
   const [merchantSearch, setMerchantSearch] = useState("");
+
+  async function handleDeleteBank(id: string) {
+    try {
+      await deleteBank(id);
+      router.refresh();
+    } catch (error) {
+      alert(error instanceof Error ? error.message : error);
+    }
+  }
+
+  async function handleDeleteMerchant(id: string) {
+    try {
+      await deleteMerchant(id);
+      router.refresh();
+    } catch (error) {
+      alert(error instanceof Error ? error.message : error);
+    }
+  }
 
   const filteredBanks = banks.filter(
     (b) =>
@@ -700,6 +791,7 @@ export function AdminEditor({ banks, merchants }: AdminEditorProps) {
                             key={bank.id}
                             bank={bank}
                             onEdit={() => setEditingBank(bank)}
+                            onDelete={() => handleDeleteBank(bank.id)}
                           />
                         ))}
                         {filteredBanks.length === 0 && (
@@ -754,6 +846,7 @@ export function AdminEditor({ banks, merchants }: AdminEditorProps) {
                             key={merchant.id}
                             merchant={merchant}
                             onEdit={() => setEditingMerchant(merchant)}
+                            onDelete={() => handleDeleteMerchant(merchant.id)}
                           />
                         ))}
                         {filteredMerchants.length === 0 && (

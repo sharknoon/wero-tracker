@@ -24,7 +24,7 @@ import {
   CountrySelector,
   SupportStatusSelect,
 } from "./dialog-shared";
-import { isValidUrl } from "@/lib/utils";
+import { isValidUrl } from "@/lib/myutils";
 import { SupportStatus } from "@/db/schema/support";
 import { createBankContribution } from "@/actions/contribution-actions";
 import { ContributionAction } from "@/db/schema/contributions";
@@ -636,13 +636,13 @@ export function BankDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{getTitle()}</DialogTitle>
           <DialogDescription>{getDescription()}</DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="max-h-[70vh] pr-4 -mr-4 **:max-w-[calc(100vw-5rem)] sm:**:max-w-116">
+        <ScrollArea className="max-h-[70vh] pr-4 -mr-4 **:max-w-[calc(100vw-4rem)] sm:**:max-w-120">
           <div className="space-y-4 py-2">
             {action === "delete" ? (
               <DeleteModeContent

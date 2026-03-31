@@ -69,7 +69,7 @@ export function MerchantItem({ merchant }: MerchantItemProps) {
                 <MoreVertical size={16} />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-40">
               {merchant.website && (
                 <DropdownMenuItem asChild>
                   <a

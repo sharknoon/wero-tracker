@@ -88,7 +88,7 @@ export function Bankitem({ bank }: BankItemProps) {
                   <MoreVertical size={16} />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="w-40">
                 <DropdownMenuItem asChild>
                   <a
                     href={bank.website}
