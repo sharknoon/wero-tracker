@@ -223,7 +223,6 @@ export async function GET() {
               ? newIconChecksum
               : (existingApp?.iconChecksum ?? newIconChecksum),
             universalLink: app.universalLink,
-            supportsDesktop: app.supportsDesktop,
             weroSupport: "supported" as const,
           };
         }),
@@ -244,7 +243,9 @@ export async function GET() {
         name: brand.name,
         website: existingBank?.website || "https://example.com",
         aliases: brand.aliases,
-        countries: brand.countries,
+        countries: Array.from(
+          new Set([...(existingBank?.countries || []), ...brand.countries]),
+        ),
         logoUrl: logoChanged
           ? brand.logoUrl
           : (existingBank?.logoUrl ?? brand.logoUrl),
@@ -292,10 +293,12 @@ export async function GET() {
         );
       }
     } else {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { id: _, ...bankWithoutId } = bank;
       const { success, message } = await createBankContribution(
         {
           action: "add",
-          data: bank,
+          data: bankWithoutId,
           reason: "Automated addition from Wero API",
         },
         "system",

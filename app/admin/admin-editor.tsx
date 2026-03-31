@@ -117,7 +117,6 @@ function BankEditor({ bank, onDone }: { bank: Bank; onDone: () => void }) {
         iconUrl: "",
         iconChecksum: "",
         universalLink: "",
-        supportsDesktop: false,
         weroSupport: "not-supported" as SupportStatus,
       },
     ]);
@@ -376,13 +375,6 @@ function BankingAppEditor({
                 </a>
               </Button>
             </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Switch
-              checked={app.supportsDesktop}
-              onCheckedChange={(v) => onChange({ supportsDesktop: v })}
-            />
-            <Label className="text-xs">Supports Desktop</Label>
           </div>
           <SupportStatusSelect
             label="Wero Support"

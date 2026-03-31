@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useContribution } from "@/lib/contribution-context";
 import { AlertTriangle, Loader2, Plus, Trash2 } from "lucide-react";
@@ -39,7 +38,6 @@ type AppFormData = {
   name: string;
   iconUrl: string;
   universalLink: string;
-  supportsDesktop: boolean;
   weroSupport: SupportStatus;
 };
 
@@ -49,7 +47,6 @@ function createEmptyApp(): AppFormData {
     name: "",
     iconUrl: "",
     universalLink: "",
-    supportsDesktop: false,
     weroSupport: "unknown",
   };
 }
@@ -181,17 +178,6 @@ function BankingAppForm({
           />
         </div>
 
-        <div className="flex items-center gap-2">
-          <Switch
-            id={`app-desktop-${index}`}
-            checked={app.supportsDesktop}
-            onCheckedChange={(checked) =>
-              onChange(index, { ...app, supportsDesktop: checked })
-            }
-          />
-          <Label htmlFor={`app-desktop-${index}`}>Supports Desktop</Label>
-        </div>
-
         <SupportStatusSelect
           label="Wero Support Status"
           value={app.weroSupport}
@@ -291,6 +277,9 @@ function BankFormContent({
           onChange={(e) => onNameChange(e.target.value)}
           required
         />
+        <p className="text-xs text-muted-foreground">
+          Use the brand name, not the company name.
+        </p>
       </div>
 
       <AliasInput
@@ -385,7 +374,7 @@ function BankFormContent({
         </div>
         {apps.length === 0 && (
           <p className="text-xs text-muted-foreground">
-            No banking apps added yet. Click &quot;Add App&quot; to add one.
+            If this bank has a banking app, it must be added.
           </p>
         )}
         {apps.map((app, i) => (
@@ -560,69 +549,67 @@ export function BankDialog() {
     if (!validation.valid) return;
     setIsSubmitting(true);
     try {
-
-    if (action === "add") {
-      const { success, message } = await createBankContribution({
-        action,
-        data: {
-          name,
-          aliases,
-          website,
-          logoUrl: `https://www.google.com/s2/favicons?domain=${new URL(website).hostname}&sz=64`,
-          logoChecksum: "WILL BE CALCULATED ON REVIEW",
-          countries,
-          p2pPaymentsSupport,
-          eCommercePaymentsSupport,
-          posPaymentsSupport,
-          standaloneAppSupport,
-          bankingApps: apps.map((app) => ({
-            ...app,
-            iconChecksum: "WILL BE CALCULATED ON REVIEW",
-          })),
-          notes,
-        },
-      });
-      if (!success) {
-        setSubmitError(message);
+      if (action === "add") {
+        const { success, message } = await createBankContribution({
+          action,
+          data: {
+            name,
+            aliases,
+            website,
+            logoUrl: `https://www.google.com/s2/favicons?domain=${new URL(website).hostname}&sz=64`,
+            logoChecksum: "WILL BE CALCULATED ON REVIEW",
+            countries,
+            p2pPaymentsSupport,
+            eCommercePaymentsSupport,
+            posPaymentsSupport,
+            standaloneAppSupport,
+            bankingApps: apps.map((app) => ({
+              ...app,
+              iconChecksum: "WILL BE CALCULATED ON REVIEW",
+            })),
+            notes,
+          },
+        });
+        if (!success) {
+          setSubmitError(message);
+        } else {
+          setOpen(false);
+          toast.success("Bank contribution submitted successfully!");
+        }
       } else {
-        setOpen(false);
-        toast.success("Bank contribution submitted successfully!");
+        const { success, message } = await createBankContribution({
+          action,
+          data: {
+            id: existingBank!.id,
+            name,
+            aliases,
+            website,
+            logoUrl: existingBank!.logoUrl,
+            logoChecksum: existingBank!.logoChecksum,
+            countries,
+            p2pPaymentsSupport,
+            eCommercePaymentsSupport,
+            posPaymentsSupport,
+            standaloneAppSupport,
+            bankingApps: apps.map((app) => ({
+              ...app,
+              iconChecksum:
+                existingBank!.bankingApps.find((a) => a.id === app.id)
+                  ?.iconChecksum || "WILL BE CALCULATED ON REVIEW",
+            })),
+            notes,
+          },
+          reason,
+        });
+        if (!success) {
+          setSubmitError(message);
+        } else {
+          setOpen(false);
+          toast.success(
+            `Bank ${action === "edit" ? "edit" : "deletion"} contribution submitted successfully!`,
+          );
+        }
       }
-    } else {
-      const { success, message } = await createBankContribution({
-        action,
-        data: {
-          id: existingBank!.id,
-          name,
-          aliases,
-          website,
-          logoUrl: existingBank!.logoUrl,
-          logoChecksum: existingBank!.logoChecksum,
-          countries,
-          p2pPaymentsSupport,
-          eCommercePaymentsSupport,
-          posPaymentsSupport,
-          standaloneAppSupport,
-          bankingApps: apps.map((app) => ({
-            ...app,
-            iconChecksum:
-              existingBank!.bankingApps.find((a) => a.id === app.id)
-                ?.iconChecksum || "WILL BE CALCULATED ON REVIEW",
-          })),
-          notes,
-        },
-        reason,
-      });
-      if (!success) {
-        setSubmitError(message);
-      } else {
-        setOpen(false);
-        toast.success(
-          `Bank ${action === "edit" ? "edit" : "deletion"} contribution submitted successfully!`,
-        );
-      }
-    }
-
     } finally {
       setIsSubmitting(false);
     }

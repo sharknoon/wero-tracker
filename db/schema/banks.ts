@@ -38,7 +38,6 @@ export const banks = pgTable(
           iconUrl: string;
           iconChecksum: string;
           universalLink: string;
-          supportsDesktop: boolean;
           weroSupport: SupportStatus;
         }[]
       >()
@@ -63,7 +62,6 @@ export const newBankSchema = createInsertSchema(banks).extend({
       iconUrl: z.url(),
       iconChecksum: z.string(),
       universalLink: z.url(),
-      supportsDesktop: z.boolean(),
       weroSupport: supportStatusesSchema,
     }),
   ),
