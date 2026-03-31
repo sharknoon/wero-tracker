@@ -65,18 +65,16 @@ export function Bankitem({ bank }: BankItemProps) {
           </Avatar>
 
           <div className="min-w-0 grow self-center">
-            <div className="flex items-center gap-2">
-              <h3
-                className="font-semibold text-foreground truncate"
-                title={bank.name}
-              >
-                {bank.name}
-              </h3>
-              {bank.notes && <NotesText notes={bank.notes} />}
-            </div>
+            <h3
+              className="font-semibold text-foreground truncate"
+              title={bank.name}
+            >
+              {bank.name}
+            </h3>
+            {bank.notes && <NotesText notes={bank.notes} />}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             <StatusBadge status={bank.weroSupport} showLabel />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

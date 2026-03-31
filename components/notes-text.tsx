@@ -63,12 +63,13 @@ export function NotesText({ notes, className }: NotesTextProps) {
         <button
           type="button"
           className={cn(
-            "rounded-full p-1 text-muted-foreground hover:text-foreground transition-colors",
+            "inline-flex items-center gap-1 rounded-full p-1 text-muted-foreground hover:text-foreground transition-colors",
             className,
           )}
           aria-label="View notes"
         >
-          <Info size={16} />
+          <Info size={14} />
+          <span className="text-xs leading-none translate-y-px">Info</span>
         </button>
       </TooltipTrigger>
       <TooltipContent
