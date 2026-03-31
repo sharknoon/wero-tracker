@@ -34,10 +34,10 @@ export function MerchantItem({ merchant }: MerchantItemProps) {
     <>
       <Item variant="outline">
         <ItemMedia>
-          <Avatar className="size-10 rounded-lg">
+          <Avatar className="size-10 after:rounded-lg">
             <AvatarImage
               src={merchant.logoUrl}
-              className="bg-white p-1 object-contain"
+              className="bg-white p-1 object-contain rounded-lg"
             />
             <AvatarFallback className="rounded-lg">
               {merchant.name.substring(0, 2).toUpperCase()}

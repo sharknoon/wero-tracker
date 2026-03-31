@@ -54,10 +54,10 @@ export function Bankitem({ bank }: BankItemProps) {
     <Card className="bg-transparent py-4">
       <CardHeader className="px-4">
         <div className="flex items-start gap-3 overflow-hidden">
-          <Avatar className="size-10 rounded-lg">
+          <Avatar className="size-10 after:rounded-lg">
             <AvatarImage
               src={bank.logoUrl}
-              className="bg-white p-1 object-contain"
+              className="bg-white p-1 object-contain rounded-lg"
             />
             <AvatarFallback className="rounded-lg">
               {bank.name.substring(0, 2).toUpperCase()}
@@ -202,8 +202,11 @@ function AppBadge({
       target="_blank"
       rel="noopener noreferrer"
     >
-      <Avatar className="size-8 rounded-lg shrink-0">
-        <AvatarImage src={iconUrl} className="bg-white object-contain" />
+      <Avatar className="size-8 after:rounded-lg shrink-0">
+        <AvatarImage
+          src={iconUrl}
+          className="bg-white object-contain rounded-lg"
+        />
         <AvatarFallback className="rounded-lg">
           {name.substring(0, 2).toUpperCase()}
         </AvatarFallback>
