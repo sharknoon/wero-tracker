@@ -13,6 +13,7 @@ import { StatsOverview } from "./stats-overview";
 import { FilterBar } from "./filter-bar";
 import { Legend } from "./legend";
 import { BankCountrySection } from "./bank-country-section";
+import { Bankitem } from "./bank-item";
 import { MerchantCategorySection } from "./merchant-category-section";
 import {
   Empty,
@@ -319,6 +320,12 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
                   </div>
                 </EmptyContent>
               </Empty>
+            ) : searchQuery ? (
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {filteredData.banks.map((bank) => (
+                  <Bankitem key={bank.id} bank={bank} />
+                ))}
+              </div>
             ) : (
               [...filteredBankCountries]
                 .sort(([a], [b]) => {
