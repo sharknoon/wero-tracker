@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useContribution } from "@/lib/contribution-context";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { merchantCategoryOptions } from "@/lib/constants";
@@ -251,6 +251,7 @@ export function MerchantDialog() {
     null,
   );
   const [submitError, setSubmitError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { onOpenContributionDialog } = useContribution();
 
   // Form state
@@ -343,6 +344,8 @@ export function MerchantDialog() {
 
   const handleSubmit = async () => {
     if (!validation.valid) return;
+    setIsSubmitting(true);
+    try {
 
     if (action === "add") {
       const { success, message } = await createMerchantContribution({
@@ -388,6 +391,10 @@ export function MerchantDialog() {
           `Merchant ${action === "edit" ? "edit" : "deletion"} contribution submitted successfully!`,
         );
       }
+    }
+
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -461,9 +468,10 @@ export function MerchantDialog() {
             </Button>
             <Button
               onClick={handleSubmit}
-              disabled={!validation.valid}
+              disabled={!validation.valid || isSubmitting}
               variant={action === "delete" ? "destructive" : "default"}
             >
+              {isSubmitting && <Loader2 className="animate-spin" />}
               {action === "delete"
                 ? "Submit Deletion Request"
                 : "Submit for Review"}
