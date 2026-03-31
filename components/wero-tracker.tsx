@@ -15,6 +15,7 @@ import { Legend } from "./legend";
 import { BankCountrySection } from "./bank-country-section";
 import { Bankitem } from "./bank-item";
 import { MerchantCategorySection } from "./merchant-category-section";
+import { MerchantItem } from "./merchant-item";
 import {
   Empty,
   EmptyContent,
@@ -375,6 +376,12 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
                   </div>
                 </EmptyContent>
               </Empty>
+            ) : searchQuery ? (
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {filteredData.merchants.map((merchant) => (
+                  <MerchantItem key={merchant.id} merchant={merchant} />
+                ))}
+              </div>
             ) : (
               categoryOrder
                 .filter((category) => filteredMerchantCategories.has(category))
