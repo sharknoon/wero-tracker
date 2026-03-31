@@ -39,6 +39,7 @@ import {
   Landmark,
   Loader2,
   Pencil,
+  Plus,
   Search,
   Smartphone,
   Store,
@@ -105,6 +106,25 @@ function BankEditor({ bank, onDone }: { bank: Bank; onDone: () => void }) {
     setBankingApps((prev) =>
       prev.map((a) => (a.id === appId ? { ...a, ...patch } : a)),
     );
+  }
+
+  function addApp() {
+    setBankingApps((prev) => [
+      ...prev,
+      {
+        id: crypto.randomUUID(),
+        name: "",
+        iconUrl: "",
+        iconChecksum: "",
+        universalLink: "",
+        supportsDesktop: false,
+        weroSupport: "not-supported" as SupportStatus,
+      },
+    ]);
+  }
+
+  function removeApp(appId: string) {
+    setBankingApps((prev) => prev.filter((a) => a.id !== appId));
   }
 
   function handleSave() {
@@ -234,20 +254,25 @@ function BankEditor({ bank, onDone }: { bank: Bank; onDone: () => void }) {
             />
           </div>
 
+          <Separator />
+          <div className="flex items-center justify-between">
+            <h4 className="font-semibold">Banking Apps</h4>
+            <Button variant="outline" size="sm" onClick={addApp}>
+              <Plus size={14} />
+              Add App
+            </Button>
+          </div>
           {bankingApps.length > 0 && (
-            <>
-              <Separator />
-              <h4 className="font-semibold">Banking Apps</h4>
-              <div className="space-y-3">
-                {bankingApps.map((app) => (
-                  <BankingAppEditor
-                    key={app.id}
-                    app={app}
-                    onChange={(patch) => updateApp(app.id, patch)}
-                  />
-                ))}
-              </div>
-            </>
+            <div className="space-y-3">
+              {bankingApps.map((app) => (
+                <BankingAppEditor
+                  key={app.id}
+                  app={app}
+                  onChange={(patch) => updateApp(app.id, patch)}
+                  onRemove={() => removeApp(app.id)}
+                />
+              ))}
+            </div>
           )}
         </div>
       </CardContent>
@@ -275,17 +300,30 @@ function BankEditor({ bank, onDone }: { bank: Bank; onDone: () => void }) {
 function BankingAppEditor({
   app,
   onChange,
+  onRemove,
 }: {
   app: Bank["bankingApps"][number];
   onChange: (patch: Partial<Bank["bankingApps"][number]>) => void;
+  onRemove: () => void;
 }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-sm flex items-center gap-2">
-          <Smartphone size={14} />
-          {app.name}
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <Smartphone size={14} />
+            {app.name || "New App"}
+          </CardTitle>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-destructive hover:text-destructive"
+            onClick={onRemove}
+          >
+            <Trash2 size={14} />
+            Remove
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="grid gap-3 sm:grid-cols-2">
@@ -575,7 +613,11 @@ function BankListItem({
         </Button>
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-destructive hover:text-destructive"
+            >
               <Trash2 size={14} />
               Delete
             </Button>
@@ -653,7 +695,11 @@ function MerchantListItem({
         </Button>
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-destructive hover:text-destructive"
+            >
               <Trash2 size={14} />
               Delete
             </Button>
