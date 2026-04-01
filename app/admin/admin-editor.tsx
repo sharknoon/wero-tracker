@@ -44,6 +44,7 @@ import {
   Smartphone,
   Store,
   Trash2,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
@@ -62,6 +63,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { calculateWeroSupport } from "@/lib/bank-helper";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 
 // ============================================================================
 // Bank Editor
@@ -787,7 +794,7 @@ export function AdminEditor({ banks, merchants }: AdminEditorProps) {
 
       <main className="container mx-auto p-4">
         <Tabs defaultValue="banks">
-          <TabsList>
+          <TabsList className="mb-2.5">
             <TabsTrigger value="banks">
               <Landmark size={14} />
               Banks ({banks.length})
@@ -810,18 +817,29 @@ export function AdminEditor({ banks, merchants }: AdminEditorProps) {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="relative">
-                      <Search
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-                        size={14}
-                      />
-                      <Input
+                    <InputGroup>
+                      <InputGroupInput
                         placeholder="Search banks..."
                         value={bankSearch}
                         onChange={(e) => setBankSearch(e.target.value)}
-                        className="pl-9"
+                        spellCheck={false}
                       />
-                    </div>
+                      <InputGroupAddon>
+                        <Search />
+                      </InputGroupAddon>
+                      {bankSearch && (
+                        <InputGroupAddon align="inline-end">
+                          <InputGroupButton
+                            aria-label="Clear"
+                            title="Clear"
+                            size="icon-xs"
+                            onClick={() => setBankSearch("")}
+                          >
+                            <X />
+                          </InputGroupButton>
+                        </InputGroupAddon>
+                      )}
+                    </InputGroup>
                     <ScrollArea className="h-[calc(100vh-20rem)]">
                       <div className="space-y-2">
                         {filteredBanks.map((bank) => (
@@ -865,18 +883,29 @@ export function AdminEditor({ banks, merchants }: AdminEditorProps) {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="relative">
-                      <Search
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-                        size={14}
-                      />
-                      <Input
-                        placeholder="Search merchants..."
+                    <InputGroup>
+                      <InputGroupInput
+                        placeholder="Search online shops..."
                         value={merchantSearch}
                         onChange={(e) => setMerchantSearch(e.target.value)}
-                        className="pl-9"
+                        spellCheck={false}
                       />
-                    </div>
+                      <InputGroupAddon>
+                        <Search />
+                      </InputGroupAddon>
+                      {merchantSearch && (
+                        <InputGroupAddon align="inline-end">
+                          <InputGroupButton
+                            aria-label="Clear"
+                            title="Clear"
+                            size="icon-xs"
+                            onClick={() => setMerchantSearch("")}
+                          >
+                            <X />
+                          </InputGroupButton>
+                        </InputGroupAddon>
+                      )}
+                    </InputGroup>
                     <ScrollArea className="h-[calc(100vh-20rem)]">
                       <div className="space-y-2">
                         {filteredMerchants.map((merchant) => (

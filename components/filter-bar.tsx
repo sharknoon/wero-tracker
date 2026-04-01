@@ -68,6 +68,7 @@ export function FilterBar({
           }
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
+          spellCheck={false}
         />
         <InputGroupAddon>
           <Search />
