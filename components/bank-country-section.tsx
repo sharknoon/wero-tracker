@@ -39,7 +39,7 @@ export function BankCountrySection({
   return (
     <>
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <CollapsibleTrigger className="flex w-full items-center justify-between rounded-lg bg-secondary/50 px-4 py-3 hover:bg-secondary transition-colors">
+        <CollapsibleTrigger className="flex w-full cursor-pointer items-center justify-between rounded-lg bg-secondary/50 px-4 py-3 hover:bg-secondary transition-colors">
           <div className="flex items-center gap-3">
             <CountryFlag countryCode={countryCode} size="md" />
             <div className="text-start">
