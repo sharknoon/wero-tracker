@@ -7,7 +7,7 @@ import {
   useCallback,
   Suspense,
 } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Header } from "./header";
 import { StatsOverview } from "./stats-overview";
 import { FilterBar } from "./filter-bar";
@@ -63,22 +63,20 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
 
   const { openContributionDialog } = useContribution();
   const searchParams = useSearchParams();
-  const router = useRouter();
 
-  const activeView: ViewType =
-    searchParams.get("view") === "merchants" ? "merchants" : "banks";
-  const setActiveView = useCallback(
-    (view: ViewType) => {
-      const params = new URLSearchParams(searchParams);
-      if (view === "banks") {
-        params.delete("view");
-      } else {
-        params.set("view", view);
-      }
-      router.replace(`?${params}`, { scroll: false });
-    },
-    [searchParams, router],
+  const [activeView, setActiveViewState] = useState<ViewType>(
+    searchParams.get("view") === "merchants" ? "merchants" : "banks",
   );
+  const setActiveView = useCallback((view: ViewType) => {
+    setActiveViewState(view);
+    const url = new URL(window.location.href);
+    if (view === "banks") {
+      url.searchParams.delete("view");
+    } else {
+      url.searchParams.set("view", view);
+    }
+    window.history.replaceState(null, "", url);
+  }, []);
 
   const sourceRepository = "https://github.com/sharknoon/wero-tracker";
   const ownerGitHub = "https://github.com/sharknoon";

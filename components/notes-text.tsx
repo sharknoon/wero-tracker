@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
 import { Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -55,7 +55,7 @@ function parseNotesWithLinks(notes: string): React.ReactNode[] {
  * URLs in the text are converted to clickable links.
  */
 export function NotesText({ notes, className }: NotesTextProps) {
-  const elements = parseNotesWithLinks(notes);
+  const elements = useMemo(() => parseNotesWithLinks(notes), [notes]);
 
   return (
     <Tooltip>

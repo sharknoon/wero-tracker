@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/collapsible";
 import { WeroData } from "@/app/page";
 
+const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
+
 interface BankCountrySectionProps {
   countryCode: string;
   banks: WeroData["banks"];
@@ -44,9 +46,7 @@ export function BankCountrySection({
             <CountryFlag countryCode={countryCode} size="md" />
             <div className="text-start">
               <h2 className="font-semibold text-foreground">
-                {new Intl.DisplayNames(["en"], { type: "region" }).of(
-                  countryCode,
-                )}
+                {regionNames.of(countryCode)}
               </h2>
               <p className="text-xs text-muted-foreground">
                 {banks.length} banks • {supportedCount} supported •{" "}

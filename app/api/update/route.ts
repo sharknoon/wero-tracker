@@ -277,6 +277,8 @@ export async function GET() {
   }
 
   const errors: string[] = [];
+  const additions: string[] = [];
+  const updates: string[] = [];
   for (const { existing, bank } of banksToUpsert.values()) {
     if (existing) {
       const { success, message } = await createBankContribution(
@@ -287,7 +289,9 @@ export async function GET() {
         },
         "system",
       );
-      if (!success) {
+      if (success) {
+        updates.push(`${bank.name} (${bank.id})`);
+      } else {
         errors.push(
           `Failed to create contribution for bank ${bank.name}: ${message}`,
         );
@@ -303,7 +307,9 @@ export async function GET() {
         },
         "system",
       );
-      if (!success) {
+      if (success) {
+        additions.push(`${bank.name} (${bank.id})`);
+      } else {
         errors.push(
           `Failed to create contribution for bank ${bank.name}: ${message}`,
         );
@@ -324,5 +330,7 @@ export async function GET() {
 
   return NextResponse.json({
     success: true,
+    additions,
+    updates,
   });
 }
