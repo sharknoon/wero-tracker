@@ -65,10 +65,12 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const activeView: ViewType =
+  const viewFromParams: ViewType =
     searchParams.get("view") === "merchants" ? "merchants" : "banks";
+  const [activeView, setActiveViewState] = useState<ViewType>(viewFromParams);
   const setActiveView = useCallback(
     (view: ViewType) => {
+      setActiveViewState(view);
       const params = new URLSearchParams(searchParams);
       if (view === "banks") {
         params.delete("view");
