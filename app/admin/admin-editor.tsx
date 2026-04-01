@@ -35,6 +35,7 @@ import { merchantCategoryOptions, supportStatusOptions } from "@/lib/constants";
 import {
   ArrowLeft,
   Check,
+  Copy,
   ExternalLink,
   Landmark,
   Loader2,
@@ -49,8 +50,12 @@ import {
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { Bank } from "@/db/schema/banks";
-import { updateBank, deleteBank } from "@/actions/bank-actions";
-import { updateMerchant, deleteMerchant } from "@/actions/merchant-actions";
+import { createBank, updateBank, deleteBank } from "@/actions/bank-actions";
+import {
+  createMerchant,
+  updateMerchant,
+  deleteMerchant,
+} from "@/actions/merchant-actions";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -566,10 +571,12 @@ function MerchantEditor({
 function BankListItem({
   bank,
   onEdit,
+  onDuplicate,
   onDelete,
 }: {
   bank: Bank;
   onEdit: () => void;
+  onDuplicate: () => void;
   onDelete: () => void;
 }) {
   const weroSupport = calculateWeroSupport(bank);
@@ -610,6 +617,10 @@ function BankListItem({
           <Pencil size={14} />
           Edit
         </Button>
+        <Button variant="ghost" size="sm" onClick={onDuplicate}>
+          <Copy size={14} />
+          Duplicate
+        </Button>
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
@@ -645,10 +656,12 @@ function BankListItem({
 function MerchantListItem({
   merchant,
   onEdit,
+  onDuplicate,
   onDelete,
 }: {
   merchant: Merchant;
   onEdit: () => void;
+  onDuplicate: () => void;
   onDelete: () => void;
 }) {
   const statusOption = supportStatusOptions.find(
@@ -691,6 +704,10 @@ function MerchantListItem({
         <Button variant="ghost" size="sm" onClick={onEdit}>
           <Pencil size={14} />
           Edit
+        </Button>
+        <Button variant="ghost" size="sm" onClick={onDuplicate}>
+          <Copy size={14} />
+          Duplicate
         </Button>
         <AlertDialog>
           <AlertDialogTrigger asChild>
@@ -753,6 +770,51 @@ export function AdminEditor({ banks, merchants }: AdminEditorProps) {
     try {
       await deleteMerchant(id);
       router.refresh();
+    } catch (error) {
+      alert(error instanceof Error ? error.message : error);
+    }
+  }
+
+  async function handleDuplicateBank(bank: Bank) {
+    try {
+      const copy = await createBank({
+        name: `${bank.name} (Copy)`,
+        aliases: bank.aliases,
+        website: bank.website,
+        logoUrl: bank.logoUrl,
+        logoChecksum: bank.logoChecksum,
+        countries: bank.countries,
+        p2pPaymentsSupport: bank.p2pPaymentsSupport,
+        eCommercePaymentsSupport: bank.eCommercePaymentsSupport,
+        posPaymentsSupport: bank.posPaymentsSupport,
+        standaloneAppSupport: bank.standaloneAppSupport,
+        bankingApps: bank.bankingApps.map((app) => ({
+          ...app,
+          id: crypto.randomUUID(),
+        })),
+        notes: bank.notes,
+      });
+      router.refresh();
+      setEditingBank(copy);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : error);
+    }
+  }
+
+  async function handleDuplicateMerchant(merchant: Merchant) {
+    try {
+      const copy = await createMerchant({
+        name: `${merchant.name} (Copy)`,
+        aliases: merchant.aliases,
+        website: merchant.website,
+        logoUrl: merchant.logoUrl,
+        logoChecksum: merchant.logoChecksum,
+        category: merchant.category,
+        weroSupport: merchant.weroSupport,
+        notes: merchant.notes,
+      });
+      router.refresh();
+      setEditingMerchant(copy);
     } catch (error) {
       alert(error instanceof Error ? error.message : error);
     }
@@ -847,6 +909,7 @@ export function AdminEditor({ banks, merchants }: AdminEditorProps) {
                             key={bank.id}
                             bank={bank}
                             onEdit={() => setEditingBank(bank)}
+                            onDuplicate={() => handleDuplicateBank(bank)}
                             onDelete={() => handleDeleteBank(bank.id)}
                           />
                         ))}
@@ -913,6 +976,9 @@ export function AdminEditor({ banks, merchants }: AdminEditorProps) {
                             key={merchant.id}
                             merchant={merchant}
                             onEdit={() => setEditingMerchant(merchant)}
+                            onDuplicate={() =>
+                              handleDuplicateMerchant(merchant)
+                            }
                             onDelete={() => handleDeleteMerchant(merchant.id)}
                           />
                         ))}
