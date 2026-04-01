@@ -9,7 +9,7 @@ import {
 } from "@/db/schema/banks";
 import { del, mirrorUrl } from "@/lib/s3";
 import { requireAdmin } from "@/actions/session-actions";
-import { eq, asc } from "drizzle-orm";
+import { eq, asc, sql } from "drizzle-orm";
 import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 import { downloadFile } from "@/lib/download";
 
@@ -18,7 +18,7 @@ export async function getAllBanks() {
   cacheLife("minutes");
   cacheTag("wero-data");
 
-  return db.select().from(banksTable).orderBy(asc(banksTable.name));
+  return db.select().from(banksTable).orderBy(asc(sql`lower(${banksTable.name})`));
 }
 
 export async function createBank(

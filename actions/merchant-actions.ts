@@ -9,7 +9,7 @@ import {
 } from "@/db/schema/merchants";
 import { del, mirrorUrl } from "@/lib/s3";
 import { requireAdmin } from "@/actions/session-actions";
-import { eq, asc } from "drizzle-orm";
+import { eq, asc, sql } from "drizzle-orm";
 import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 import { downloadFile } from "@/lib/download";
 
@@ -18,7 +18,10 @@ export async function getAllMerchants() {
   cacheLife("minutes");
   cacheTag("wero-data");
 
-  return db.select().from(merchantsTable).orderBy(asc(merchantsTable.name));
+  return db
+    .select()
+    .from(merchantsTable)
+    .orderBy(asc(sql`lower(${merchantsTable.name})`));
 }
 
 export async function createMerchant(

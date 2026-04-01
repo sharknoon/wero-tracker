@@ -1,9 +1,11 @@
+import { getAllBanks } from "@/actions/bank-actions";
+import { getAllMerchants } from "@/actions/merchant-actions";
 import { WeroTracker } from "@/components/wero-tracker";
 import { db } from "@/db";
 import { banks } from "@/db/schema/banks";
 import { merchants } from "@/db/schema/merchants";
 import { calculateWeroSupport } from "@/lib/bank-helper";
-import { asc, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 
 async function getWeroData() {
@@ -12,12 +14,8 @@ async function getWeroData() {
   cacheTag("wero-data");
 
   const [banksData, merchantsData, lastUpdated] = await Promise.all([
-    db.query.banks.findMany({
-      orderBy: (b) => [asc(b.name)],
-    }),
-    db.query.merchants.findMany({
-      orderBy: (m) => [asc(m.name)],
-    }),
+    getAllBanks(),
+    getAllMerchants(),
     db
       .execute<{ latest: string }>(
         sql`
