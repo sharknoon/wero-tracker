@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -20,7 +19,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -28,6 +26,7 @@ import {
   AliasInput,
   CountrySelector,
   SupportStatusSelect,
+  WebsiteInput,
 } from "@/components/dialog-shared";
 import { SupportStatus } from "@/db/schema/support";
 import { Merchant, MerchantCategory } from "@/db/schema/merchants";
@@ -67,6 +66,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { calculateWeroSupport } from "@/lib/bank-helper";
 import {
   InputGroup,
@@ -165,129 +171,112 @@ function BankEditor({ bank, onDone }: { bank: Bank; onDone: () => void }) {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Editing: {bank.name}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-6">
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label>Name</Label>
-              <Input value={name} onChange={(e) => setName(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label>Website</Label>
-              <div className="flex items-center gap-2">
-                <Input
-                  value={website}
-                  onChange={(e) => setWebsite(e.target.value)}
-                />
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="shrink-0"
-                  asChild
-                >
-                  <a href={website} target="_blank" rel="noopener noreferrer">
-                    <ExternalLink size={14} />
-                  </a>
-                </Button>
-              </div>
-            </div>
-            <div className="space-y-2 md:col-span-2">
-              <Label>Logo URL</Label>
-              <div className="flex items-center gap-3">
-                {logoUrl && (
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img
-                    src={logoUrl}
-                    alt="Logo preview"
-                    className="size-10 shrink-0 rounded-md object-contain bg-white p-0.5 border"
-                  />
-                )}
-                <Input
-                  value={logoUrl}
-                  onChange={(e) => setLogoUrl(e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
-
-          <AliasInput
-            aliases={aliases}
-            aliasInput={aliasInput}
-            onAliasInputChange={setAliasInput}
-            onAddAlias={handleAddAlias}
-            onRemoveAlias={(a) => setAliases(aliases.filter((x) => x !== a))}
-          />
-
-          <CountrySelector
-            countries={countries}
-            onToggleCountry={(c) =>
-              setCountries(
-                countries.includes(c)
-                  ? countries.filter((x) => x !== c)
-                  : [...countries, c],
-              )
-            }
-          />
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <SupportStatusSelect
-              label="P2P Payments"
-              value={p2pPaymentsSupport}
-              onChange={setP2pPaymentsSupport}
-            />
-            <SupportStatusSelect
-              label="E-Commerce Payments"
-              value={eCommercePaymentsSupport}
-              onChange={setECommercePaymentsSupport}
-            />
-            <SupportStatusSelect
-              label="POS Payments"
-              value={posPaymentsSupport}
-              onChange={setPosPaymentsSupport}
-            />
-            <SupportStatusSelect
-              label="Standalone Wero App"
-              value={standaloneAppSupport}
-              onChange={setStandaloneAppSupport}
-            />
-          </div>
-
+    <DialogContent
+      className="sm:max-w-2xl max-h-[90vh] overflow-y-auto"
+      aria-describedby={undefined}
+    >
+      <DialogHeader>
+        <DialogTitle>Editing: {bank.name}</DialogTitle>
+      </DialogHeader>
+      <div className="space-y-6">
+        <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label>Notes</Label>
-            <Textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Optional notes"
-            />
+            <Label>Name</Label>
+            <Input value={name} onChange={(e) => setName(e.target.value)} />
           </div>
-
-          <Separator />
-          <div className="flex items-center justify-between">
-            <h4 className="font-semibold">Banking Apps</h4>
-            <Button variant="outline" size="sm" onClick={addApp}>
-              <Plus size={14} />
-              Add App
-            </Button>
-          </div>
-          {bankingApps.length > 0 && (
-            <div className="space-y-3">
-              {bankingApps.map((app) => (
-                <BankingAppEditor
-                  key={app.id}
-                  app={app}
-                  onChange={(patch) => updateApp(app.id, patch)}
-                  onRemove={() => removeApp(app.id)}
+          <WebsiteInput value={website} onChange={setWebsite} />
+          <div className="space-y-2 md:col-span-2">
+            <Label>Logo URL</Label>
+            <div className="flex items-center gap-3">
+              {logoUrl && (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src={logoUrl}
+                  alt="Logo preview"
+                  className="size-10 shrink-0 rounded-md object-contain bg-white p-0.5 border"
                 />
-              ))}
+              )}
+              <Input
+                value={logoUrl}
+                onChange={(e) => setLogoUrl(e.target.value)}
+              />
             </div>
-          )}
+          </div>
         </div>
-      </CardContent>
-      <CardFooter className="justify-end gap-2">
+
+        <AliasInput
+          aliases={aliases}
+          aliasInput={aliasInput}
+          onAliasInputChange={setAliasInput}
+          onAddAlias={handleAddAlias}
+          onRemoveAlias={(a) => setAliases(aliases.filter((x) => x !== a))}
+        />
+
+        <CountrySelector
+          countries={countries}
+          onToggleCountry={(c) =>
+            setCountries(
+              countries.includes(c)
+                ? countries.filter((x) => x !== c)
+                : [...countries, c],
+            )
+          }
+        />
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <SupportStatusSelect
+            label="P2P Payments"
+            value={p2pPaymentsSupport}
+            onChange={setP2pPaymentsSupport}
+          />
+          <SupportStatusSelect
+            label="E-Commerce Payments"
+            value={eCommercePaymentsSupport}
+            onChange={setECommercePaymentsSupport}
+          />
+          <SupportStatusSelect
+            label="POS Payments"
+            value={posPaymentsSupport}
+            onChange={setPosPaymentsSupport}
+          />
+          <SupportStatusSelect
+            label="Standalone Wero App"
+            value={standaloneAppSupport}
+            onChange={setStandaloneAppSupport}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label>Notes</Label>
+          <Textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Optional notes"
+          />
+        </div>
+
+        <Separator />
+        <div className="flex items-center justify-between">
+          <h4 className="font-semibold">Banking Apps</h4>
+          <Button variant="outline" size="sm" onClick={addApp}>
+            <Plus size={14} />
+            Add App
+          </Button>
+        </div>
+        {bankingApps.length > 0 && (
+          <div className="space-y-3">
+            {bankingApps.map((app) => (
+              <BankingAppEditor
+                key={app.id}
+                app={app}
+                onChange={(patch) => updateApp(app.id, patch)}
+                onRemove={() => removeApp(app.id)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+      <DialogFooter>
         <Button variant="outline" onClick={onDone}>
           Cancel
         </Button>
@@ -299,8 +288,8 @@ function BankEditor({ bank, onDone }: { bank: Bank; onDone: () => void }) {
           )}
           Save
         </Button>
-      </CardFooter>
-    </Card>
+      </DialogFooter>
+    </DialogContent>
   );
 }
 
@@ -454,100 +443,83 @@ function MerchantEditor({
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Editing: {merchant.name}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-6">
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label>Name</Label>
-              <Input value={name} onChange={(e) => setName(e.target.value)} />
-            </div>
-            <div className="space-y-2">
-              <Label>Website</Label>
-              <div className="flex items-center gap-2">
-                <Input
-                  value={website}
-                  onChange={(e) => setWebsite(e.target.value)}
-                />
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="shrink-0"
-                  asChild
-                >
-                  <a href={website} target="_blank" rel="noopener noreferrer">
-                    <ExternalLink size={14} />
-                  </a>
-                </Button>
-              </div>
-            </div>
-            <div className="space-y-2 md:col-span-2">
-              <Label>Logo URL</Label>
-              <div className="flex items-center gap-3">
-                {logoUrl && (
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img
-                    src={logoUrl}
-                    alt="Logo preview"
-                    className="size-10 shrink-0 rounded-md object-contain bg-white p-0.5 border"
-                  />
-                )}
-                <Input
-                  value={logoUrl}
-                  onChange={(e) => setLogoUrl(e.target.value)}
-                />
-              </div>
-            </div>
-          </div>
-
-          <AliasInput
-            aliases={aliases}
-            aliasInput={aliasInput}
-            onAliasInputChange={setAliasInput}
-            onAddAlias={handleAddAlias}
-            onRemoveAlias={(a) => setAliases(aliases.filter((x) => x !== a))}
-          />
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label>Category</Label>
-              <Select
-                value={category}
-                onValueChange={(v) => setCategory(v as MerchantCategory)}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {merchantCategoryOptions.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.emoji} {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <SupportStatusSelect
-              label="Wero Support"
-              value={weroSupport}
-              onChange={setWeroSupport}
-            />
-          </div>
-
+    <DialogContent
+      className="sm:max-w-2xl max-h-[90vh] overflow-y-auto"
+      aria-describedby={undefined}
+    >
+      <DialogHeader>
+        <DialogTitle>Editing: {merchant.name}</DialogTitle>
+      </DialogHeader>
+      <div className="space-y-6">
+        <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label>Notes</Label>
-            <Textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Optional notes"
-            />
+            <Label>Name</Label>
+            <Input value={name} onChange={(e) => setName(e.target.value)} />
+          </div>
+          <WebsiteInput value={website} onChange={setWebsite} />
+          <div className="space-y-2 md:col-span-2">
+            <Label>Logo URL</Label>
+            <div className="flex items-center gap-3">
+              {logoUrl && (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src={logoUrl}
+                  alt="Logo preview"
+                  className="size-10 shrink-0 rounded-md object-contain bg-white p-0.5 border"
+                />
+              )}
+              <Input
+                value={logoUrl}
+                onChange={(e) => setLogoUrl(e.target.value)}
+              />
+            </div>
           </div>
         </div>
-      </CardContent>
-      <CardFooter className="justify-end gap-2">
+
+        <AliasInput
+          aliases={aliases}
+          aliasInput={aliasInput}
+          onAliasInputChange={setAliasInput}
+          onAddAlias={handleAddAlias}
+          onRemoveAlias={(a) => setAliases(aliases.filter((x) => x !== a))}
+        />
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label>Category</Label>
+            <Select
+              value={category}
+              onValueChange={(v) => setCategory(v as MerchantCategory)}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {merchantCategoryOptions.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.emoji} {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <SupportStatusSelect
+            label="Wero Support"
+            value={weroSupport}
+            onChange={setWeroSupport}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label>Notes</Label>
+          <Textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Optional notes"
+          />
+        </div>
+      </div>
+      <DialogFooter>
         <Button variant="outline" onClick={onDone}>
           Cancel
         </Button>
@@ -559,8 +531,8 @@ function MerchantEditor({
           )}
           Save
         </Button>
-      </CardFooter>
-    </Card>
+      </DialogFooter>
+    </DialogContent>
   );
 }
 
@@ -869,138 +841,146 @@ export function AdminEditor({ banks, merchants }: AdminEditorProps) {
 
           {/* Banks Tab */}
           <TabsContent value="banks">
-            {!editingBank && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Banks</CardTitle>
-                  <CardDescription>
-                    Edit bank details, support statuses, and their banking apps.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <InputGroup>
-                      <InputGroupInput
-                        placeholder="Search banks..."
-                        value={bankSearch}
-                        onChange={(e) => setBankSearch(e.target.value)}
-                        spellCheck={false}
-                      />
-                      <InputGroupAddon>
-                        <Search />
+            <Card>
+              <CardHeader>
+                <CardTitle>Banks</CardTitle>
+                <CardDescription>
+                  Edit bank details, support statuses, and their banking apps.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <InputGroup>
+                    <InputGroupInput
+                      placeholder="Search banks..."
+                      value={bankSearch}
+                      onChange={(e) => setBankSearch(e.target.value)}
+                      spellCheck={false}
+                    />
+                    <InputGroupAddon>
+                      <Search />
+                    </InputGroupAddon>
+                    {bankSearch && (
+                      <InputGroupAddon align="inline-end">
+                        <InputGroupButton
+                          aria-label="Clear"
+                          title="Clear"
+                          size="icon-xs"
+                          onClick={() => setBankSearch("")}
+                        >
+                          <X />
+                        </InputGroupButton>
                       </InputGroupAddon>
-                      {bankSearch && (
-                        <InputGroupAddon align="inline-end">
-                          <InputGroupButton
-                            aria-label="Clear"
-                            title="Clear"
-                            size="icon-xs"
-                            onClick={() => setBankSearch("")}
-                          >
-                            <X />
-                          </InputGroupButton>
-                        </InputGroupAddon>
+                    )}
+                  </InputGroup>
+                  <ScrollArea className="h-[calc(100vh-20rem)]">
+                    <div className="space-y-2">
+                      {filteredBanks.map((bank) => (
+                        <BankListItem
+                          key={bank.id}
+                          bank={bank}
+                          onEdit={() => setEditingBank(bank)}
+                          onDuplicate={() => handleDuplicateBank(bank)}
+                          onDelete={() => handleDeleteBank(bank.id)}
+                        />
+                      ))}
+                      {filteredBanks.length === 0 && (
+                        <p className="text-center text-sm text-muted-foreground py-8">
+                          No banks found.
+                        </p>
                       )}
-                    </InputGroup>
-                    <ScrollArea className="h-[calc(100vh-20rem)]">
-                      <div className="space-y-2">
-                        {filteredBanks.map((bank) => (
-                          <BankListItem
-                            key={bank.id}
-                            bank={bank}
-                            onEdit={() => setEditingBank(bank)}
-                            onDuplicate={() => handleDuplicateBank(bank)}
-                            onDelete={() => handleDeleteBank(bank.id)}
-                          />
-                        ))}
-                        {filteredBanks.length === 0 && (
-                          <p className="text-center text-sm text-muted-foreground py-8">
-                            No banks found.
-                          </p>
-                        )}
-                      </div>
-                    </ScrollArea>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                    </div>
+                  </ScrollArea>
+                </div>
+              </CardContent>
+            </Card>
 
-            {editingBank && (
-              <BankEditor
-                key={editingBank.id}
-                bank={editingBank}
-                onDone={() => setEditingBank(null)}
-              />
-            )}
+            <Dialog
+              open={!!editingBank}
+              onOpenChange={(open) => {
+                if (!open) setEditingBank(null);
+              }}
+            >
+              {editingBank && (
+                <BankEditor
+                  key={editingBank.id}
+                  bank={editingBank}
+                  onDone={() => setEditingBank(null)}
+                />
+              )}
+            </Dialog>
           </TabsContent>
 
           {/* Merchants Tab */}
           <TabsContent value="merchants">
-            {!editingMerchant && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Merchants</CardTitle>
-                  <CardDescription>
-                    Edit merchant details and support statuses.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <InputGroup>
-                      <InputGroupInput
-                        placeholder="Search online shops..."
-                        value={merchantSearch}
-                        onChange={(e) => setMerchantSearch(e.target.value)}
-                        spellCheck={false}
-                      />
-                      <InputGroupAddon>
-                        <Search />
+            <Card>
+              <CardHeader>
+                <CardTitle>Merchants</CardTitle>
+                <CardDescription>
+                  Edit merchant details and support statuses.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <InputGroup>
+                    <InputGroupInput
+                      placeholder="Search online shops..."
+                      value={merchantSearch}
+                      onChange={(e) => setMerchantSearch(e.target.value)}
+                      spellCheck={false}
+                    />
+                    <InputGroupAddon>
+                      <Search />
+                    </InputGroupAddon>
+                    {merchantSearch && (
+                      <InputGroupAddon align="inline-end">
+                        <InputGroupButton
+                          aria-label="Clear"
+                          title="Clear"
+                          size="icon-xs"
+                          onClick={() => setMerchantSearch("")}
+                        >
+                          <X />
+                        </InputGroupButton>
                       </InputGroupAddon>
-                      {merchantSearch && (
-                        <InputGroupAddon align="inline-end">
-                          <InputGroupButton
-                            aria-label="Clear"
-                            title="Clear"
-                            size="icon-xs"
-                            onClick={() => setMerchantSearch("")}
-                          >
-                            <X />
-                          </InputGroupButton>
-                        </InputGroupAddon>
+                    )}
+                  </InputGroup>
+                  <ScrollArea className="h-[calc(100vh-20rem)]">
+                    <div className="space-y-2">
+                      {filteredMerchants.map((merchant) => (
+                        <MerchantListItem
+                          key={merchant.id}
+                          merchant={merchant}
+                          onEdit={() => setEditingMerchant(merchant)}
+                          onDuplicate={() => handleDuplicateMerchant(merchant)}
+                          onDelete={() => handleDeleteMerchant(merchant.id)}
+                        />
+                      ))}
+                      {filteredMerchants.length === 0 && (
+                        <p className="text-center text-sm text-muted-foreground py-8">
+                          No merchants found.
+                        </p>
                       )}
-                    </InputGroup>
-                    <ScrollArea className="h-[calc(100vh-20rem)]">
-                      <div className="space-y-2">
-                        {filteredMerchants.map((merchant) => (
-                          <MerchantListItem
-                            key={merchant.id}
-                            merchant={merchant}
-                            onEdit={() => setEditingMerchant(merchant)}
-                            onDuplicate={() =>
-                              handleDuplicateMerchant(merchant)
-                            }
-                            onDelete={() => handleDeleteMerchant(merchant.id)}
-                          />
-                        ))}
-                        {filteredMerchants.length === 0 && (
-                          <p className="text-center text-sm text-muted-foreground py-8">
-                            No merchants found.
-                          </p>
-                        )}
-                      </div>
-                    </ScrollArea>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                    </div>
+                  </ScrollArea>
+                </div>
+              </CardContent>
+            </Card>
 
-            {editingMerchant && (
-              <MerchantEditor
-                key={editingMerchant.id}
-                merchant={editingMerchant}
-                onDone={() => setEditingMerchant(null)}
-              />
-            )}
+            <Dialog
+              open={!!editingMerchant}
+              onOpenChange={(open) => {
+                if (!open) setEditingMerchant(null);
+              }}
+            >
+              {editingMerchant && (
+                <MerchantEditor
+                  key={editingMerchant.id}
+                  merchant={editingMerchant}
+                  onDone={() => setEditingMerchant(null)}
+                />
+              )}
+            </Dialog>
           </TabsContent>
         </Tabs>
       </main>

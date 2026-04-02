@@ -11,9 +11,54 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SupportStatus } from "@/db/schema/support";
-import { Plus, X } from "lucide-react";
+import { ExternalLink, Plus, X } from "lucide-react";
 import { CountryFlag } from "./country-flag";
 import { euCountries, supportStatusOptions } from "@/lib/constants";
+
+// ============================================================================
+// Website Input Component
+// ============================================================================
+
+export interface WebsiteInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  label?: string;
+  id?: string;
+  placeholder?: string;
+  required?: boolean;
+}
+
+export function WebsiteInput({
+  value,
+  onChange,
+  label = "Website",
+  id = "website",
+  placeholder = "https://example.com",
+  required,
+}: WebsiteInputProps) {
+  return (
+    <div className="space-y-2">
+      <Label htmlFor={id}>
+        {label} {required && <span className="text-destructive">*</span>}
+      </Label>
+      <div className="flex items-center gap-2">
+        <Input
+          id={id}
+          type="url"
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          required={required}
+        />
+        <Button variant="outline" size="icon" className="shrink-0" asChild>
+          <a href={value} target="_blank" rel="noopener noreferrer">
+            <ExternalLink size={14} />
+          </a>
+        </Button>
+      </div>
+    </div>
+  );
+}
 
 // ============================================================================
 // Alias Input Component
@@ -26,7 +71,6 @@ export interface AliasInputProps {
   onAddAlias: () => void;
   onRemoveAlias: (alias: string) => void;
   placeholder?: string;
-  disabled?: boolean;
 }
 
 export function AliasInput({
@@ -36,7 +80,6 @@ export function AliasInput({
   onAddAlias,
   onRemoveAlias,
   placeholder = "Add alias",
-  disabled,
 }: AliasInputProps) {
   return (
     <div className="space-y-2">
@@ -53,14 +96,12 @@ export function AliasInput({
               onAddAlias();
             }
           }}
-          disabled={disabled}
         />
         <Button
           type="button"
           variant="outline"
           size="icon"
           onClick={onAddAlias}
-          disabled={disabled}
         >
           <Plus className="size-4" />
         </Button>

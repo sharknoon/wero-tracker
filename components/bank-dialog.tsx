@@ -22,6 +22,7 @@ import {
   AliasInput,
   CountrySelector,
   SupportStatusSelect,
+  WebsiteInput,
 } from "./dialog-shared";
 import { isValidUrl } from "@/lib/myutils";
 import { SupportStatus } from "@/db/schema/support";
@@ -114,7 +115,7 @@ function BankingAppForm({
   onRemove,
 }: BankingAppFormProps) {
   return (
-    <Card className="bg-secondary/30">
+    <Card className="bg-secondary/30 m-px">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm">
@@ -150,40 +151,43 @@ function BankingAppForm({
           <Label htmlFor={`app-icon-${index}`}>
             Icon URL <span className="text-destructive">*</span>
           </Label>
-          <Input
-            id={`app-icon-${index}`}
-            type="url"
-            placeholder="https://example.com/icon.png"
-            value={app.iconUrl}
-            onChange={(e) =>
-              onChange(index, { ...app, iconUrl: e.target.value })
-            }
-            required
-          />
+          <div className="flex items-center gap-2">
+            {app.iconUrl && (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={app.iconUrl}
+                alt="Icon preview"
+                className="size-8 shrink-0 rounded-md object-contain bg-white"
+              />
+            )}
+            <Input
+              id={`app-icon-${index}`}
+              type="url"
+              placeholder="https://example.com/icon.png"
+              value={app.iconUrl}
+              onChange={(e) =>
+                onChange(index, { ...app, iconUrl: e.target.value })
+              }
+              required
+            />
+          </div>
           <p className="text-xs text-muted-foreground">
             The icon URL can be copied from the Google Play Store website.
           </p>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor={`app-link-${index}`}>
-            Universal Link <span className="text-destructive">*</span>
-          </Label>
-          <Input
-            id={`app-link-${index}`}
-            type="url"
-            placeholder="https://example.com/app"
-            value={app.universalLink}
-            onChange={(e) =>
-              onChange(index, { ...app, universalLink: e.target.value })
-            }
-            required
-          />
-          <p className="text-xs text-muted-foreground">
-            This should be the bank&apos;s website that links to both the Google
-            Play Store and the App Store.
-          </p>
-        </div>
+        <WebsiteInput
+          id={`app-link-${index}`}
+          label="Universal Link"
+          value={app.universalLink}
+          onChange={(v) => onChange(index, { ...app, universalLink: v })}
+          placeholder="https://example.com/app"
+          required
+        />
+        <p className="text-xs text-muted-foreground">
+          This should be the bank&apos;s website that links to both the Google
+          Play Store and the App Store.
+        </p>
 
         <SupportStatusSelect
           label="Wero Support Status"
@@ -298,19 +302,12 @@ function BankFormContent({
         placeholder="Add alias (helps with search)"
       />
 
-      <div className="space-y-2">
-        <Label htmlFor="website">
-          Website <span className="text-destructive">*</span>
-        </Label>
-        <Input
-          id="website"
-          type="url"
-          placeholder="https://bank.com"
-          value={website}
-          onChange={(e) => onWebsiteChange(e.target.value)}
-          required
-        />
-      </div>
+      <WebsiteInput
+        value={website}
+        onChange={onWebsiteChange}
+        placeholder="https://bank.com"
+        required
+      />
 
       <CountrySelector
         countries={countries}
@@ -481,7 +478,6 @@ export function BankDialog() {
   // Populate form with existing data for edit/delete
   useEffect(() => {
     if (open && existingBank) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- Form initialization in dialog is a valid pattern
       setName(existingBank.name);
       setAliases(existingBank.aliases);
       setWebsite(existingBank.website);

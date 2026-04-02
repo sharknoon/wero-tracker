@@ -26,7 +26,7 @@ import { AlertTriangle, Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { merchantCategoryOptions } from "@/lib/constants";
-import { AliasInput, SupportStatusSelect } from "./dialog-shared";
+import { AliasInput, SupportStatusSelect, WebsiteInput } from "./dialog-shared";
 import { isValidUrl } from "@/lib/myutils";
 import { Merchant } from "@/db/schema/merchants";
 import { SupportStatus } from "@/db/schema/support";
@@ -182,19 +182,12 @@ function MerchantFormContent({
         placeholder="Add alias (helps with search)"
       />
 
-      <div className="space-y-2">
-        <Label htmlFor="website">
-          Website <span className="text-destructive">*</span>
-        </Label>
-        <Input
-          id="website"
-          type="url"
-          placeholder="https://merchant.com"
-          value={website}
-          onChange={(e) => onWebsiteChange(e.target.value)}
-          required
-        />
-      </div>
+      <WebsiteInput
+        value={website}
+        onChange={onWebsiteChange}
+        placeholder="https://merchant.com"
+        required
+      />
 
       <CategorySelect value={category} onChange={onCategoryChange} />
 
