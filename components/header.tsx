@@ -171,6 +171,7 @@ export function Header({ sourceRepository, lastUpdated }: HeaderProps) {
               alt="Wero Logo"
               width={128}
               height={40}
+              loading="eager"
             />
             <div>
               <h1 className="text-xl font-bold text-foreground">

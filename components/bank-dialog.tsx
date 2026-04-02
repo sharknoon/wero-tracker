@@ -160,6 +160,9 @@ function BankingAppForm({
             }
             required
           />
+          <p className="text-xs text-muted-foreground">
+            The icon URL can be copied from the Google Play Store website.
+          </p>
         </div>
 
         <div className="space-y-2">
@@ -176,6 +179,10 @@ function BankingAppForm({
             }
             required
           />
+          <p className="text-xs text-muted-foreground">
+            This should be the bank&apos;s website that links to both the Google
+            Play Store and the App Store.
+          </p>
         </div>
 
         <SupportStatusSelect

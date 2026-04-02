@@ -1,3 +1,6 @@
+"use client";
+
+import { authClient } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { StatusBadge } from "./status-badge";
 import { NotesText } from "./notes-text";
@@ -19,6 +22,8 @@ import {
 import { useContribution } from "@/lib/contribution-context";
 import { merchantCategoryOptions } from "@/lib/constants";
 import { Merchant } from "@/db/schema/merchants";
+import { ContributionAction } from "@/db/schema/contributions";
+import { redirect, usePathname, useSearchParams } from "next/navigation";
 
 interface MerchantItemProps {
   merchant: Merchant;
@@ -26,9 +31,27 @@ interface MerchantItemProps {
 
 export function MerchantItem({ merchant }: MerchantItemProps) {
   const { openContributionDialog } = useContribution();
+  const { data: session } = authClient.useSession();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const category = merchantCategoryOptions.find(
     (option) => option.value === merchant.category,
   );
+
+  function handleEditOrDelete(type: Exclude<ContributionAction, "add">) {
+    if (!session?.user) {
+      const target = searchParams?.size
+        ? `${pathname}?${searchParams}`
+        : pathname;
+      redirect(`/sign-in?redirect=${encodeURIComponent(target)}`);
+    }
+
+    openContributionDialog({
+      type: "merchant",
+      action: type,
+      entity: merchant,
+    });
+  }
 
   return (
     <>
@@ -82,27 +105,11 @@ export function MerchantItem({ merchant }: MerchantItemProps) {
                   </a>
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem
-                onClick={() =>
-                  openContributionDialog({
-                    type: "merchant",
-                    action: "edit",
-                    entity: merchant,
-                  })
-                }
-              >
+              <DropdownMenuItem onClick={() => handleEditOrDelete("edit")}>
                 <Pencil size={14} />
                 Suggest Edit
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() =>
-                  openContributionDialog({
-                    type: "merchant",
-                    action: "delete",
-                    entity: merchant,
-                  })
-                }
-              >
+              <DropdownMenuItem onClick={() => handleEditOrDelete("delete")}>
                 <Trash2 size={14} />
                 Suggest Deletion
               </DropdownMenuItem>
