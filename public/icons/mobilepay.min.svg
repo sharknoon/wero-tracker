@@ -1,0 +1,32 @@
+<svg width="150.82" height="150.82" version="1.1" viewBox="0 0 150.82 150.82" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <radialGradient id="radial-gradient" cx="-1799" cy="732.46" r=".29"
+            gradientTransform="matrix(17.167 -87.583 -68.605 -13.447 81229 -147631)" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#626262" offset="0" />
+            <stop stop-color="#fff" offset="1" />
+        </radialGradient>
+        <linearGradient id="linear-gradient" x1="1729.1" x2="1753.5" y1="223.92" y2="240.71"
+            gradientTransform="matrix(1 0 0 -1 -1662.8 306.07)" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#c0bdca" offset="0" />
+            <stop stop-color="#fff" offset="1" />
+        </linearGradient>
+        <radialGradient id="radial-gradient-2" cx="-1815.5" cy="789.32" r=".29"
+            gradientTransform="matrix(0 58.65 135.23 0 -106642 106545)" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#c7c4cf" offset="0" />
+            <stop stop-color="#c6c3cf" offset=".58" />
+            <stop stop-color="#fff" stop-opacity="0" offset="1" />
+        </radialGradient>
+    </defs>
+    <rect width="150.82" height="150.82" fill="#5a78ff" stroke-width="2.48" />
+    <path
+        d="m67.87 33.9c-0.45 0-0.91 0.09-1.35 0.27l-27.79 11.56c-0.88 0.36-1.56 1.05-1.92 1.93s-0.36 1.85 0 2.73l26.54 64.35c0.75 1.82 2.83 2.68 4.63 1.93l27.79-11.57c1.81-0.75 2.67-2.84 1.92-4.65l-26.54-64.34c-0.57-1.37-1.89-2.2-3.28-2.2zm-1.24 87.19c-3.02 0-5.88-1.79-7.11-4.76l-26.54-64.35c-0.78-1.9-0.78-4 0-5.9 0.79-1.9 2.26-3.39 4.16-4.18l27.79-11.56c3.91-1.62 8.41 0.24 10.04 4.18l26.54 64.35c1.62 3.93-0.25 8.45-4.16 10.08l-27.79 11.56c-0.96 0.4-1.95 0.59-2.93 0.59z"
+        fill="url(#radial-gradient)" />
+    <path
+        d="m91.41 77.29c-8.05 3.33-14.77 7.92-19.17 13.46l-11.35-27.35c4.81-5.78 11.12-10.13 19.17-13.45 8.05-3.33 16.18-4.94 23.09-4l11.35 27.35c-7.18-0.75-15.04 0.68-23.09 4z"
+        fill="url(#linear-gradient)" />
+    <path
+        d="m91.41 77.29c-8.05 3.33-14.77 7.92-19.17 13.46l-11.35-27.35c4.81-5.78 11.12-10.13 19.17-13.45 8.05-3.33 16.18-4.94 23.09-4l11.35 27.35c-7.18-0.75-15.04 0.68-23.09 4z"
+        fill="url(#radial-gradient-2)" />
+    <path fill="#fff"
+        d="m95.21 85.69c-8.7 0-16.65 1.66-22.83 5.05v-27.34c6.66-3.47 14.14-5.06 22.83-5.05 8.7 0 16.81 1.59 22.83 5.06v27.34c-6.33-3.39-14.14-5.06-22.83-5.06z" />
+</svg>

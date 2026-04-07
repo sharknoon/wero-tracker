@@ -1,0 +1,22 @@
+<svg width="150" height="150" fill="none" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <path d="m0 0h150v150h-150z" fill="url(#b)" stroke-width=".99668" />
+    <path transform="translate(-3.1025 .25)"
+        d="m61.64 30.07h-14.108v61.14c0 16.884 13.687 30.571 30.57 30.571 16.884 0 30.571-13.687 30.571-30.57 0-16.884-13.687-30.57-30.57-30.57a30.425 30.425 0 0 0-16.461 4.805v-35.376zm30.57 61.14c0 7.793-6.316 14.11-14.108 14.11-7.793 0-14.11-6.317-14.11-14.11 0-7.791 6.317-14.108 14.11-14.108 7.792 0 14.109 6.316 14.109 14.109z"
+        clip-rule="evenodd" fill="#fff" fill-rule="evenodd" />
+    <rect transform="rotate(-90 76.676 57.614)" x="78.102" y="55.938" width="28.219" height="28.219" rx="14.109"
+        fill="url(#c)" />
+    <defs>
+        <linearGradient id="b" x1="75.25" x2="75.25" y1="149.45" y2=".602" gradientTransform="scale(.99668)"
+            gradientUnits="userSpaceOnUse">
+            <stop stop-color="#5A5A5A" offset="0" />
+            <stop stop-color="#484848" offset=".146" />
+            <stop stop-color="#212121" offset=".52" />
+            <stop stop-color="#080808" offset=".817" />
+            <stop offset="1" />
+        </linearGradient>
+        <linearGradient id="c" x1="82.25" x2="102.2" y1="60.057" y2="80.036" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#E52F08" offset="0" />
+            <stop stop-color="#E94F96" offset="1" />
+        </linearGradient>
+    </defs>
+</svg>

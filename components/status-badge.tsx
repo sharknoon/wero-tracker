@@ -1,59 +1,51 @@
 import { cn } from "@/lib/utils";
 import {
   Check,
-  Info,
   CircleCheck,
   Clock,
   CircleX,
   CircleQuestionMark,
 } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { SupportStatus } from "@/db/schema/support";
 
 interface StatusBadgeProps {
   status: SupportStatus;
-  notes?: string;
   showLabel?: boolean;
   size?: "sm" | "md" | "lg";
 }
 
 const statusConfig: Record<
   SupportStatus,
-  { label: string; icon: typeof Check; className: string }
+  {
+    label: string;
+    icon: typeof Check;
+    colorCSSVar: string;
+  }
 > = {
   supported: {
     label: "Supported",
     icon: CircleCheck,
-    className:
-      "bg-status-supported/20 text-status-supported border-status-supported/30",
+    colorCSSVar: "--status-supported",
   },
   announced: {
     label: "Announced",
     icon: Clock,
-    className:
-      "bg-status-announced/20 text-status-announced border-status-announced/30",
+    colorCSSVar: "--status-announced",
   },
   unsupported: {
     label: "Not Available",
     icon: CircleX,
-    className:
-      "bg-status-unsupported/20 text-status-unsupported border-status-unsupported/30",
+    colorCSSVar: "--status-unsupported",
   },
   unknown: {
     label: "Unknown",
     icon: CircleQuestionMark,
-    className:
-      "bg-status-unknown/20 text-status-unknown border-status-unknown/30",
+    colorCSSVar: "--status-unknown",
   },
 };
 
 export function StatusBadge({
   status,
-  notes,
   showLabel = false,
   size = "md",
 }: StatusBadgeProps) {
@@ -72,39 +64,47 @@ export function StatusBadge({
     lg: 16,
   };
 
-  const badge = (
-    <div
-      className={cn(
-        "inline-flex items-center gap-1.5 rounded-md border px-2 py-1 font-medium",
-        config.className,
-        showLabel ? "" : sizeClasses[size],
-      )}
-    >
-      <Icon size={iconSizes[size]} />
-      {showLabel && <span>{config.label}</span>}
-    </div>
-  );
-
-  if (!notes) {
-    return badge;
-  }
-
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <div className="cursor-help">{badge}</div>
-      </TooltipTrigger>
-      <TooltipContent className="max-w-xs">
-        <div className="space-y-2">
-          {notes && (
-            <p className="flex items-center gap-2 text-sm">
-              <Info size={14} />
-              {notes}
-            </p>
-          )}
+    <div
+      className="flex flex-col outline rounded-md overflow-hidden my-px"
+      style={{
+        outlineColor: `var(${config.colorCSSVar})`,
+        backgroundColor: `var(${config.colorCSSVar})`,
+      }}
+    >
+      <div
+        className={cn(
+          "inline-flex items-center gap-1.5 px-2 py-1 outline rounded-md",
+          showLabel ? "" : sizeClasses[size],
+        )}
+        style={{
+          outlineColor: `var(${config.colorCSSVar})`,
+          backgroundColor: `color-mix(in oklab, var(${config.colorCSSVar}) 37%, black)`,
+          color: `var(${config.colorCSSVar})`,
+        }}
+      >
+        <Icon size={iconSizes[size]} />
+        {showLabel && <span>{config.label}</span>}
+      </div>
+      {/*partner && (status === "announced" || status === "supported") && (
+        <div
+          className="flex justify-center items-center px-2 py-0.5 text-[10px]"
+          style={{
+            color: `color-mix(in oklab, var(${config.colorCSSVar}) 37%, black)`,
+          }}
+        >
+          <span>via&nbsp;</span>
+          <Image
+            src={`/${partner.icon}`}
+            alt={partner.label}
+            width={12}
+            height={12}
+            className="bg-white rounded-[3px]"
+          />
+          <span>&nbsp;{partner.label}</span>
         </div>
-      </TooltipContent>
-    </Tooltip>
+      )*/}
+    </div>
   );
 }
 

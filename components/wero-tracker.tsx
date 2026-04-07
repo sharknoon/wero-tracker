@@ -31,7 +31,7 @@ import {
   ContributionProvider,
   useContribution,
 } from "@/lib/contribution-context";
-import { euCountries } from "@/lib/constants";
+import { countries } from "@/lib/constants";
 import { MerchantDialog } from "./merchant-dialog";
 import { BankDialog } from "./bank-dialog";
 import { Merchant } from "@/db/schema/merchants";
@@ -161,18 +161,6 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
     selectedCountries,
   ]);
 
-  const availableCountries = useMemo(() => {
-    // Only banks have countries, merchants don't
-    if (activeView !== "banks") {
-      return [];
-    }
-    const countries = data.banks.flatMap((bank) => bank.countries);
-    const filteredCountries = countries.filter((code) =>
-      euCountries.includes(code),
-    );
-    return Array.from(new Set(filteredCountries)).sort();
-  }, [activeView, data.banks]);
-
   // Get user's country from browser locale (using useSyncExternalStore to avoid hydration mismatch)
   const userCountry = useSyncExternalStore(
     () => () => {}, // No subscription needed for static value
@@ -202,7 +190,7 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
           (code) =>
             (selectedCountries.length === 0 ||
               selectedCountries.includes(code)) &&
-            euCountries.includes(code),
+            countries.includes(code),
         )
         .forEach((countryCode) => {
           if (!countryMap.has(countryCode)) {
@@ -284,7 +272,6 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
               onStatusChange={setSelectedStatuses}
               selectedCountries={selectedCountries}
               onCountryChange={setSelectedCountries}
-              availableCountries={availableCountries}
               activeView={activeView}
             />
             <Legend />

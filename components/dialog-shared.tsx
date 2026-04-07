@@ -13,7 +13,10 @@ import {
 import { SupportStatus } from "@/db/schema/support";
 import { ExternalLink, Plus, X } from "lucide-react";
 import { CountryFlag } from "./country-flag";
-import { euCountries, supportStatusOptions } from "@/lib/constants";
+import {
+  countries as allCountries,
+  supportStatusOptions,
+} from "@/lib/constants";
 
 // ============================================================================
 // Website Input Component
@@ -152,7 +155,7 @@ export function CountrySelector({
         Countries {required && <span className="text-destructive">*</span>}
       </Label>
       <div className="flex flex-wrap gap-2 p-3 border rounded-md max-h-32 overflow-y-auto">
-        {euCountries.map((country) => (
+        {allCountries.map((country) => (
           <button
             key={country}
             type="button"

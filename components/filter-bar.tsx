@@ -1,14 +1,18 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Search, Filter, X } from "lucide-react";
+import { Search, Filter, X, Flag, Info } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuCheckboxItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuPortal,
+  DropdownMenuSubContent,
+  DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import {
   InputGroup,
@@ -18,7 +22,7 @@ import {
 } from "@/components/ui/input-group";
 import { CountryFlag } from "./country-flag";
 import { SupportStatus } from "@/db/schema/support";
-import { supportStatusOptions } from "@/lib/constants";
+import { countries, supportStatusOptions } from "@/lib/constants";
 
 interface FilterBarProps {
   searchQuery: string;
@@ -27,7 +31,6 @@ interface FilterBarProps {
   onStatusChange: (statuses: SupportStatus[]) => void;
   selectedCountries: string[];
   onCountryChange: (countries: string[]) => void;
-  availableCountries: string[];
   activeView: "banks" | "merchants";
 }
 
@@ -38,7 +41,6 @@ export function FilterBar({
   onStatusChange,
   selectedCountries,
   onCountryChange,
-  availableCountries,
   activeView,
 }: FilterBarProps) {
   const toggleSupportStatus = (status: SupportStatus) => {
@@ -99,38 +101,65 @@ export function FilterBar({
             )}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="bg-card border-border w-40" align="end">
-          <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {supportStatusOptions.map((status) => (
-            <DropdownMenuCheckboxItem
-              key={status.value}
-              checked={selectedStatuses.includes(status.value)}
-              onCheckedChange={() => toggleSupportStatus(status.value)}
-            >
-              <status.icon className={status.iconColor} size={16} />
-              {status.label}
-            </DropdownMenuCheckboxItem>
-          ))}
+        <DropdownMenuContent className="w-48" align="end">
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <Info />
+              Status
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                {supportStatusOptions.map((status) => (
+                  <DropdownMenuCheckboxItem
+                    key={status.value}
+                    checked={selectedStatuses.includes(status.value)}
+                    onCheckedChange={() => toggleSupportStatus(status.value)}
+                  >
+                    <status.icon className={status.iconColor} size={16} />
+                    {status.label}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+
           {activeView === "banks" && (
             <>
-              <DropdownMenuSeparator />
-              <DropdownMenuLabel>Filter by Country</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {availableCountries.map((country) => (
-                <DropdownMenuCheckboxItem
-                  key={country}
-                  checked={selectedCountries.includes(country)}
-                  onCheckedChange={() => toggleCountry(country)}
-                >
-                  <CountryFlag countryCode={country} size="sm" />
-                  {new Intl.DisplayNames(["en"], { type: "region" }).of(
-                    country,
-                  )}
-                </DropdownMenuCheckboxItem>
-              ))}
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <Flag />
+                  Countries
+                </DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent>
+                    {countries.map((country) => (
+                      <DropdownMenuCheckboxItem
+                        key={country}
+                        checked={selectedCountries.includes(country)}
+                        onCheckedChange={() => toggleCountry(country)}
+                      >
+                        <CountryFlag countryCode={country} size="sm" />
+                        {new Intl.DisplayNames(["en"], { type: "region" }).of(
+                          country,
+                        )}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
             </>
           )}
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            variant="destructive"
+            onSelect={() => {
+              onStatusChange([]);
+              onCountryChange([]);
+            }}
+          >
+            <X className="mr-2" />
+            Clear All Filters
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

@@ -1,9 +1,9 @@
-import { Merchant } from "@/db/schema/merchants";
-import { SupportStatus } from "@/db/schema/support";
+import type { Merchant } from "@/db/schema/merchants";
+import type { SupportStatus } from "@/db/schema/support";
 import { CircleCheck, CircleQuestionMark, CircleX, Clock } from "lucide-react";
 
-// List of all eu countries
-export const euCountries: string[] = [
+// List of all eu countries + EuroPA countries (+ NO)
+export const countries: string[] = [
   "AT",
   "BE",
   "BG",
@@ -24,6 +24,7 @@ export const euCountries: string[] = [
   "LU",
   "MT",
   "NL",
+  "NO",
   "PL",
   "PT",
   "RO",
@@ -127,3 +128,67 @@ export const merchantCategoryOptions: {
     label: "Other",
   },
 ];
+
+// All available partner systems (EuroPA alliance)
+export type PartnerSystem =
+  | "bizum"
+  | "bancomat"
+  | "mb-way"
+  | "vipps"
+  | "mobilepay"
+  | "blik"
+  | "iris";
+export const partnerSystemOptions: Record<
+  PartnerSystem,
+  {
+    icon: string;
+    value: PartnerSystem;
+    label: string;
+    countries: string[]; // List of country codes where this system is available
+  }
+> = {
+  bizum: {
+    icon: "icons/bizum.svg",
+    value: "bizum",
+    label: "Bizum",
+    countries: ["ES"],
+  },
+  bancomat: {
+    icon: "icons/bancomat.svg",
+    value: "bancomat",
+    label: "BANCOMAT Pay",
+    countries: ["IT"],
+  },
+  "mb-way": {
+    icon: "icons/mb-way.svg",
+    value: "mb-way",
+    label: "MB WAY",
+    countries: ["PT"],
+  },
+  vipps: {
+    icon: "icons/vipps.svg",
+    value: "vipps",
+    label: "Vipps",
+    countries: ["NO"],
+  },
+  mobilepay: {
+    icon: "icons/mobilepay.svg",
+    value: "mobilepay",
+    label: "MobilePay",
+    countries: ["DK", "FI"],
+  },
+  blik: {
+    icon: "icons/blik.svg",
+    value: "blik",
+    label: "BLIK",
+    countries: ["PL"],
+  },
+  iris: {
+    icon: "icons/iris.svg",
+    value: "iris",
+    label: "IRIS",
+    countries: ["GR"],
+  },
+};
+export type PartnerSystemOption =
+  (typeof partnerSystemOptions)[keyof typeof partnerSystemOptions];

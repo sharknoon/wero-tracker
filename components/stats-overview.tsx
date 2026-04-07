@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { CircleCheck, CircleX, Clock, Flag, Store } from "lucide-react";
-import { euCountries } from "@/lib/constants";
+import { countries } from "@/lib/constants";
 import { WeroData } from "@/app/page";
 
 interface StatsOverviewProps {
@@ -36,7 +36,7 @@ export function StatsOverview({ data, activeView }: StatsOverviewProps) {
       {
         label: "Countries",
         value: supportedBankCountries.size,
-        subtext: `of ${euCountries.length} countries (+${additionallyAnnouncedBankCountries.length} announced)`,
+        subtext: `of ${countries.length} countries (+${additionallyAnnouncedBankCountries.length} announced)`,
         icon: Flag,
         color: "text-primary",
       },
