@@ -28,7 +28,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   ArrowLeft,
   Check,
@@ -188,11 +187,11 @@ function TypeBadge({ type }: { type: ContributionType }) {
 // ============================================================================
 
 function DiffViewer({
-  oldJson,
-  newJson,
+  oldJson = "",
+  newJson = "",
 }: {
-  oldJson: string;
-  newJson: string;
+  oldJson?: string;
+  newJson?: string;
 }) {
   const changes = diffLines(oldJson, newJson);
   let oldLine = 1;
@@ -250,51 +249,6 @@ function DiffViewer({
   );
 }
 
-function JsonBlock({
-  json,
-  variant,
-}: {
-  json: string;
-  variant: "add" | "delete";
-}) {
-  const lines = json.split("\n");
-  return (
-    <div className="rounded-lg border bg-muted/30 overflow-hidden text-xs font-mono min-w-0 max-w-full">
-      <div className="flex items-center gap-2 px-3 py-1.5 border-b bg-muted/50 text-muted-foreground text-[11px]">
-        <span className="inline-flex items-center gap-1">
-          <span
-            className={cn(
-              "inline-block size-2 rounded-full",
-              variant === "add" ? "bg-green-400" : "bg-red-400",
-            )}
-          />
-          {variant === "add" ? "New data" : "Data to remove"}
-        </span>
-      </div>
-      <pre className="overflow-x-auto min-w-0 max-w-full">
-        {lines.map((line, i) => (
-          <div
-            key={i}
-            className={cn(
-              "flex",
-              variant === "add"
-                ? "bg-green-500/5 text-green-700 dark:text-green-400"
-                : "bg-red-500/5 text-red-700 dark:text-red-400",
-            )}
-          >
-            <span className="select-none w-10 shrink-0 text-right pr-2 text-muted-foreground/50 border-r border-border/50">
-              {String(i + 1).padStart(3, " ")}
-            </span>
-            <span className="px-1 whitespace-pre-wrap break-all min-w-0">
-              {line}
-            </span>
-          </div>
-        ))}
-      </pre>
-    </div>
-  );
-}
-
 function DataPreview({
   contribution,
 }: {
@@ -304,18 +258,15 @@ function DataPreview({
   const previousData = contribution.previousData;
 
   const newJson = stableStringify(data, { space: "  " }) ?? "";
+  const oldJson = previousData
+    ? (stableStringify(previousData, { space: "  " }) ?? "")
+    : undefined;
 
-  if (contribution.action === "edit" && previousData) {
-    const oldJson = stableStringify(previousData, { space: "  " }) ?? "";
-    return <DiffViewer oldJson={oldJson} newJson={newJson} />;
+  if (contribution.action === "delete") {
+    return <DiffViewer oldJson={newJson} />;
   }
 
-  return (
-    <JsonBlock
-      json={newJson}
-      variant={contribution.action === "delete" ? "delete" : "add"}
-    />
-  );
+  return <DiffViewer oldJson={oldJson} newJson={newJson} />;
 }
 
 // ============================================================================
@@ -381,7 +332,7 @@ function ReviewDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-hidden grid-rows-[auto_1fr_auto] sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Review Contribution</DialogTitle>
           <DialogDescription>
@@ -390,7 +341,7 @@ function ReviewDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="max-h-[60vh] pr-4 -mr-4">
+        <div className="min-h-0 overflow-x-auto">
           <div className="space-y-4 py-2">
             <DataPreview contribution={contribution} />
             <LogoPreview contribution={contribution} />
@@ -419,7 +370,7 @@ function ReviewDialog({
               />
             </div>
           </div>
-        </ScrollArea>
+        </div>
 
         <DialogFooter className="gap-2">
           <Button

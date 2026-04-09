@@ -416,7 +416,7 @@ function OverrideIndicator<T>({
         )}
       </button>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-hidden grid-rows-[auto_1fr_auto] sm:max-w-md">
           <DialogHeader>
             <DialogTitle>{label} Overrides</DialogTitle>
             <DialogDescription>
@@ -425,7 +425,7 @@ function OverrideIndicator<T>({
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-3 max-h-[60vh] overflow-y-auto">
+          <div className="space-y-3 min-h-0 overflow-y-auto">
             {overriddenCountries.length === 0 && (
               <p className="text-sm text-muted-foreground text-center py-4">
                 No country overrides yet. Select a country below to add one.

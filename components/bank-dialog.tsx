@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useEditor } from "@/lib/editor-context";
 import { AlertTriangle, Copy, Loader2, Plus, Trash2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -247,7 +246,7 @@ function BankingAppForm({
           Play Store and the App Store.
         </p>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid sm:grid-cols-2 gap-2">
           <SupportStatusSelect
             supportStatus={app.weroSupport}
             onSupportStatusChange={(v) =>
@@ -475,7 +474,7 @@ function BankFormContent({
 
       <Separator />
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid sm:grid-cols-2 gap-4">
         <SupportStatusSelect
           supportStatus={p2pPaymentsSupport}
           onSupportStatusChange={onP2pPaymentsSupportChange}
@@ -681,7 +680,9 @@ export function BankDialog() {
         // Clean up country-specific overrides from all CountryOverride fields
         setWebsite((v) => stripCountryFromOverride(v, country));
         setP2pPaymentsSupport((v) => stripCountryFromOverride(v, country));
-        setECommercePaymentsSupport((v) => stripCountryFromOverride(v, country));
+        setECommercePaymentsSupport((v) =>
+          stripCountryFromOverride(v, country),
+        );
         setPosPaymentsSupport((v) => stripCountryFromOverride(v, country));
         setStandaloneAppSupport((v) => stripCountryFromOverride(v, country));
         setNotes((v) => stripCountryFromOverride(v, country));
@@ -901,13 +902,13 @@ export function BankDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-xl">
+      <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-hidden grid-rows-[auto_1fr_auto] sm:max-w-xl">
         <DialogHeader>
           <DialogTitle>{getTitle(submitType)}</DialogTitle>
           <DialogDescription>{getDescription(submitType)}</DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="max-h-[70vh] pr-4 -mr-4 **:max-w-[calc(100vw-4rem)] sm:**:max-w-136">
+        <div className="min-h-0 overflow-y-auto **:max-w-[calc(100vw-4rem)] sm:**:max-w-136">
           <div className="space-y-4 py-2">
             {action === "delete" ? (
               <DeleteModeContent
@@ -950,7 +951,7 @@ export function BankDialog() {
               />
             )}
           </div>
-        </ScrollArea>
+        </div>
 
         <DialogFooter className="flex-col gap-2 sm:flex-row sm:items-center">
           {submitError && (

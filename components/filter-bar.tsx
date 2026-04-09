@@ -131,7 +131,7 @@ export function FilterBar({
                   Countries
                 </DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
-                  <DropdownMenuSubContent>
+                  <DropdownMenuSubContent className="max-h-(--radix-dropdown-menu-content-available-height) overflow-y-auto">
                     {countries.map((country) => (
                       <DropdownMenuCheckboxItem
                         key={country}
