@@ -30,7 +30,7 @@ import { createBankContribution } from "@/actions/contribution-actions";
 import { ContributionAction } from "@/db/schema/contributions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Bank, BankingApp, NewBank } from "@/db/schema/banks";
+import { Bank, BankingApp, CountryOverride, NewBank } from "@/db/schema/banks";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -50,6 +50,15 @@ function createEmptyApp(supportedCountries: string[]): BankingApp {
     weroSupport: { default: "unknown" },
     supportedCountries,
   };
+}
+
+function stripCountryFromOverride<T>(
+  override: CountryOverride<T>,
+  country: string,
+): CountryOverride<T> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { [country]: _, ...rest } = override;
+  return rest as CountryOverride<T>;
 }
 
 // ============================================================================
@@ -124,10 +133,20 @@ function BankingAppForm({
 }: BankingAppFormProps) {
   const handleToggleCountry = (country: string) => {
     const current = app.supportedCountries;
-    const updated = current.includes(country)
+    const isRemoving = current.includes(country);
+    const updated = isRemoving
       ? current.filter((c) => c !== country)
       : [...current, country];
-    onChange(index, { ...app, supportedCountries: updated });
+    if (isRemoving) {
+      onChange(index, {
+        ...app,
+        supportedCountries: updated,
+        universalLink: stripCountryFromOverride(app.universalLink, country),
+        weroSupport: stripCountryFromOverride(app.weroSupport, country),
+      });
+    } else {
+      onChange(index, { ...app, supportedCountries: updated });
+    }
   };
 
   const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
@@ -656,11 +675,41 @@ export function BankDialog() {
   };
 
   const handleToggleCountry = (country: string) => {
-    setCountries((prev) =>
-      prev.includes(country)
-        ? prev.filter((c) => c !== country)
-        : [...prev, country],
-    );
+    setCountries((prev) => {
+      const isRemoving = prev.includes(country);
+      if (isRemoving) {
+        // Clean up country-specific overrides from all CountryOverride fields
+        setWebsite((v) => stripCountryFromOverride(v, country));
+        setP2pPaymentsSupport((v) => stripCountryFromOverride(v, country));
+        setECommercePaymentsSupport((v) => stripCountryFromOverride(v, country));
+        setPosPaymentsSupport((v) => stripCountryFromOverride(v, country));
+        setStandaloneAppSupport((v) => stripCountryFromOverride(v, country));
+        setNotes((v) => stripCountryFromOverride(v, country));
+        // Clean up banking apps: remove country from supportedCountries and their overrides
+        setApps((prevApps) =>
+          prevApps.map((app) =>
+            app.supportedCountries.includes(country)
+              ? {
+                  ...app,
+                  supportedCountries: app.supportedCountries.filter(
+                    (c) => c !== country,
+                  ),
+                  universalLink: stripCountryFromOverride(
+                    app.universalLink,
+                    country,
+                  ),
+                  weroSupport: stripCountryFromOverride(
+                    app.weroSupport,
+                    country,
+                  ),
+                }
+              : app,
+          ),
+        );
+        return prev.filter((c) => c !== country);
+      }
+      return [...prev, country];
+    });
   };
 
   const getSubmitValidation = () => {
