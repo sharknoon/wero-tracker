@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useEditor } from "@/lib/editor-context";
-import { AlertTriangle, Loader2, Plus, Trash2 } from "lucide-react";
+import { AlertTriangle, Copy, Loader2, Plus, Trash2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -110,6 +110,7 @@ interface BankingAppFormProps {
   index: number;
   availableCountries: string[];
   onChange: (index: number, app: BankingApp) => void;
+  onDuplicate: (index: number) => void;
   onRemove: (index: number) => void;
 }
 
@@ -118,6 +119,7 @@ function BankingAppForm({
   index,
   availableCountries,
   onChange,
+  onDuplicate,
   onRemove,
 }: BankingAppFormProps) {
   const handleToggleCountry = (country: string) => {
@@ -145,15 +147,28 @@ function BankingAppForm({
             Banking App {index + 1}
             {app.name ? `: ${app.name}` : ""}
           </CardTitle>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="size-7 text-muted-foreground hover:text-destructive"
-            onClick={() => onRemove(index)}
-          >
-            <Trash2 className="size-3.5" />
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-7 text-muted-foreground hover:text-foreground"
+              title="Duplicate App"
+              onClick={() => onDuplicate(index)}
+            >
+              <Copy className="size-3.5" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-7 text-muted-foreground hover:text-destructive"
+              title="Remove App"
+              onClick={() => onRemove(index)}
+            >
+              <Trash2 className="size-3.5" />
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -356,6 +371,14 @@ function BankFormContent({
     onAppsChange(newApps);
   };
 
+  const handleDuplicateApp = (index: number) => {
+    const source = apps[index];
+    const duplicate = { ...source, id: crypto.randomUUID() };
+    const newApps = [...apps];
+    newApps.splice(index + 1, 0, duplicate);
+    onAppsChange(newApps);
+  };
+
   const handleRemoveApp = (index: number) => {
     onAppsChange(apps.filter((_, i) => i !== index));
   };
@@ -503,6 +526,7 @@ function BankFormContent({
             index={i}
             availableCountries={countries}
             onChange={handleAppChange}
+            onDuplicate={handleDuplicateApp}
             onRemove={handleRemoveApp}
           />
         ))}
