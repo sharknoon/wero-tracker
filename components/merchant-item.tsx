@@ -19,7 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useContribution } from "@/lib/contribution-context";
+import { useEditor } from "@/lib/editor-context";
 import { merchantCategoryOptions } from "@/lib/constants";
 import { Merchant } from "@/db/schema/merchants";
 import { ContributionAction } from "@/db/schema/contributions";
@@ -30,7 +30,7 @@ interface MerchantItemProps {
 }
 
 export function MerchantItem({ merchant }: MerchantItemProps) {
-  const { openContributionDialog } = useContribution();
+  const { openEditorDialog } = useEditor();
   const { data: session } = authClient.useSession();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -46,10 +46,11 @@ export function MerchantItem({ merchant }: MerchantItemProps) {
       redirect(`/sign-in?redirect=${encodeURIComponent(target)}`);
     }
 
-    openContributionDialog({
+    openEditorDialog({
       type: "merchant",
       action: type,
       entity: merchant,
+      submit: session.user.role === "admin" ? "admin" : "contribution",
     });
   }
 
@@ -107,11 +108,11 @@ export function MerchantItem({ merchant }: MerchantItemProps) {
               )}
               <DropdownMenuItem onClick={() => handleEditOrDelete("edit")}>
                 <Pencil size={14} />
-                Suggest Edit
+                {session?.user.role === "admin" ? "Edit" : "Suggest Edit"}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleEditOrDelete("delete")}>
                 <Trash2 size={14} />
-                Suggest Deletion
+                {session?.user.role === "admin" ? "Delete" : "Suggest Deletion"}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

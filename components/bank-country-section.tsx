@@ -66,7 +66,7 @@ export function BankCountrySection({
           <div className="p-px">
             <div className="grid gap-4 mt-4 md:grid-cols-2 lg:grid-cols-3">
               {banks.map((bank) => (
-                <Bankitem key={bank.id} bank={bank} />
+                <Bankitem key={bank.id} bank={bank} countryCode={countryCode} />
               ))}
             </div>
           </div>

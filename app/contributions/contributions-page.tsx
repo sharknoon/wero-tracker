@@ -238,9 +238,6 @@ function DiffViewer({
                 <span className="select-none w-10 shrink-0 text-right pr-2 text-muted-foreground/50 border-r border-border/50">
                   {lineNum}
                 </span>
-                <span className="select-none w-5 shrink-0 text-center text-muted-foreground/60">
-                  {change.added ? "+" : change.removed ? "−" : " "}
-                </span>
                 <span className="px-1 whitespace-pre-wrap break-all min-w-0">
                   {line}
                 </span>
@@ -287,9 +284,6 @@ function JsonBlock({
           >
             <span className="select-none w-10 shrink-0 text-right pr-2 text-muted-foreground/50 border-r border-border/50">
               {String(i + 1).padStart(3, " ")}
-            </span>
-            <span className="select-none w-5 shrink-0 text-center text-muted-foreground/60">
-              {variant === "add" ? "+" : "−"}
             </span>
             <span className="px-1 whitespace-pre-wrap break-all min-w-0">
               {line}

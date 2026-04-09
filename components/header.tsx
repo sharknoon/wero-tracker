@@ -5,7 +5,6 @@ import {
   Landmark,
   LogIn,
   LogOut,
-  Pencil,
   Plus,
   Store,
 } from "lucide-react";
@@ -28,7 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useContribution } from "@/lib/contribution-context";
+import { useEditor } from "@/lib/editor-context";
 import { authClient } from "@/lib/auth-client";
 import { ContributionType } from "@/db/schema/contributions";
 
@@ -47,7 +46,7 @@ function getInitials(name: string): string {
 }
 
 function AddButton() {
-  const { openContributionDialog } = useContribution();
+  const { openEditorDialog } = useEditor();
   const { data: session } = authClient.useSession();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -60,7 +59,7 @@ function AddButton() {
       redirect(`/sign-in?redirect=${encodeURIComponent(target)}`);
     }
 
-    openContributionDialog({ type, action: "add" });
+    openEditorDialog({ type, action: "add" });
   }
 
   return (
@@ -139,14 +138,6 @@ function UserMenu() {
             Contributions
           </Link>
         </DropdownMenuItem>
-        {session.user.role === "admin" && (
-          <DropdownMenuItem asChild>
-            <Link href="/admin">
-              <Pencil size={14} />
-              Admin Editor
-            </Link>
-          </DropdownMenuItem>
-        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem
           variant="destructive"

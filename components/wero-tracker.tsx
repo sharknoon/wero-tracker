@@ -13,7 +13,6 @@ import { StatsOverview } from "./stats-overview";
 import { FilterBar } from "./filter-bar";
 import { Legend } from "./legend";
 import { BankCountrySection } from "./bank-country-section";
-import { Bankitem } from "./bank-item";
 import { MerchantCategorySection } from "./merchant-category-section";
 import { MerchantItem } from "./merchant-item";
 import {
@@ -27,10 +26,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Landmark, Plus, SearchX, Store } from "lucide-react";
 import { Button } from "./ui/button";
-import {
-  ContributionProvider,
-  useContribution,
-} from "@/lib/contribution-context";
+import { EditorProvider, useEditor } from "@/lib/editor-context";
 import { countries } from "@/lib/constants";
 import { MerchantDialog } from "./merchant-dialog";
 import { BankDialog } from "./bank-dialog";
@@ -46,13 +42,13 @@ interface WeroTrackerProps {
 
 export function WeroTracker({ data }: WeroTrackerProps) {
   return (
-    <ContributionProvider>
+    <EditorProvider>
       <Suspense fallback={<div className="text-center py-20">Loading...</div>}>
         <WeroTrackerContent data={data} />
       </Suspense>
       <MerchantDialog />
       <BankDialog />
-    </ContributionProvider>
+    </EditorProvider>
   );
 }
 
@@ -61,7 +57,7 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
   const [selectedStatuses, setSelectedStatuses] = useState<SupportStatus[]>([]);
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
 
-  const { openContributionDialog } = useContribution();
+  const { openEditorDialog } = useEditor();
   const searchParams = useSearchParams();
 
   const [activeView, setActiveViewState] = useState<ViewType>(
@@ -180,9 +176,9 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
     () => null, // Server: return null to avoid hydration mismatch
   );
 
-  // Group banks by country
+  // Group banks by country (with per-country overrides resolved)
   const filteredBankCountries = useMemo(() => {
-    const countryMap = new Map<string, WeroData["banks"][number][]>();
+    const countryMap = new Map<string, WeroData["banks"]>();
 
     filteredData.banks.forEach((bank) => {
       bank.countries
@@ -294,7 +290,7 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
                   <div className="flex gap-2">
                     <Button
                       onClick={() =>
-                        openContributionDialog({
+                        openEditorDialog({
                           type: "bank",
                           action: "add",
                         })
@@ -306,12 +302,6 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
                   </div>
                 </EmptyContent>
               </Empty>
-            ) : searchQuery ? (
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {filteredData.banks.map((bank) => (
-                  <Bankitem key={bank.id} bank={bank} />
-                ))}
-              </div>
             ) : (
               [...filteredBankCountries]
                 .sort(([a], [b]) => {
@@ -349,7 +339,7 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
                   <div className="flex gap-2">
                     <Button
                       onClick={() =>
-                        openContributionDialog({
+                        openEditorDialog({
                           type: "merchant",
                           action: "add",
                         })

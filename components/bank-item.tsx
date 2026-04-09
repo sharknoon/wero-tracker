@@ -19,21 +19,25 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useContribution } from "@/lib/contribution-context";
-import { WeroData } from "@/app/page";
+import { useEditor } from "@/lib/editor-context";
+import { Bank } from "@/db/schema/banks";
 import { SupportStatus } from "@/db/schema/support";
 import { redirect, usePathname, useSearchParams } from "next/navigation";
 import { ContributionAction } from "@/db/schema/contributions";
+import { resolveBank } from "@/lib/bank-helper";
 
 interface BankItemProps {
-  bank: WeroData["banks"][number];
+  bank: Bank;
+  countryCode: string;
 }
 
-export function Bankitem({ bank }: BankItemProps) {
-  const { openContributionDialog } = useContribution();
+export function Bankitem({ bank: unresolvedBank, countryCode }: BankItemProps) {
+  const { openEditorDialog } = useEditor();
   const { data: session } = authClient.useSession();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  const bank = resolveBank(unresolvedBank, countryCode);
 
   function handleEditOrDelete(type: Exclude<ContributionAction, "add">) {
     if (!session?.user) {
@@ -43,10 +47,11 @@ export function Bankitem({ bank }: BankItemProps) {
       redirect(`/sign-in?redirect=${encodeURIComponent(target)}`);
     }
 
-    openContributionDialog({
+    openEditorDialog({
       type: "bank",
       action: type,
-      entity: bank,
+      entity: unresolvedBank,
+      submit: session.user.role === "admin" ? "admin" : "contribution",
     });
   }
 
@@ -99,11 +104,13 @@ export function Bankitem({ bank }: BankItemProps) {
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleEditOrDelete("edit")}>
                   <Pencil size={14} />
-                  Suggest Edit
+                  {session?.user.role === "admin" ? "Edit" : "Suggest Edit"}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleEditOrDelete("delete")}>
                   <Trash2 size={14} />
-                  Suggest Deletion
+                  {session?.user.role === "admin"
+                    ? "Delete"
+                    : "Suggest Deletion"}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

@@ -10,21 +10,39 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupTextarea,
+} from "@/components/ui/input-group";
 import { SupportStatus } from "@/db/schema/support";
-import { ExternalLink, Plus, X } from "lucide-react";
+import { ExternalLink, Globe, Plus, Trash2, X } from "lucide-react";
 import { CountryFlag } from "./country-flag";
 import {
   countries as allCountries,
   supportStatusOptions,
 } from "@/lib/constants";
+import { Bank, CountryOverride } from "@/db/schema/banks";
+import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 // ============================================================================
 // Website Input Component
 // ============================================================================
 
 export interface WebsiteInputProps {
-  value: string;
-  onChange: (value: string) => void;
+  website: Bank["website"];
+  onWebsiteChange: (value: Bank["website"]) => void;
+  countries: string[];
   label?: string;
   id?: string;
   placeholder?: string;
@@ -32,8 +50,9 @@ export interface WebsiteInputProps {
 }
 
 export function WebsiteInput({
-  value,
-  onChange,
+  website,
+  onWebsiteChange,
+  countries,
   label = "Website",
   id = "website",
   placeholder = "https://example.com",
@@ -45,16 +64,37 @@ export function WebsiteInput({
         {label} {required && <span className="text-destructive">*</span>}
       </Label>
       <div className="flex items-center gap-2">
-        <Input
-          id={id}
-          type="url"
-          placeholder={placeholder}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          required={required}
-        />
+        <InputGroup>
+          <InputGroupInput
+            id={id}
+            type="url"
+            placeholder={placeholder}
+            value={website.default}
+            onChange={(e) =>
+              onWebsiteChange({ ...website, default: e.target.value })
+            }
+          />
+          <InputGroupAddon align="inline-end">
+            <OverrideIndicator
+              value={website}
+              onChange={onWebsiteChange}
+              label={label}
+              allCountries={countries}
+              input={(c) => (
+                <Input
+                  type="url"
+                  placeholder={placeholder}
+                  value={website[c] ?? website.default}
+                  onChange={(e) =>
+                    onWebsiteChange({ ...website, [c]: e.target.value })
+                  }
+                />
+              )}
+            />
+          </InputGroupAddon>
+        </InputGroup>
         <Button variant="outline" size="icon" className="shrink-0" asChild>
-          <a href={value} target="_blank" rel="noopener noreferrer">
+          <a href={website.default} target="_blank" rel="noopener noreferrer">
             <ExternalLink size={14} />
           </a>
         </Button>
@@ -184,17 +224,19 @@ export function CountrySelector({
 // ============================================================================
 
 export interface SupportStatusSelectProps {
+  supportStatus: CountryOverride<SupportStatus>;
+  onSupportStatusChange: (value: CountryOverride<SupportStatus>) => void;
+  countries: string[];
   label: string;
-  value: SupportStatus;
-  onChange: (value: SupportStatus) => void;
   disabled?: boolean;
   required?: boolean;
 }
 
 export function SupportStatusSelect({
+  supportStatus,
+  onSupportStatusChange,
+  countries,
   label,
-  value,
-  onChange,
   disabled,
   required,
 }: SupportStatusSelectProps) {
@@ -203,23 +245,242 @@ export function SupportStatusSelect({
       <Label>
         {label} {required && <span className="text-destructive">*</span>}
       </Label>
-      <Select
-        value={value}
-        onValueChange={(v) => onChange(v as SupportStatus)}
-        disabled={disabled}
-      >
-        <SelectTrigger>
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {supportStatusOptions.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              <option.icon className={option.iconColor} size={16} />
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <div className="flex items-center gap-1">
+        <Select
+          value={supportStatus.default}
+          onValueChange={(v) =>
+            onSupportStatusChange({
+              ...supportStatus,
+              default: v as SupportStatus,
+            })
+          }
+          disabled={disabled}
+        >
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {supportStatusOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                <option.icon className={option.iconColor} size={16} />
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <OverrideIndicator
+          value={supportStatus}
+          onChange={onSupportStatusChange}
+          label={label}
+          allCountries={countries}
+          input={(c) => (
+            <Select
+              value={supportStatus[c] ?? supportStatus.default}
+              onValueChange={(v) =>
+                onSupportStatusChange({
+                  ...supportStatus,
+                  [c]: v as SupportStatus,
+                })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {supportStatusOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    <option.icon className={option.iconColor} size={16} />
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
+      </div>
     </div>
+  );
+}
+
+// ============================================================================
+// Notes Input Component
+// ============================================================================
+
+export function NotesInput({
+  notes,
+  onNotesChange,
+  countries,
+}: {
+  notes: CountryOverride<string | null>;
+  onNotesChange: (value: CountryOverride<string | null>) => void;
+  countries: string[];
+}) {
+  return (
+    <div className="space-y-2">
+      <Label htmlFor="notes">Notes</Label>
+      <InputGroup>
+        <InputGroupTextarea
+          id="notes"
+          placeholder="Any additional information..."
+          value={notes.default || ""}
+          onChange={(e) => onNotesChange({ ...notes, default: e.target.value })}
+        />
+        <InputGroupAddon align="inline-end">
+          <OverrideIndicator
+            value={notes}
+            onChange={onNotesChange}
+            label="Notes"
+            allCountries={countries}
+            input={(c) => (
+              <InputGroupTextarea
+                placeholder="Any additional information..."
+                value={notes[c] || notes.default || ""}
+                onChange={(e) =>
+                  onNotesChange({ ...notes, [c]: e.target.value })
+                }
+              />
+            )}
+          />
+        </InputGroupAddon>
+      </InputGroup>
+      <p className="text-xs text-muted-foreground">
+        Notes are being displayed in a tooltip on the bank card
+      </p>
+    </div>
+  );
+}
+
+// ============================================================================
+// Field Override System
+// ============================================================================
+
+const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
+
+function OverrideIndicator<T>({
+  value,
+  onChange,
+  label,
+  allCountries,
+  input,
+}: {
+  value: CountryOverride<T>;
+  onChange: (value: CountryOverride<T>) => void;
+  label: string;
+  allCountries: string[];
+  input: (countryCode: string) => React.ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
+
+  const overriddenCountries = Object.entries(value)
+    .filter(([key]) => key !== "default")
+    .map(([key]) => key);
+
+  const availableCountries = allCountries.filter(
+    (c) => !overriddenCountries.includes(c),
+  );
+
+  const count = overriddenCountries.length;
+
+  if (allCountries.length <= 1) return null;
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setOpen(true);
+        }}
+        className={cn(
+          "inline-flex items-center gap-0.5 shrink-0 rounded-sm p-1 transition-colors hover:bg-accent",
+          count > 0 ? "text-primary" : "text-muted-foreground",
+        )}
+        title={
+          count > 0
+            ? `${count} country override${count !== 1 ? "s" : ""}`
+            : "Add country override"
+        }
+      >
+        {count > 0 ? (
+          <>
+            {overriddenCountries.slice(0, 3).map((c) => (
+              <CountryFlag key={c} countryCode={c} size="sm" />
+            ))}
+            {count > 3 && (
+              <span className="text-xs font-medium">+{count - 3}</span>
+            )}
+          </>
+        ) : (
+          <Globe size={14} />
+        )}
+      </button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{label} Overrides</DialogTitle>
+            <DialogDescription>
+              Set different values for specific countries. Countries without
+              overrides inherit the base value.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-3 max-h-[60vh] overflow-y-auto">
+            {overriddenCountries.length === 0 && (
+              <p className="text-sm text-muted-foreground text-center py-4">
+                No country overrides yet. Select a country below to add one.
+              </p>
+            )}
+
+            {overriddenCountries.map((c) => (
+              <div key={c} className="space-y-2 rounded-lg border p-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CountryFlag countryCode={c} size="sm" />
+                    <span className="text-sm font-medium">
+                      {regionNames.of(c)}
+                    </span>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="size-7 text-muted-foreground hover:text-destructive"
+                    onClick={() => {
+                      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                      const { [c]: _, ...rest } = value;
+                      onChange(rest as CountryOverride<T>);
+                    }}
+                  >
+                    <Trash2 className="size-3.5" />
+                  </Button>
+                </div>
+                {input(c)}
+              </div>
+            ))}
+
+            <div className="flex flex-wrap gap-1">
+              {availableCountries.map((c) => (
+                <Button
+                  key={c}
+                  variant="secondary"
+                  onClick={() => {
+                    onChange({ ...value, [c]: value.default });
+                  }}
+                >
+                  <Plus />
+                  <CountryFlag countryCode={c} size="sm" />
+                  {regionNames.of(c)}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button onClick={() => setOpen(false)}>Done</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

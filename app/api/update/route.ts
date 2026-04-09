@@ -1,5 +1,6 @@
 import { db } from "@/db";
-import { Bank, banks } from "@/db/schema/banks";
+import { Bank, banks, CountryOverride } from "@/db/schema/banks";
+import { SupportStatus } from "@/db/schema/support";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -185,6 +186,34 @@ export async function GET() {
     }
   > = new Map();
 
+  function createCountryOverride<T>(
+    existingOverride: CountryOverride<T>,
+    countries: string[],
+    newValue: (c: string) => T,
+  ): CountryOverride<T> {
+    if (countries.length === 1) {
+      return { ...existingOverride, default: newValue(countries[0]) };
+    }
+    const newStatus: CountryOverride<T> = { ...existingOverride };
+    for (const country of countries) {
+      const newValueForCountry = newValue(country);
+      // no need to store values multiple times if they are the same as the default
+      if (newValueForCountry === newStatus.default) {
+        delete newStatus[country];
+      } else {
+        newStatus[country] = newValueForCountry;
+      }
+    }
+    return newStatus;
+  }
+
+  function resolveCountryOverride<T>(
+    override: CountryOverride<T> | undefined,
+    country: string,
+  ): T | undefined {
+    return override ? (override[country] ?? override.default) : undefined;
+  }
+
   for (const brand of p2pData.brands) {
     if (brand.banks.length > 0) {
       const firstBank = brand.banks[0];
@@ -213,6 +242,14 @@ export async function GET() {
           const existingIconChecksum = existingApp?.iconChecksum;
           const iconChanged = newIconChecksum !== existingIconChecksum;
 
+          const countriesOfThisApp = Array.from(
+            new Set(
+              brand.banks
+                .filter((b) => b.appIds.includes(app.id))
+                .flatMap((b) => b.countries ?? brand.countries),
+            ),
+          );
+
           return {
             id: app.id,
             name: app.name,
@@ -222,16 +259,30 @@ export async function GET() {
             iconChecksum: iconChanged
               ? newIconChecksum
               : (existingApp?.iconChecksum ?? newIconChecksum),
-            universalLink: app.universalLink,
-            weroSupport: "supported" as const,
+            universalLink: createCountryOverride<string>(
+              existingApp?.universalLink || { default: app.universalLink },
+              countriesOfThisApp,
+              () => app.universalLink,
+            ),
+            weroSupport: createCountryOverride<SupportStatus>(
+              existingApp?.weroSupport || { default: "unsupported" },
+              countriesOfThisApp,
+              () => "supported",
+            ),
+            supportedCountries: Array.from(
+              new Set([
+                ...(existingApp?.supportedCountries || []),
+                ...countriesOfThisApp,
+              ]),
+            ),
           };
         }),
       );
 
-      const existingAppIds = new Set(existingApps.map((app) => app.id));
+      const newAppIds = new Set(newApps.map((app) => app.id));
       const mergedApps = [
-        ...existingApps,
-        ...newApps.filter((app) => !existingAppIds.has(app.id)),
+        ...newApps,
+        ...existingApps.filter((app) => !newAppIds.has(app.id)),
       ];
 
       const newLogoChecksum = (await downloadFile(brand.logoUrl)).checksum;
@@ -241,7 +292,7 @@ export async function GET() {
       const possibleBankToUpsert: Omit<Bank, "createdAt" | "updatedAt"> = {
         id: brand.id,
         name: brand.name,
-        website: existingBank?.website || "https://example.com",
+        website: existingBank?.website || { default: "https://example.com" },
         aliases: brand.aliases,
         countries: Array.from(
           new Set([...(existingBank?.countries || []), ...brand.countries]),
@@ -252,19 +303,42 @@ export async function GET() {
         logoChecksum: logoChanged
           ? newLogoChecksum
           : (existingBank?.logoChecksum ?? newLogoChecksum),
-        standaloneAppSupport: firstBank.supportsStandaloneApp
-          ? "supported"
-          : existingBank?.standaloneAppSupport || "unsupported",
-        p2pPaymentsSupport: "supported",
-        eCommercePaymentsSupport:
-          ecommerceBankData?.supportedPaymentUseCases.includes(
-            "SingleImmediatePayments",
-          )
-            ? "supported"
-            : existingBank?.eCommercePaymentsSupport || "unsupported",
-        posPaymentsSupport: existingBank?.posPaymentsSupport || "unknown",
+        standaloneAppSupport: createCountryOverride<SupportStatus>(
+          existingBank?.standaloneAppSupport || { default: "unsupported" },
+          brand.countries,
+          (c) =>
+            firstBank.supportsStandaloneApp
+              ? "supported"
+              : resolveCountryOverride(existingBank?.standaloneAppSupport, c) ||
+                "unsupported",
+        ),
+        p2pPaymentsSupport: createCountryOverride<SupportStatus>(
+          existingBank?.p2pPaymentsSupport || { default: "unsupported" },
+          brand.countries,
+          () => "supported",
+        ),
+        eCommercePaymentsSupport: createCountryOverride<SupportStatus>(
+          existingBank?.eCommercePaymentsSupport || { default: "unsupported" },
+          brand.countries,
+          (c) =>
+            ecommerceBankData?.supportedPaymentUseCases.includes(
+              "SingleImmediatePayments",
+            )
+              ? "supported"
+              : resolveCountryOverride(
+                  existingBank?.eCommercePaymentsSupport,
+                  c,
+                ) || "unsupported",
+        ),
+        posPaymentsSupport: createCountryOverride<SupportStatus>(
+          existingBank?.posPaymentsSupport || { default: "unsupported" },
+          brand.countries,
+          () => "unsupported",
+        ),
         bankingApps: mergedApps,
-        notes: existingBank?.notes || "Automatically imported from Wero API",
+        notes: existingBank?.notes || {
+          default: "Automatically imported from Wero API",
+        },
       };
 
       if (!deepEqual(possibleBankToUpsert, existingBank)) {

@@ -14,41 +14,41 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useContribution } from "@/lib/contribution-context";
+import { useEditor } from "@/lib/editor-context";
 import { AlertTriangle, Loader2, Plus, Trash2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import {
   AliasInput,
   CountrySelector,
+  NotesInput,
   SupportStatusSelect,
   WebsiteInput,
 } from "./dialog-shared";
 import { isValidUrl } from "@/lib/myutils";
-import { SupportStatus } from "@/db/schema/support";
 import { createBankContribution } from "@/actions/contribution-actions";
 import { ContributionAction } from "@/db/schema/contributions";
-import { WeroData } from "@/app/page";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import { Bank, BankingApp, NewBank } from "@/db/schema/banks";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { createBank, deleteBank, updateBank } from "@/actions/bank-actions";
+import { CountryFlag } from "./country-flag";
 
-type BankEntity = WeroData["banks"][number];
-
-type AppFormData = {
-  id: string;
-  name: string;
-  iconUrl: string;
-  universalLink: string;
-  weroSupport: SupportStatus;
-};
-
-function createEmptyApp(): AppFormData {
+function createEmptyApp(supportedCountries: string[]): BankingApp {
   return {
     id: crypto.randomUUID(),
     name: "",
     iconUrl: "",
-    universalLink: "",
-    weroSupport: "unknown",
+    iconChecksum: "WILL BE CALCULATED ON REVIEW",
+    universalLink: { default: "" },
+    weroSupport: { default: "unknown" },
+    supportedCountries,
   };
 }
 
@@ -58,12 +58,14 @@ function createEmptyApp(): AppFormData {
 
 interface DeleteModeContentProps {
   bankName: string;
+  submitType: "contribution" | "admin";
   reason: string;
   onReasonChange: (value: string) => void;
 }
 
 function DeleteModeContent({
   bankName,
+  submitType,
   reason,
   onReasonChange,
 }: DeleteModeContentProps) {
@@ -81,18 +83,20 @@ function DeleteModeContent({
         </AlertDescription>
       </Alert>
 
-      <div className="space-y-2">
-        <Label htmlFor="reason">
-          Reason for deletion <span className="text-destructive">*</span>
-        </Label>
-        <Textarea
-          id="reason"
-          placeholder="Why should this bank be removed?"
-          value={reason}
-          onChange={(e) => onReasonChange(e.target.value)}
-          required
-        />
-      </div>
+      {submitType === "contribution" && (
+        <div className="space-y-2">
+          <Label htmlFor="reason">
+            Reason for deletion <span className="text-destructive">*</span>
+          </Label>
+          <Textarea
+            id="reason"
+            placeholder="Why should this bank be removed?"
+            value={reason}
+            onChange={(e) => onReasonChange(e.target.value)}
+            required
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -102,21 +106,40 @@ function DeleteModeContent({
 // ============================================================================
 
 interface BankingAppFormProps {
-  app: AppFormData;
+  app: BankingApp;
   index: number;
-  onChange: (index: number, app: AppFormData) => void;
+  availableCountries: string[];
+  onChange: (index: number, app: BankingApp) => void;
   onRemove: (index: number) => void;
 }
 
 function BankingAppForm({
   app,
   index,
+  availableCountries,
   onChange,
   onRemove,
 }: BankingAppFormProps) {
+  const handleToggleCountry = (country: string) => {
+    const current = app.supportedCountries;
+    const updated = current.includes(country)
+      ? current.filter((c) => c !== country)
+      : [...current, country];
+    onChange(index, { ...app, supportedCountries: updated });
+  };
+
+  const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
+
+  const availableCountryOptions = availableCountries
+    .map((country) => ({
+      value: country,
+      label: regionNames.of(country) ?? country,
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+
   return (
     <Card className="bg-secondary/30 m-px">
-      <CardHeader className="pb-3">
+      <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm">
             Banking App {index + 1}
@@ -177,10 +200,11 @@ function BankingAppForm({
         </div>
 
         <WebsiteInput
-          id={`app-link-${index}`}
+          website={app.universalLink}
+          onWebsiteChange={(v) => onChange(index, { ...app, universalLink: v })}
+          countries={app.supportedCountries}
           label="Universal Link"
-          value={app.universalLink}
-          onChange={(v) => onChange(index, { ...app, universalLink: v })}
+          id={`app-link-${index}`}
           placeholder="https://example.com/app"
           required
         />
@@ -189,12 +213,69 @@ function BankingAppForm({
           Play Store and the App Store.
         </p>
 
-        <SupportStatusSelect
-          label="Wero Support Status"
-          value={app.weroSupport}
-          onChange={(value) => onChange(index, { ...app, weroSupport: value })}
-          required
-        />
+        <div className="grid grid-cols-2 gap-2">
+          <SupportStatusSelect
+            supportStatus={app.weroSupport}
+            onSupportStatusChange={(v) =>
+              onChange(index, { ...app, weroSupport: v })
+            }
+            countries={app.supportedCountries}
+            label="Wero Support Status"
+            required
+          />
+
+          <div className="space-y-2">
+            <Label>
+              Supported Countries <span className="text-destructive">*</span>
+            </Label>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start font-normal"
+                >
+                  {app.supportedCountries.length > 0 ? (
+                    <span className="flex items-center gap-1 truncate">
+                      {app.supportedCountries
+                        .sort((a, b) =>
+                          regionNames.of(a)!.localeCompare(regionNames.of(b)!),
+                        )
+                        .slice(0, 3)
+                        .map((c) => (
+                          <CountryFlag key={c} countryCode={c} size="sm" />
+                        ))}
+                      {app.supportedCountries.length > 3 && (
+                        <span className="ml-1 text-muted-foreground">
+                          +{app.supportedCountries.length - 3} more
+                        </span>
+                      )}
+                    </span>
+                  ) : (
+                    <span className="text-muted-foreground">
+                      Select countries...
+                    </span>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="start"
+                className="max-h-60 overflow-y-auto"
+              >
+                {availableCountryOptions.map((option) => (
+                  <DropdownMenuCheckboxItem
+                    key={option.value}
+                    checked={app.supportedCountries.includes(option.value)}
+                    onCheckedChange={() => handleToggleCountry(option.value)}
+                    onSelect={(e) => e.preventDefault()}
+                  >
+                    <CountryFlag countryCode={option.value} size="sm" />
+                    {option.label}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
@@ -212,23 +293,28 @@ interface BankFormContentProps {
   onAliasInputChange: (value: string) => void;
   onAddAlias: () => void;
   onRemoveAlias: (alias: string) => void;
-  website: string;
-  onWebsiteChange: (value: string) => void;
+  logoUrl: string;
+  onLogoUrlChange: (value: string) => void;
+  website: Bank["website"];
+  onWebsiteChange: (value: Bank["website"]) => void;
   countries: string[];
   onToggleCountry: (country: string) => void;
-  p2pPaymentsSupport: SupportStatus;
-  onP2pPaymentsSupportChange: (value: SupportStatus) => void;
-  eCommercePaymentsSupport: SupportStatus;
-  onECommercePaymentsSupportChange: (value: SupportStatus) => void;
-  posPaymentsSupport: SupportStatus;
-  onPosPaymentsSupportChange: (value: SupportStatus) => void;
-  standaloneAppSupport: SupportStatus;
-  onStandaloneAppSupportChange: (value: SupportStatus) => void;
-  notes: string;
-  onNotesChange: (value: string) => void;
-  apps: AppFormData[];
-  onAppsChange: (apps: AppFormData[]) => void;
+  p2pPaymentsSupport: Bank["p2pPaymentsSupport"];
+  onP2pPaymentsSupportChange: (value: Bank["p2pPaymentsSupport"]) => void;
+  eCommercePaymentsSupport: Bank["eCommercePaymentsSupport"];
+  onECommercePaymentsSupportChange: (
+    value: Bank["eCommercePaymentsSupport"],
+  ) => void;
+  posPaymentsSupport: Bank["posPaymentsSupport"];
+  onPosPaymentsSupportChange: (value: Bank["posPaymentsSupport"]) => void;
+  standaloneAppSupport: Bank["standaloneAppSupport"];
+  onStandaloneAppSupportChange: (value: Bank["standaloneAppSupport"]) => void;
+  notes: Bank["notes"];
+  onNotesChange: (value: Bank["notes"]) => void;
+  apps: Bank["bankingApps"];
+  onAppsChange: (apps: Bank["bankingApps"]) => void;
   isEdit: boolean;
+  submitType: "contribution" | "admin";
   reason: string;
   onReasonChange: (value: string) => void;
 }
@@ -241,6 +327,8 @@ function BankFormContent({
   onAliasInputChange,
   onAddAlias,
   onRemoveAlias,
+  logoUrl,
+  onLogoUrlChange,
   website,
   onWebsiteChange,
   countries,
@@ -258,10 +346,11 @@ function BankFormContent({
   apps,
   onAppsChange,
   isEdit,
+  submitType,
   reason,
   onReasonChange,
 }: BankFormContentProps) {
-  const handleAppChange = (index: number, app: AppFormData) => {
+  const handleAppChange = (index: number, app: Bank["bankingApps"][number]) => {
     const newApps = [...apps];
     newApps[index] = app;
     onAppsChange(newApps);
@@ -272,7 +361,7 @@ function BankFormContent({
   };
 
   const handleAddApp = () => {
-    onAppsChange([...apps, createEmptyApp()]);
+    onAppsChange([...apps, createEmptyApp(countries)]);
   };
 
   return (
@@ -302,9 +391,36 @@ function BankFormContent({
         placeholder="Add alias (helps with search)"
       />
 
+      {submitType === "admin" && (
+        <div className="space-y-2">
+          <Label htmlFor="bank-logo">
+            Icon URL <span className="text-destructive">*</span>
+          </Label>
+          <div className="flex items-center gap-2">
+            {logoUrl && (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={logoUrl}
+                alt="Icon preview"
+                className="size-8 shrink-0 rounded-md object-contain bg-white"
+              />
+            )}
+            <Input
+              id="bank-logo"
+              type="url"
+              placeholder="https://example.com/icon.png"
+              value={logoUrl}
+              onChange={(e) => onLogoUrlChange(e.target.value)}
+              required
+            />
+          </div>
+        </div>
+      )}
+
       <WebsiteInput
-        value={website}
-        onChange={onWebsiteChange}
+        website={website}
+        onWebsiteChange={onWebsiteChange}
+        countries={countries}
         placeholder="https://bank.com"
         required
       />
@@ -317,53 +433,52 @@ function BankFormContent({
 
       <Separator />
 
-      <SupportStatusSelect
-        label="P2P Payments Support"
-        value={p2pPaymentsSupport}
-        onChange={onP2pPaymentsSupportChange}
-        required
-      />
-
-      <SupportStatusSelect
-        label="eCommerce Payments Support"
-        value={eCommercePaymentsSupport}
-        onChange={onECommercePaymentsSupportChange}
-        required
-      />
-
-      <SupportStatusSelect
-        label="POS Payments Support"
-        value={posPaymentsSupport}
-        onChange={onPosPaymentsSupportChange}
-        required
-      />
-
-      <SupportStatusSelect
-        label="Standalone Wero App Support"
-        value={standaloneAppSupport}
-        onChange={onStandaloneAppSupportChange}
-        required
-      />
-
-      <Separator />
-
-      <div className="space-y-2">
-        <Label htmlFor="notes">Notes</Label>
-        <Textarea
-          id="notes"
-          placeholder="Any additional information about this bank..."
-          value={notes}
-          onChange={(e) => onNotesChange(e.target.value)}
+      <div className="grid grid-cols-2 gap-4">
+        <SupportStatusSelect
+          supportStatus={p2pPaymentsSupport}
+          onSupportStatusChange={onP2pPaymentsSupportChange}
+          countries={countries}
+          label="P2P Payments Support"
+          required
         />
-        <p className="text-xs text-muted-foreground">
-          Notes are being displayed in a tooltip on the bank card
-        </p>
+
+        <SupportStatusSelect
+          supportStatus={eCommercePaymentsSupport}
+          onSupportStatusChange={onECommercePaymentsSupportChange}
+          countries={countries}
+          label="eCommerce Payments Support"
+          required
+        />
+
+        <SupportStatusSelect
+          supportStatus={posPaymentsSupport}
+          onSupportStatusChange={onPosPaymentsSupportChange}
+          countries={countries}
+          label="POS Payments Support"
+          required
+        />
+
+        <SupportStatusSelect
+          supportStatus={standaloneAppSupport}
+          onSupportStatusChange={onStandaloneAppSupportChange}
+          countries={countries}
+          label="Standalone Wero App Support"
+          required
+        />
       </div>
 
       <Separator />
 
+      <NotesInput
+        notes={notes}
+        onNotesChange={onNotesChange}
+        countries={countries}
+      />
+
+      <Separator />
+
       {/* Banking Apps Section */}
-      <div className="space-y-3">
+      <div className="space-y-3!">
         <div className="flex items-center justify-between">
           <Label>Banking Apps</Label>
           <Button
@@ -386,13 +501,14 @@ function BankFormContent({
             key={i}
             app={app}
             index={i}
+            availableCountries={countries}
             onChange={handleAppChange}
             onRemove={handleRemoveApp}
           />
         ))}
       </div>
 
-      {isEdit && (
+      {isEdit && submitType === "contribution" && (
         <>
           <Separator />
 
@@ -421,51 +537,63 @@ function BankFormContent({
 export function BankDialog() {
   const [open, setOpen] = useState(false);
   const [action, setAction] = useState<ContributionAction>("add");
-  const [existingBank, setExistingBank] = useState<BankEntity | null>(null);
+  const [submitType, setSubmitType] = useState<"contribution" | "admin">(
+    "contribution",
+  );
+  const [existingBank, setExistingBank] = useState<Bank | null>(null);
   const [submitError, setSubmitError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { onOpenContributionDialog } = useContribution();
+  const { onOpenEditorDialog } = useEditor();
 
   // Form state
-  const [name, setName] = useState("");
-  const [aliases, setAliases] = useState<string[]>([]);
-  const [aliasInput, setAliasInput] = useState("");
-  const [website, setWebsite] = useState("");
-  const [countries, setCountries] = useState<string[]>([]);
-  const [p2pPaymentsSupport, setP2pPaymentsSupport] =
-    useState<SupportStatus>("unknown");
-  const [eCommercePaymentsSupport, setECommercePaymentsSupport] =
-    useState<SupportStatus>("unknown");
-  const [posPaymentsSupport, setPosPaymentsSupport] =
-    useState<SupportStatus>("unknown");
-  const [standaloneAppSupport, setStandaloneAppSupport] =
-    useState<SupportStatus>("unknown");
-  const [notes, setNotes] = useState("");
-  const [reason, setReason] = useState("");
-  const [apps, setApps] = useState<AppFormData[]>([]);
+  const [name, setName] = useState<Bank["name"]>("");
+  const [aliases, setAliases] = useState<Bank["aliases"]>([]);
+  const [aliasInput, setAliasInput] = useState<Bank["aliases"][number]>("");
+  const [logoUrl, setLogoUrl] = useState<Bank["logoUrl"]>("");
+  const [website, setWebsite] = useState<Bank["website"]>({
+    default: "",
+  });
+  const [countries, setCountries] = useState<Bank["countries"]>([]);
+  const [p2pPaymentsSupport, setP2pPaymentsSupport] = useState<
+    Bank["p2pPaymentsSupport"]
+  >({ default: "unknown" });
+  const [eCommercePaymentsSupport, setECommercePaymentsSupport] = useState<
+    Bank["eCommercePaymentsSupport"]
+  >({ default: "unknown" });
+  const [posPaymentsSupport, setPosPaymentsSupport] = useState<
+    Bank["posPaymentsSupport"]
+  >({ default: "unknown" });
+  const [standaloneAppSupport, setStandaloneAppSupport] = useState<
+    Bank["standaloneAppSupport"]
+  >({ default: "unknown" });
+  const [apps, setApps] = useState<Bank["bankingApps"]>([]);
+  const [notes, setNotes] = useState<Bank["notes"]>({ default: "" });
+  const [reason, setReason] = useState<string>("");
 
   const resetForm = () => {
     setSubmitError("");
     setName("");
     setAliases([]);
     setAliasInput("");
-    setWebsite("");
+    setLogoUrl("");
+    setWebsite({ default: "" });
     setCountries([]);
-    setP2pPaymentsSupport("unknown");
-    setECommercePaymentsSupport("unknown");
-    setPosPaymentsSupport("unknown");
-    setStandaloneAppSupport("unknown");
-    setNotes("");
+    setP2pPaymentsSupport({ default: "unknown" });
+    setECommercePaymentsSupport({ default: "unknown" });
+    setPosPaymentsSupport({ default: "unknown" });
+    setStandaloneAppSupport({ default: "unknown" });
+    setNotes({ default: "" });
     setReason("");
     setApps([]);
   };
 
   useEffect(() => {
-    onOpenContributionDialog((options) => {
+    onOpenEditorDialog((options) => {
       if (options.type === "bank") {
         resetForm();
         setOpen(true);
         setAction(options.action);
+        setSubmitType(options.submit);
         if (options.action === "edit" || options.action === "delete") {
           setExistingBank(options.entity);
         } else {
@@ -473,20 +601,21 @@ export function BankDialog() {
         }
       }
     });
-  }, [onOpenContributionDialog]);
+  }, [onOpenEditorDialog]);
 
   // Populate form with existing data for edit/delete
   useEffect(() => {
     if (open && existingBank) {
       setName(existingBank.name);
       setAliases(existingBank.aliases);
+      setLogoUrl(existingBank.logoUrl);
       setWebsite(existingBank.website);
       setCountries(existingBank.countries);
       setP2pPaymentsSupport(existingBank.p2pPaymentsSupport);
       setECommercePaymentsSupport(existingBank.eCommercePaymentsSupport);
       setPosPaymentsSupport(existingBank.posPaymentsSupport);
       setStandaloneAppSupport(existingBank.standaloneAppSupport);
-      setNotes(existingBank.notes || "");
+      setNotes(existingBank.notes);
       setApps(existingBank.bankingApps);
     }
   }, [open, existingBank, action]);
@@ -511,7 +640,7 @@ export function BankDialog() {
   };
 
   const getSubmitValidation = () => {
-    if (action === "delete") {
+    if (action === "delete" && submitType === "contribution") {
       const hasReason = reason.trim().length > 0;
 
       if (!hasReason)
@@ -525,9 +654,17 @@ export function BankDialog() {
 
     const errors: string[] = [];
     if (!name.trim()) errors.push("Bank name");
-    if (!website.trim() || !isValidUrl(website.trim())) errors.push("Website");
+    if (
+      !Object.values(website).every(
+        (url) => url.trim() && isValidUrl(url.trim()),
+      )
+    ) {
+      errors.push("Website");
+    }
     if (countries.length === 0) errors.push("Countries");
-    if (action === "edit" && !reason.trim()) errors.push("Reason for changes");
+    if (action === "edit" && submitType === "contribution" && !reason.trim()) {
+      errors.push("Reason for changes");
+    }
 
     // Validate apps
     for (let i = 0; i < apps.length; i++) {
@@ -535,8 +672,14 @@ export function BankDialog() {
       if (!app.name.trim()) errors.push(`App ${i + 1} name`);
       if (!app.iconUrl.trim() || !isValidUrl(app.iconUrl.trim()))
         errors.push(`App ${i + 1} icon URL`);
-      if (!app.universalLink.trim() || !isValidUrl(app.universalLink.trim()))
+      if (
+        !Object.values(app.universalLink).every(
+          (url) => url.trim() && isValidUrl(url.trim()),
+        )
+      )
         errors.push(`App ${i + 1} universal link`);
+      if (app.supportedCountries.length === 0)
+        errors.push(`App ${i + 1} supported countries`);
     }
 
     if (errors.length > 0) {
@@ -553,97 +696,150 @@ export function BankDialog() {
     setIsSubmitting(true);
     try {
       if (action === "add") {
-        const { success, message } = await createBankContribution({
-          action,
-          data: {
-            name,
-            aliases,
-            website,
-            logoUrl: `https://www.google.com/s2/favicons?domain=${new URL(website).hostname}&sz=64`,
-            logoChecksum: "WILL BE CALCULATED ON REVIEW",
-            countries,
-            p2pPaymentsSupport,
-            eCommercePaymentsSupport,
-            posPaymentsSupport,
-            standaloneAppSupport,
-            bankingApps: apps.map((app) => ({
-              ...app,
-              iconChecksum: "WILL BE CALCULATED ON REVIEW",
-            })),
-            notes,
-          },
-        });
-        if (!success) {
-          setSubmitError(message);
+        const newBank: Omit<NewBank, "id"> = {
+          name,
+          aliases,
+          website,
+          logoUrl: `https://www.google.com/s2/favicons?domain=${new URL(website.default).hostname}&sz=64`,
+          logoChecksum: "WILL BE CALCULATED ON REVIEW",
+          countries,
+          p2pPaymentsSupport,
+          eCommercePaymentsSupport,
+          posPaymentsSupport,
+          standaloneAppSupport,
+          bankingApps: apps.map((app) => ({
+            ...app,
+            iconChecksum: "WILL BE CALCULATED ON REVIEW",
+          })),
+          notes,
+        };
+        if (submitType === "contribution") {
+          const { success, message } = await createBankContribution({
+            action,
+            data: newBank,
+          });
+          if (!success) {
+            setSubmitError(message);
+          } else {
+            setOpen(false);
+            toast.success("Bank contribution submitted successfully!");
+          }
         } else {
+          await createBank(newBank);
           setOpen(false);
-          toast.success("Bank contribution submitted successfully!");
+          toast.success("Bank created successfully!");
         }
       } else {
-        const { success, message } = await createBankContribution({
-          action,
-          data: {
-            id: existingBank!.id,
-            name,
-            aliases,
-            website,
-            logoUrl: existingBank!.logoUrl,
-            logoChecksum: existingBank!.logoChecksum,
-            countries,
-            p2pPaymentsSupport,
-            eCommercePaymentsSupport,
-            posPaymentsSupport,
-            standaloneAppSupport,
-            bankingApps: apps.map((app) => ({
-              ...app,
-              iconChecksum:
-                existingBank!.bankingApps.find((a) => a.id === app.id)
-                  ?.iconChecksum || "WILL BE CALCULATED ON REVIEW",
-            })),
-            notes,
-          },
-          reason,
-        });
-        if (!success) {
-          setSubmitError(message);
+        const updatedBank: Omit<Bank, "createdAt" | "updatedAt"> = {
+          id: existingBank!.id,
+          name,
+          aliases,
+          website,
+          logoUrl,
+          logoChecksum: existingBank!.logoChecksum,
+          countries,
+          p2pPaymentsSupport,
+          eCommercePaymentsSupport,
+          posPaymentsSupport,
+          standaloneAppSupport,
+          bankingApps: apps.map((app) => ({
+            ...app,
+            iconChecksum:
+              existingBank!.bankingApps.find((a) => a.id === app.id)
+                ?.iconChecksum || "WILL BE CALCULATED ON REVIEW",
+          })),
+          notes,
+        };
+        if (submitType === "contribution") {
+          const { success, message } = await createBankContribution({
+            action,
+            data: updatedBank,
+            reason,
+          });
+          if (!success) {
+            setSubmitError(message);
+          } else {
+            setOpen(false);
+            toast.success(
+              `Bank ${action === "edit" ? "edit" : "deletion"} contribution submitted successfully!`,
+            );
+          }
         } else {
+          if (action === "delete") {
+            await deleteBank(existingBank!.id);
+            toast.success("Bank deleted successfully!");
+          } else {
+            await updateBank(updatedBank);
+            toast.success("Bank updated successfully!");
+          }
           setOpen(false);
-          toast.success(
-            `Bank ${action === "edit" ? "edit" : "deletion"} contribution submitted successfully!`,
-          );
         }
       }
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : String(error));
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const getTitle = () => {
-    if (action === "delete") return "Suggest Deletion";
-    if (action === "edit") return "Suggest Edit";
-    return "Add New Bank";
+  const getTitle = (submitType: "contribution" | "admin") => {
+    if (action === "delete") {
+      if (submitType === "contribution") {
+        return `Suggest Deletion`;
+      } else {
+        return `Delete Bank`;
+      }
+    } else if (action === "edit") {
+      if (submitType === "contribution") {
+        return `Suggest Edit`;
+      } else {
+        return `Edit Bank`;
+      }
+    } else {
+      if (submitType === "admin") {
+        return "Add New Bank";
+      } else {
+        return "Suggest New Bank";
+      }
+    }
   };
 
-  const getDescription = () => {
-    if (action === "delete")
-      return `Request to remove "${existingBank?.name}" from the tracker.`;
-    if (action === "edit") return `Suggest changes to "${existingBank?.name}".`;
-    return "Submit a new bank to be added to the tracker. Your submission will be reviewed before being published.";
+  const getDescription = (submitType: "contribution" | "admin") => {
+    if (action === "delete") {
+      if (submitType === "contribution") {
+        return `Request to remove "${existingBank?.name}" from the tracker.`;
+      } else {
+        return `Remove "${existingBank?.name}" from the tracker.`;
+      }
+    } else if (action === "edit") {
+      if (submitType === "contribution") {
+        return `Suggest changes to "${existingBank?.name}".`;
+      } else {
+        return `Edit "${existingBank?.name}".`;
+      }
+    } else {
+      if (submitType === "admin") {
+        return "Add a new bank to the tracker.";
+      } else {
+        return "Submit a new bank to be added to the tracker. Your submission will be reviewed before being published.";
+      }
+    }
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>{getTitle()}</DialogTitle>
-          <DialogDescription>{getDescription()}</DialogDescription>
+          <DialogTitle>{getTitle(submitType)}</DialogTitle>
+          <DialogDescription>{getDescription(submitType)}</DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="max-h-[70vh] pr-4 -mr-4 **:max-w-[calc(100vw-4rem)] sm:**:max-w-120">
+        <ScrollArea className="max-h-[70vh] pr-4 -mr-4 **:max-w-[calc(100vw-4rem)] sm:**:max-w-136">
           <div className="space-y-4 py-2">
             {action === "delete" ? (
               <DeleteModeContent
                 bankName={existingBank?.name || ""}
+                submitType={submitType}
                 reason={reason}
                 onReasonChange={setReason}
               />
@@ -656,6 +852,8 @@ export function BankDialog() {
                 onAliasInputChange={setAliasInput}
                 onAddAlias={handleAddAlias}
                 onRemoveAlias={handleRemoveAlias}
+                logoUrl={logoUrl}
+                onLogoUrlChange={setLogoUrl}
                 website={website}
                 onWebsiteChange={setWebsite}
                 countries={countries}
@@ -673,6 +871,7 @@ export function BankDialog() {
                 apps={apps}
                 onAppsChange={setApps}
                 isEdit={action === "edit"}
+                submitType={submitType}
                 reason={reason}
                 onReasonChange={setReason}
               />
@@ -700,8 +899,12 @@ export function BankDialog() {
             >
               {isSubmitting && <Loader2 className="animate-spin" />}
               {action === "delete"
-                ? "Submit Deletion Request"
-                : "Submit for Review"}
+                ? submitType === "contribution"
+                  ? "Submit Deletion Request"
+                  : "Delete"
+                : submitType === "contribution"
+                  ? "Submit for Review"
+                  : "Save"}
             </Button>
           </div>
         </DialogFooter>

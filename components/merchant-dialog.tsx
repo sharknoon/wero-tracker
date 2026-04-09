@@ -21,18 +21,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useContribution } from "@/lib/contribution-context";
-import { AlertTriangle, Loader2 } from "lucide-react";
+import { useEditor } from "@/lib/editor-context";
+import { AlertTriangle, ExternalLink, Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
-import { merchantCategoryOptions } from "@/lib/constants";
-import { AliasInput, SupportStatusSelect, WebsiteInput } from "./dialog-shared";
+import { merchantCategoryOptions, supportStatusOptions } from "@/lib/constants";
+import { AliasInput } from "./dialog-shared";
 import { isValidUrl } from "@/lib/myutils";
-import { Merchant } from "@/db/schema/merchants";
+import { Merchant, NewMerchant } from "@/db/schema/merchants";
 import { SupportStatus } from "@/db/schema/support";
 import { createMerchantContribution } from "@/actions/contribution-actions";
 import { ContributionAction } from "@/db/schema/contributions";
 import { toast } from "sonner";
+import {
+  createMerchant,
+  deleteMerchant,
+  updateMerchant,
+} from "@/actions/merchant-actions";
 
 // ============================================================================
 // Delete Mode Content Component
@@ -40,12 +45,14 @@ import { toast } from "sonner";
 
 interface DeleteModeContentProps {
   merchantName: string;
+  submitType: "contribution" | "admin";
   reason: string;
   onReasonChange: (value: string) => void;
 }
 
 function DeleteModeContent({
   merchantName,
+  submitType,
   reason,
   onReasonChange,
 }: DeleteModeContentProps) {
@@ -63,18 +70,20 @@ function DeleteModeContent({
         </AlertDescription>
       </Alert>
 
-      <div className="space-y-2">
-        <Label htmlFor="reason">
-          Reason for deletion <span className="text-destructive">*</span>
-        </Label>
-        <Textarea
-          id="reason"
-          placeholder="Why should this merchant be removed?"
-          value={reason}
-          onChange={(e) => onReasonChange(e.target.value)}
-          required
-        />
-      </div>
+      {submitType === "contribution" && (
+        <div className="space-y-2">
+          <Label htmlFor="reason">
+            Reason for deletion <span className="text-destructive">*</span>
+          </Label>
+          <Textarea
+            id="reason"
+            placeholder="Why should this merchant be removed?"
+            value={reason}
+            onChange={(e) => onReasonChange(e.target.value)}
+            required
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -125,6 +134,8 @@ interface MerchantFormContentProps {
   onAliasInputChange: (value: string) => void;
   onAddAlias: () => void;
   onRemoveAlias: (alias: string) => void;
+  logoUrl: string;
+  onLogoUrlChange: (value: string) => void;
   website: string;
   onWebsiteChange: (value: string) => void;
   category: Merchant["category"];
@@ -134,6 +145,7 @@ interface MerchantFormContentProps {
   notes: string;
   onNotesChange: (value: string) => void;
   isEdit: boolean;
+  submitType: "contribution" | "admin";
   reason: string;
   onReasonChange: (value: string) => void;
 }
@@ -146,6 +158,8 @@ function MerchantFormContent({
   onAliasInputChange,
   onAddAlias,
   onRemoveAlias,
+  logoUrl,
+  onLogoUrlChange,
   website,
   onWebsiteChange,
   category,
@@ -155,6 +169,7 @@ function MerchantFormContent({
   notes,
   onNotesChange,
   isEdit,
+  submitType,
   reason,
   onReasonChange,
 }: MerchantFormContentProps) {
@@ -182,21 +197,77 @@ function MerchantFormContent({
         placeholder="Add alias (helps with search)"
       />
 
-      <WebsiteInput
-        value={website}
-        onChange={onWebsiteChange}
-        placeholder="https://merchant.com"
-        required
-      />
+      {submitType === "admin" && (
+        <div className="space-y-2">
+          <Label htmlFor="bank-logo">
+            Logo URL <span className="text-destructive">*</span>
+          </Label>
+          <div className="flex items-center gap-2">
+            {logoUrl && (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={logoUrl}
+                alt="Icon preview"
+                className="size-8 shrink-0 rounded-md object-contain bg-white"
+              />
+            )}
+            <Input
+              id="bank-logo"
+              type="url"
+              placeholder="https://example.com/logo.png"
+              value={logoUrl}
+              onChange={(e) => onLogoUrlChange(e.target.value)}
+              required
+            />
+          </div>
+        </div>
+      )}
+
+      <div className="space-y-2">
+        <Label htmlFor="website">
+          Website <span className="text-destructive">*</span>
+        </Label>
+        <div className="flex items-center gap-2">
+          <Input
+            id="website"
+            type="url"
+            placeholder="https://merchant.com"
+            value={website}
+            onChange={(e) => onWebsiteChange(e.target.value)}
+          />
+          <Button variant="outline" size="icon" className="shrink-0" asChild>
+            <a href={website} target="_blank" rel="noopener noreferrer">
+              <ExternalLink size={14} />
+            </a>
+          </Button>
+        </div>
+      </div>
 
       <CategorySelect value={category} onChange={onCategoryChange} />
 
-      <SupportStatusSelect
-        label="Wero Support Status"
-        value={weroSupport}
-        onChange={onWeroSupportChange}
-        required
-      />
+      <div className="space-y-2">
+        <Label>
+          Wero Support Status <span className="text-destructive">*</span>
+        </Label>
+        <div className="flex items-center gap-1">
+          <Select
+            value={weroSupport}
+            onValueChange={(v) => onWeroSupportChange(v as SupportStatus)}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {supportStatusOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  <option.icon className={option.iconColor} size={16} />
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
       <div className="space-y-2">
         <Label htmlFor="notes">Notes</Label>
@@ -211,7 +282,7 @@ function MerchantFormContent({
         </p>
       </div>
 
-      {isEdit && (
+      {isEdit && submitType === "contribution" && (
         <>
           <Separator />
 
@@ -240,17 +311,21 @@ function MerchantFormContent({
 export function MerchantDialog() {
   const [open, setOpen] = useState(false);
   const [action, setAction] = useState<ContributionAction>("add");
+  const [submitType, setSubmitType] = useState<"contribution" | "admin">(
+    "contribution",
+  );
   const [existingMerchant, setExistingMerchant] = useState<Merchant | null>(
     null,
   );
   const [submitError, setSubmitError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { onOpenContributionDialog } = useContribution();
+  const { onOpenEditorDialog } = useEditor();
 
   // Form state
   const [name, setName] = useState("");
   const [aliases, setAliases] = useState<string[]>([]);
   const [aliasInput, setAliasInput] = useState("");
+  const [logoUrl, setLogoUrl] = useState<Merchant["logoUrl"]>("");
   const [website, setWebsite] = useState("");
   const [category, setCategory] = useState<Merchant["category"]>("other");
   const [weroSupport, setWeroSupport] = useState<SupportStatus>("unknown");
@@ -262,6 +337,7 @@ export function MerchantDialog() {
     setName("");
     setAliases([]);
     setAliasInput("");
+    setLogoUrl("");
     setWebsite("");
     setCategory("other");
     setWeroSupport("unknown");
@@ -270,11 +346,12 @@ export function MerchantDialog() {
   };
 
   useEffect(() => {
-    onOpenContributionDialog((options) => {
+    onOpenEditorDialog((options) => {
       if (options.type === "merchant") {
         resetForm();
         setOpen(true);
         setAction(options.action);
+        setSubmitType(options.submit);
         if (options.action === "edit" || options.action === "delete") {
           setExistingMerchant(options.entity);
         } else {
@@ -282,14 +359,14 @@ export function MerchantDialog() {
         }
       }
     });
-  }, [onOpenContributionDialog]);
+  }, [onOpenEditorDialog]);
 
   // Populate form with existing data for edit/delete
   useEffect(() => {
     if (open && existingMerchant) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- Form initialization in dialog is a valid pattern
       setName(existingMerchant.name);
       setAliases(existingMerchant.aliases);
+      setLogoUrl(existingMerchant.logoUrl);
       setWebsite(existingMerchant.website);
       setCategory(existingMerchant.category);
       setWeroSupport(existingMerchant.weroSupport);
@@ -309,7 +386,7 @@ export function MerchantDialog() {
   };
 
   const getSubmitValidation = () => {
-    if (action === "delete") {
+    if (action === "delete" && submitType === "contribution") {
       const hasReason = reason.trim().length > 0;
 
       if (!hasReason)
@@ -324,7 +401,9 @@ export function MerchantDialog() {
     const errors: string[] = [];
     if (!name.trim()) errors.push("Merchant name");
     if (!website.trim() || !isValidUrl(website.trim())) errors.push("Website");
-    if (action === "edit" && !reason.trim()) errors.push("Reason for changes");
+    if (action === "edit" && submitType === "contribution" && !reason.trim()) {
+      errors.push("Reason for changes");
+    }
 
     if (errors.length > 0) {
       return { valid: false, message: `Missing: ${errors.join(", ")}` };
@@ -339,11 +418,8 @@ export function MerchantDialog() {
     if (!validation.valid) return;
     setIsSubmitting(true);
     try {
-
-    if (action === "add") {
-      const { success, message } = await createMerchantContribution({
-        action,
-        data: {
+      if (action === "add") {
+        const newMerchant: Omit<NewMerchant, "id"> = {
           name,
           aliases,
           website,
@@ -352,18 +428,25 @@ export function MerchantDialog() {
           category,
           weroSupport,
           notes,
-        },
-      });
-      if (!success) {
-        setSubmitError(message);
+        };
+        if (submitType === "contribution") {
+          const { success, message } = await createMerchantContribution({
+            action,
+            data: newMerchant,
+          });
+          if (!success) {
+            setSubmitError(message);
+          } else {
+            setOpen(false);
+            toast.success("Merchant contribution submitted successfully!");
+          }
+        } else {
+          await createMerchant(newMerchant);
+          setOpen(false);
+          toast.success("Merchant created successfully!");
+        }
       } else {
-        setOpen(false);
-        toast.success("Merchant contribution submitted successfully!");
-      }
-    } else {
-      const { success, message } = await createMerchantContribution({
-        action,
-        data: {
+        const updatedMerchant: Omit<Merchant, "createdAt" | "updatedAt"> = {
           id: existingMerchant!.id,
           name,
           aliases,
@@ -373,44 +456,89 @@ export function MerchantDialog() {
           category,
           weroSupport,
           notes,
-        },
-        reason,
-      });
-      if (!success) {
-        setSubmitError(message);
-      } else {
-        setOpen(false);
-        toast.success(
-          `Merchant ${action === "edit" ? "edit" : "deletion"} contribution submitted successfully!`,
-        );
+        };
+        if (submitType === "contribution") {
+          const { success, message } = await createMerchantContribution({
+            action,
+            data: updatedMerchant,
+            reason,
+          });
+          if (!success) {
+            setSubmitError(message);
+          } else {
+            setOpen(false);
+            toast.success(
+              `Merchant ${action === "edit" ? "edit" : "deletion"} contribution submitted successfully!`,
+            );
+          }
+        } else {
+          if (action === "delete") {
+            await deleteMerchant(existingMerchant!.id);
+            toast.success("Merchant deleted successfully!");
+          } else {
+            await updateMerchant(updatedMerchant);
+            toast.success("Merchant updated successfully!");
+          }
+          setOpen(false);
+        }
       }
-    }
-
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : String(error));
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const getTitle = () => {
-    if (action === "delete") return "Suggest Deletion";
-    if (action === "edit") return "Suggest Edit";
-    return "Add New Merchant";
+  const getTitle = (submitType: "contribution" | "admin") => {
+    if (action === "delete") {
+      if (submitType === "contribution") {
+        return `Suggest Deletion`;
+      } else {
+        return `Delete Merchant`;
+      }
+    } else if (action === "edit") {
+      if (submitType === "contribution") {
+        return `Suggest Edit`;
+      } else {
+        return `Edit Merchant`;
+      }
+    } else {
+      if (submitType === "admin") {
+        return "Add New Merchant";
+      } else {
+        return "Suggest New Merchant";
+      }
+    }
   };
 
-  const getDescription = () => {
-    if (action === "delete")
-      return `Request to remove "${existingMerchant?.name}" from the tracker.`;
-    if (action === "edit")
-      return `Suggest changes to "${existingMerchant?.name}".`;
-    return "Submit a new merchant to be added to the tracker. Your submission will be reviewed before being published.";
+  const getDescription = (submitType: "contribution" | "admin") => {
+    if (action === "delete") {
+      if (submitType === "contribution") {
+        return `Request to remove "${existingMerchant?.name}" from the tracker.`;
+      } else {
+        return `Remove "${existingMerchant?.name}" from the tracker.`;
+      }
+    } else if (action === "edit") {
+      if (submitType === "contribution") {
+        return `Suggest changes to "${existingMerchant?.name}".`;
+      } else {
+        return `Edit "${existingMerchant?.name}".`;
+      }
+    } else {
+      if (submitType === "admin") {
+        return "Add a new merchant to the tracker.";
+      } else {
+        return "Submit a new merchant to be added to the tracker. Your submission will be reviewed before being published.";
+      }
+    }
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{getTitle()}</DialogTitle>
-          <DialogDescription>{getDescription()}</DialogDescription>
+          <DialogTitle>{getTitle(submitType)}</DialogTitle>
+          <DialogDescription>{getDescription(submitType)}</DialogDescription>
         </DialogHeader>
 
         <ScrollArea className="max-h-[70vh] pr-4 -mr-4 **:max-w-[calc(100vw-4rem)] sm:**:max-w-120">
@@ -418,6 +546,7 @@ export function MerchantDialog() {
             {action === "delete" ? (
               <DeleteModeContent
                 merchantName={existingMerchant?.name || ""}
+                submitType={submitType}
                 reason={reason}
                 onReasonChange={setReason}
               />
@@ -430,6 +559,8 @@ export function MerchantDialog() {
                 onAliasInputChange={setAliasInput}
                 onAddAlias={handleAddAlias}
                 onRemoveAlias={handleRemoveAlias}
+                logoUrl={logoUrl}
+                onLogoUrlChange={setLogoUrl}
                 website={website}
                 onWebsiteChange={setWebsite}
                 category={category}
@@ -439,6 +570,7 @@ export function MerchantDialog() {
                 notes={notes}
                 onNotesChange={setNotes}
                 isEdit={action === "edit"}
+                submitType={submitType}
                 reason={reason}
                 onReasonChange={setReason}
               />
@@ -466,8 +598,12 @@ export function MerchantDialog() {
             >
               {isSubmitting && <Loader2 className="animate-spin" />}
               {action === "delete"
-                ? "Submit Deletion Request"
-                : "Submit for Review"}
+                ? submitType === "contribution"
+                  ? "Submit Deletion Request"
+                  : "Delete"
+                : submitType === "contribution"
+                  ? "Submit for Review"
+                  : "Save"}
             </Button>
           </div>
         </DialogFooter>

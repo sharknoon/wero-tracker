@@ -6,6 +6,7 @@ import {
   banks as banksTable,
   NewBank,
   newBankSchema,
+  updateBankSchema,
 } from "@/db/schema/banks";
 import { del, mirrorUrl } from "@/lib/s3";
 import { requireAdmin } from "@/actions/session-actions";
@@ -18,7 +19,10 @@ export async function getAllBanks() {
   cacheLife("minutes");
   cacheTag("wero-data");
 
-  return db.select().from(banksTable).orderBy(asc(sql`lower(${banksTable.name})`));
+  return db
+    .select()
+    .from(banksTable)
+    .orderBy(asc(sql`lower(${banksTable.name})`));
 }
 
 export async function createBank(
@@ -26,39 +30,32 @@ export async function createBank(
 ): Promise<Bank> {
   await requireAdmin();
 
-  newBankSchema
-    .strict()
-    .omit({
-      id: true,
-      createdAt: true,
-      updatedAt: true,
-    })
-    .parse(bank);
+  newBankSchema.strict().parse(bank);
 
-  const id = crypto.randomUUID();
-  const mirroredLogo = await mirrorUrl(bank.logoUrl, id);
-  const value: NewBank = {
-    ...bank,
-    id,
-    logoUrl: mirroredLogo.url,
-    logoChecksum: mirroredLogo.checksum,
-    bankingApps: bank.bankingApps
-      ? await Promise.all(
-          bank.bankingApps.map(async (app) => {
-            const mirroredIcon = await mirrorUrl(app.iconUrl, app.id);
-            return {
-              ...app,
-              iconUrl: mirroredIcon.url,
-              iconChecksum: mirroredIcon.checksum,
-            };
-          }),
-        )
-      : undefined,
-  };
+  const newBank: NewBank = { id: crypto.randomUUID(), ...bank };
+
+  // Mirror bank logo to S3
+  const mirroredLogo = await mirrorUrl(bank.logoUrl, newBank.id);
+  bank.logoUrl = mirroredLogo.url;
+  bank.logoChecksum = mirroredLogo.checksum;
+
+  // Mirror banking app icons to S3
+  if (bank.bankingApps) {
+    bank.bankingApps = await Promise.all(
+      bank.bankingApps.map(async (app) => {
+        const mirroredIcon = await mirrorUrl(app.iconUrl, app.id);
+        return {
+          ...app,
+          iconUrl: mirroredIcon.url,
+          iconChecksum: mirroredIcon.checksum,
+        };
+      }),
+    );
+  }
 
   const result = await db
     .insert(banksTable)
-    .values(value)
+    .values(newBank)
     .returning()
     .then(([inserted]) => inserted);
 
@@ -72,13 +69,7 @@ export async function updateBank(
 ): Promise<Bank> {
   await requireAdmin();
 
-  newBankSchema
-    .strict()
-    .omit({
-      createdAt: true,
-      updatedAt: true,
-    })
-    .parse(bank);
+  updateBankSchema.strict().parse(bank);
 
   // Fetch existing bank to detect removed banking apps and changed logos
   const existingBank = await db
@@ -97,48 +88,42 @@ export async function updateBank(
     }
   }
 
+  const updatedBank: NewBank = bank;
+
+  // Mirror new bank logo to S3 if changed
   const existingLogoChecksum = existingBank.logoChecksum;
   const { checksum: newLogoChecksum } = await downloadFile(bank.logoUrl);
-  const mirroredLogo =
-    existingLogoChecksum !== newLogoChecksum
-      ? await mirrorUrl(bank.logoUrl, bank.id)
-      : { url: existingBank.logoUrl, checksum: existingBank.logoChecksum };
+  if (existingLogoChecksum !== newLogoChecksum) {
+    const mirroredLogo = await mirrorUrl(bank.logoUrl, bank.id);
+    updatedBank.logoUrl = mirroredLogo.url;
+    updatedBank.logoChecksum = mirroredLogo.checksum;
+  }
 
-  const value: NewBank = {
-    ...bank,
-    logoUrl: mirroredLogo.url,
-    logoChecksum: mirroredLogo.checksum,
-    bankingApps: bank.bankingApps
-      ? await Promise.all(
-          bank.bankingApps.map(async (app) => {
-            const existingApp = existingBank.bankingApps.find(
-              (a) => a.id === app.id,
-            );
-            const existingIconChecksum = existingApp?.iconChecksum;
-            const { checksum: newIconChecksum } = await downloadFile(
-              app.iconUrl,
-            );
-            const mirroredIcon =
-              existingIconChecksum !== newIconChecksum
-                ? await mirrorUrl(app.iconUrl, app.id)
-                : {
-                    url: existingApp!.iconUrl,
-                    checksum: existingApp!.iconChecksum,
-                  };
-
-            return {
-              ...app,
-              iconUrl: mirroredIcon.url,
-              iconChecksum: mirroredIcon.checksum,
-            };
-          }),
-        )
-      : undefined,
-  };
+  // Mirror new banking app icons to S3 if changed
+  if (bank.bankingApps) {
+    bank.bankingApps = await Promise.all(
+      bank.bankingApps.map(async (app) => {
+        const existingApp = existingBank.bankingApps.find(
+          (a) => a.id === app.id,
+        );
+        const existingIconChecksum = existingApp?.iconChecksum;
+        const { checksum: newIconChecksum } = await downloadFile(app.iconUrl);
+        if (existingIconChecksum !== newIconChecksum) {
+          const mirroredIcon = await mirrorUrl(app.iconUrl, app.id);
+          return {
+            ...app,
+            iconUrl: mirroredIcon.url,
+            iconChecksum: mirroredIcon.checksum,
+          };
+        }
+        return app;
+      }),
+    );
+  }
 
   const result = await db
     .update(banksTable)
-    .set(value)
+    .set(updatedBank)
     .where(eq(banksTable.id, bank.id))
     .returning()
     .then(([updated]) => updated);
