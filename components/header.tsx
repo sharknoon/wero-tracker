@@ -10,11 +10,6 @@ import {
 } from "lucide-react";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect, usePathname, useSearchParams } from "next/navigation";
@@ -30,6 +25,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEditor } from "@/lib/editor-context";
 import { authClient } from "@/lib/auth-client";
 import { ContributionType } from "@/db/schema/contributions";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 export interface HeaderProps {
   sourceRepository: string;
@@ -176,17 +176,17 @@ export function Header({ sourceRepository, lastUpdated }: HeaderProps) {
           </div>
 
           <div className="flex items-center justify-center md:justify-start gap-3">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex items-center gap-2 rounded-lg bg-muted px-2.5 py-1.5 text-xs text-muted-foreground">
+            <Popover>
+              <PopoverTrigger asChild>
+                <div className="flex items-center gap-2 rounded-lg bg-muted px-2.5 py-1.5 text-xs text-muted-foreground cursor-pointer">
                   <Info size={14} />
                   Last updated: {lastUpdated.toLocaleDateString()}
                 </div>
-              </TooltipTrigger>
-              <TooltipContent className="bg-popover text-popover-foreground border p-3 [&_svg]:bg-popover [&_svg]:fill-popover [&_svg]:border-b [&_svg]:border-e [&_svg]:translate-y-[calc(-50%+1px)] [&_svg]:rounded-none [&_svg]:rounded-br-[2px]">
+              </PopoverTrigger>
+              <PopoverContent className="bg-popover text-popover-foreground border p-3 [&_svg]:bg-popover [&_svg]:fill-popover [&_svg]:border-b [&_svg]:border-e [&_svg]:translate-y-[calc(-50%+1px)] [&_svg]:rounded-none [&_svg]:rounded-br-[2px]">
                 <p>Data is updated automatically every 24 hours.</p>
-              </TooltipContent>
-            </Tooltip>
+              </PopoverContent>
+            </Popover>
 
             <Button variant="ghost" size="sm" className="gap-2" asChild>
               <a

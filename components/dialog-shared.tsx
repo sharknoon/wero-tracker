@@ -344,7 +344,7 @@ export function NotesInput({
         </InputGroupAddon>
       </InputGroup>
       <p className="text-xs text-muted-foreground">
-        Notes are being displayed in a tooltip on the bank card
+        Notes are being displayed in a popover on the bank card
       </p>
     </div>
   );

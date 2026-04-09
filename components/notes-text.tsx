@@ -51,7 +51,7 @@ function parseNotesWithLinks(notes: string): React.ReactNode[] {
 }
 
 /**
- * Renders an info icon that shows notes in a tooltip on hover.
+ * Renders an info icon that shows notes in a popover on click.
  * URLs in the text are converted to clickable links.
  */
 export function NotesText({ notes, className }: NotesTextProps) {
@@ -63,7 +63,7 @@ export function NotesText({ notes, className }: NotesTextProps) {
         <button
           type="button"
           className={cn(
-            "inline-flex items-center gap-1 rounded-full p-1 text-muted-foreground hover:text-foreground transition-colors",
+            "inline-flex items-center gap-1 rounded-full p-1 text-muted-foreground hover:text-foreground transition-colors cursor-pointer",
             className,
           )}
           aria-label="View notes"

@@ -277,7 +277,7 @@ function MerchantFormContent({
           onChange={(e) => onNotesChange(e.target.value)}
         />
         <p className="text-xs text-muted-foreground">
-          Notes are being displayed in a tooltip on the merchant card
+          Notes are being displayed in a popover on the merchant card
         </p>
       </div>
 
