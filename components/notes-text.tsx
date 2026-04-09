@@ -2,10 +2,10 @@ import { Fragment, useMemo } from "react";
 import { Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface NotesTextProps {
   notes: string;
@@ -58,8 +58,8 @@ export function NotesText({ notes, className }: NotesTextProps) {
   const elements = useMemo(() => parseNotesWithLinks(notes), [notes]);
 
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
+    <Popover>
+      <PopoverTrigger asChild>
         <button
           type="button"
           className={cn(
@@ -71,13 +71,10 @@ export function NotesText({ notes, className }: NotesTextProps) {
           <Info size={14} />
           <span className="text-xs leading-none translate-y-px">Info</span>
         </button>
-      </TooltipTrigger>
-      <TooltipContent
-        side="top"
-        className="max-w-xs md:max-w-md bg-popover text-popover-foreground border p-3 [&_svg]:bg-popover [&_svg]:fill-popover [&_svg]:border-b [&_svg]:border-e [&_svg]:translate-y-[calc(-50%+1px)] [&_svg]:rounded-none [&_svg]:rounded-br-[2px]"
-      >
+      </PopoverTrigger>
+      <PopoverContent side="top" className="max-w-xs md:max-w-md">
         <p className="text-sm leading-relaxed">{elements}</p>
-      </TooltipContent>
-    </Tooltip>
+      </PopoverContent>
+    </Popover>
   );
 }
