@@ -140,7 +140,7 @@ export function Bankitem({ bank: unresolvedBank, countryCode }: BankItemProps) {
           </h4>
           <div className="grid grid-cols-2 gap-3">
             <AppBadge
-              iconUrl="/wero-app.png"
+              iconUrl="/icons/wero.svg"
               name="Wero"
               status={bank.standaloneAppSupport}
               link="https://app.weropay.eu/"
