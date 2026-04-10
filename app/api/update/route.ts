@@ -252,7 +252,7 @@ export async function GET() {
 
           return {
             id: app.id,
-            name: app.name,
+            name: app.name.trim(),
             iconUrl: iconChanged
               ? app.iconUrl
               : (existingApp?.iconUrl ?? app.iconUrl),
@@ -291,7 +291,7 @@ export async function GET() {
 
       const possibleBankToUpsert: Omit<Bank, "createdAt" | "updatedAt"> = {
         id: brand.id,
-        name: brand.name,
+        name: brand.name.trim(),
         website: existingBank?.website || { default: "https://example.com" },
         aliases: brand.aliases,
         countries: Array.from(
