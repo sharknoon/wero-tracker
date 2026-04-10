@@ -1,5 +1,6 @@
 import { Bank } from "@/db/schema/banks";
 import { SupportStatus } from "@/db/schema/support";
+import { baseStatus } from "@/lib/status-helper";
 
 export function calculateWeroSupport(
   bank: Pick<
@@ -15,9 +16,11 @@ export function calculateWeroSupport(
       bank.eCommercePaymentsSupport.default,
     (countryCode && bank.posPaymentsSupport[countryCode]) ||
       bank.posPaymentsSupport.default,
-  ];
+  ].map((s) => [baseStatus(s), s] as const);
   for (const status of ["supported", "announced", "unsupported"] as const) {
-    if (statuses.includes(status)) return status;
+    for (const [base, original] of statuses) {
+      if (base === status) return original;
+    }
   }
   return "unknown";
 }

@@ -24,7 +24,10 @@ import { useEditor } from "@/lib/editor-context";
 import { AlertTriangle, ExternalLink, Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
-import { merchantCategoryOptions, supportStatusOptions } from "@/lib/constants";
+import {
+  merchantCategoryOptions,
+  baseSupportStatusOptions,
+} from "@/lib/constants";
 import { AliasInput } from "./dialog-shared";
 import { isValidUrl } from "@/lib/myutils";
 import { Merchant, NewMerchant } from "@/db/schema/merchants";
@@ -257,7 +260,7 @@ function MerchantFormContent({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {supportStatusOptions.map((option) => (
+              {baseSupportStatusOptions.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   <option.icon className={option.iconColor} size={16} />
                   {option.label}

@@ -7,15 +7,21 @@ import {
   CircleQuestionMark,
 } from "lucide-react";
 import { SupportStatus } from "@/db/schema/support";
+import { partnerSystemOptions, PartnerSystem } from "@/lib/constants";
+import Image from "next/image";
+import {
+  baseStatus,
+  BaseSupportStatus,
+  parseStatus,
+} from "@/lib/status-helper";
 
 interface StatusBadgeProps {
   status: SupportStatus;
-  showLabel?: boolean;
-  size?: "sm" | "md" | "lg";
+  compact?: boolean;
 }
 
 const statusConfig: Record<
-  SupportStatus,
+  BaseSupportStatus,
   {
     label: string;
     icon: typeof Check;
@@ -44,25 +50,13 @@ const statusConfig: Record<
   },
 };
 
-export function StatusBadge({
-  status,
-  showLabel = false,
-  size = "md",
-}: StatusBadgeProps) {
-  const config = statusConfig[status];
+export function StatusBadge({ status, compact = false }: StatusBadgeProps) {
+  const { base, partner } = parseStatus(status);
+  const config = statusConfig[base];
+  const partnerInfo = partner
+    ? partnerSystemOptions[partner as PartnerSystem]
+    : undefined;
   const Icon = config.icon;
-
-  const sizeClasses = {
-    sm: "min-w-5 h-5 text-xs",
-    md: "min-w-6 h-6 text-sm",
-    lg: "min-w-8 h-8 text-base",
-  };
-
-  const iconSizes = {
-    sm: 12,
-    md: 14,
-    lg: 16,
-  };
 
   return (
     <div
@@ -75,7 +69,7 @@ export function StatusBadge({
       <div
         className={cn(
           "inline-flex items-center gap-1.5 px-2 py-1 outline rounded-md",
-          showLabel ? "" : sizeClasses[size],
+          compact ? "min-w-5 h-5 text-xs" : "min-w-6 h-6 text-sm",
         )}
         style={{
           outlineColor: `var(${config.colorCSSVar})`,
@@ -83,27 +77,41 @@ export function StatusBadge({
           color: `var(${config.colorCSSVar})`,
         }}
       >
-        <Icon size={iconSizes[size]} />
-        {showLabel && <span>{config.label}</span>}
+        <Icon size={compact ? 12 : 14} />
+        {compact && partnerInfo && (
+          <>
+            <span className="text-[10px]">via </span>
+            <Image
+              src={`/${partnerInfo.icon}`}
+              alt={partnerInfo.label}
+              width={12}
+              height={12}
+              className="bg-white rounded-[3px]"
+            />
+          </>
+        )}
+        {!compact && <span>{config.label}</span>}
       </div>
-      {/*partner && (status === "announced" || status === "supported") && (
-        <div
-          className="flex justify-center items-center px-2 py-0.5 text-[10px]"
-          style={{
-            color: `color-mix(in oklab, var(${config.colorCSSVar}) 37%, black)`,
-          }}
-        >
-          <span>via&nbsp;</span>
-          <Image
-            src={`/${partner.icon}`}
-            alt={partner.label}
-            width={12}
-            height={12}
-            className="bg-white rounded-[3px]"
-          />
-          <span>&nbsp;{partner.label}</span>
-        </div>
-      )*/}
+      {!compact &&
+        partnerInfo &&
+        (base === "announced" || base === "supported") && (
+          <div
+            className="flex justify-center items-center px-2 py-0.5 text-[10px]"
+            style={{
+              color: `color-mix(in oklab, var(${config.colorCSSVar}) 37%, black)`,
+            }}
+          >
+            <span>via&nbsp;</span>
+            <Image
+              src={`/${partnerInfo.icon}`}
+              alt={partnerInfo.label}
+              width={12}
+              height={12}
+              className="bg-white rounded-[3px]"
+            />
+            <span>&nbsp;{partnerInfo.label}</span>
+          </div>
+        )}
     </div>
   );
 }
@@ -115,7 +123,7 @@ export function StatusDot({
   status: SupportStatus;
   className?: string;
 }) {
-  const colorClasses: Record<SupportStatus, string> = {
+  const colorClasses: Record<BaseSupportStatus, string> = {
     supported: "bg-status-supported",
     announced: "bg-status-announced",
     unsupported: "bg-status-unsupported",
@@ -126,7 +134,7 @@ export function StatusDot({
     <span
       className={cn(
         "inline-block size-2 rounded-full",
-        colorClasses[status],
+        colorClasses[baseStatus(status)],
         className,
       )}
     />

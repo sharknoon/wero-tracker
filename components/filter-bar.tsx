@@ -21,14 +21,14 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { CountryFlag } from "./country-flag";
-import { SupportStatus } from "@/db/schema/support";
-import { countries, supportStatusOptions } from "@/lib/constants";
+import { BaseSupportStatus } from "@/lib/status-helper";
+import { countries, baseSupportStatusOptions } from "@/lib/constants";
 
 interface FilterBarProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
-  selectedStatuses: SupportStatus[];
-  onStatusChange: (statuses: SupportStatus[]) => void;
+  selectedStatuses: BaseSupportStatus[];
+  onStatusChange: (statuses: BaseSupportStatus[]) => void;
   selectedCountries: string[];
   onCountryChange: (countries: string[]) => void;
   activeView: "banks" | "merchants";
@@ -43,7 +43,7 @@ export function FilterBar({
   onCountryChange,
   activeView,
 }: FilterBarProps) {
-  const toggleSupportStatus = (status: SupportStatus) => {
+  const toggleSupportStatus = (status: BaseSupportStatus) => {
     if (selectedStatuses.includes(status)) {
       onStatusChange(selectedStatuses.filter((s) => s !== status));
     } else {
@@ -109,7 +109,7 @@ export function FilterBar({
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
-                {supportStatusOptions.map((status) => (
+                {baseSupportStatusOptions.map((status) => (
                   <DropdownMenuCheckboxItem
                     key={status.value}
                     checked={selectedStatuses.includes(status.value)}

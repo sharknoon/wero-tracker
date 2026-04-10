@@ -29,7 +29,7 @@ import { ExternalLink, Globe, Plus, Trash2, X } from "lucide-react";
 import { CountryFlag } from "./country-flag";
 import {
   countries as allCountries,
-  supportStatusOptions,
+  getStatusOptionsForCountry,
 } from "@/lib/constants";
 import { Bank, CountryOverride } from "@/db/schema/banks";
 import { cn } from "@/lib/utils";
@@ -228,6 +228,7 @@ export interface SupportStatusSelectProps {
   onSupportStatusChange: (value: CountryOverride<SupportStatus>) => void;
   countries: string[];
   label: string;
+  includePartnerSystems?: boolean;
   disabled?: boolean;
   required?: boolean;
 }
@@ -237,9 +238,14 @@ export function SupportStatusSelect({
   onSupportStatusChange,
   countries,
   label,
+  includePartnerSystems,
   disabled,
   required,
 }: SupportStatusSelectProps) {
+  const defaultOptions = getStatusOptionsForCountry(
+    countries.length === 1 && includePartnerSystems ? countries[0] : undefined,
+  );
+
   return (
     <div className="space-y-2">
       <Label>
@@ -260,7 +266,7 @@ export function SupportStatusSelect({
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {supportStatusOptions.map((option) => (
+            {defaultOptions.map((option) => (
               <SelectItem key={option.value} value={option.value}>
                 <option.icon className={option.iconColor} size={16} />
                 {option.label}
@@ -273,29 +279,34 @@ export function SupportStatusSelect({
           onChange={onSupportStatusChange}
           label={label}
           allCountries={countries}
-          input={(c) => (
-            <Select
-              value={supportStatus[c] ?? supportStatus.default}
-              onValueChange={(v) =>
-                onSupportStatusChange({
-                  ...supportStatus,
-                  [c]: v as SupportStatus,
-                })
-              }
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {supportStatusOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    <option.icon className={option.iconColor} size={16} />
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
+          input={(c) => {
+            const overrideOptions = getStatusOptionsForCountry(
+              includePartnerSystems ? c : undefined,
+            );
+            return (
+              <Select
+                value={supportStatus[c] ?? supportStatus.default}
+                onValueChange={(v) =>
+                  onSupportStatusChange({
+                    ...supportStatus,
+                    [c]: v as SupportStatus,
+                  })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {overrideOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      <option.icon className={option.iconColor} size={16} />
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            );
+          }}
         />
       </div>
     </div>

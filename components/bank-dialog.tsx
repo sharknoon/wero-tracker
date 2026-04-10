@@ -254,6 +254,7 @@ function BankingAppForm({
             }
             countries={app.supportedCountries}
             label="Wero Support Status"
+            includePartnerSystems
             required
           />
 
@@ -480,6 +481,7 @@ function BankFormContent({
           onSupportStatusChange={onP2pPaymentsSupportChange}
           countries={countries}
           label="P2P Payments Support"
+          includePartnerSystems
           required
         />
 
@@ -488,6 +490,7 @@ function BankFormContent({
           onSupportStatusChange={onECommercePaymentsSupportChange}
           countries={countries}
           label="eCommerce Payments Support"
+          includePartnerSystems
           required
         />
 
@@ -496,6 +499,7 @@ function BankFormContent({
           onSupportStatusChange={onPosPaymentsSupportChange}
           countries={countries}
           label="POS Payments Support"
+          includePartnerSystems
           required
         />
 

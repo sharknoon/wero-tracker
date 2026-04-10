@@ -31,7 +31,7 @@ import { countries } from "@/lib/constants";
 import { MerchantDialog } from "./merchant-dialog";
 import { BankDialog } from "./bank-dialog";
 import { Merchant } from "@/db/schema/merchants";
-import { SupportStatus } from "@/db/schema/support";
+import { baseStatus, BaseSupportStatus } from "@/lib/status-helper";
 import { WeroData } from "@/app/page";
 
 type ViewType = "banks" | "merchants";
@@ -54,7 +54,9 @@ export function WeroTracker({ data }: WeroTrackerProps) {
 
 function WeroTrackerContent({ data }: WeroTrackerProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedStatuses, setSelectedStatuses] = useState<SupportStatus[]>([]);
+  const [selectedStatuses, setSelectedStatuses] = useState<BaseSupportStatus[]>(
+    [],
+  );
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
 
   const { openEditorDialog } = useEditor();
@@ -99,7 +101,7 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
           // Status filter
           if (
             selectedStatuses.length > 0 &&
-            !selectedStatuses.includes(bank.weroSupport)
+            !selectedStatuses.includes(baseStatus(bank.weroSupport))
           ) {
             return false;
           }
@@ -138,7 +140,7 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
           // Status filter
           if (
             selectedStatuses.length > 0 &&
-            !selectedStatuses.includes(merchant.weroSupport)
+            !selectedStatuses.includes(baseStatus(merchant.weroSupport))
           ) {
             return false;
           }

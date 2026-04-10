@@ -12,7 +12,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "auth:generate": "npx @better-auth/cli generate --output db/schema/auth.ts",
-    "shadcn:update": "npx shadcn@latest init --base radix --preset nova --reinstall"
+    "shadcn:update": "npx shadcn@latest init --base radix --preset nova --reinstall && prettier --write ."
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1028.0",

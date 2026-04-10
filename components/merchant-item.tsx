@@ -82,7 +82,7 @@ export function MerchantItem({ merchant }: MerchantItemProps) {
           </ItemDescription>
         </ItemContent>
         <ItemActions>
-          <StatusBadge status={merchant.weroSupport} showLabel />
+          <StatusBadge status={merchant.weroSupport} />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button

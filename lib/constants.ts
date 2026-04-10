@@ -1,6 +1,7 @@
 import type { Merchant } from "@/db/schema/merchants";
 import type { SupportStatus } from "@/db/schema/support";
 import { CircleCheck, CircleQuestionMark, CircleX, Clock } from "lucide-react";
+import { BaseSupportStatus } from "@/lib/status-helper";
 
 // List of all eu countries + EuroPA countries (+ NO)
 export const countries: string[] = [
@@ -35,40 +36,35 @@ export const countries: string[] = [
 ];
 
 // All available support statuses
-export const supportStatusOptions: {
+export const baseSupportStatusOptions: {
   icon: React.ElementType;
   iconColor: string;
-  value: SupportStatus;
+  value: BaseSupportStatus;
   label: string;
-  description: string;
 }[] = [
   {
     icon: CircleCheck,
     iconColor: "text-status-supported",
     value: "supported",
     label: "Supported",
-    description: "Wero is fully supported",
   },
   {
     icon: Clock,
     iconColor: "text-status-announced",
     value: "announced",
     label: "Announced",
-    description: "Support has been announced but not yet available",
   },
   {
     icon: CircleX,
     iconColor: "text-status-unsupported",
     value: "unsupported",
     label: "Unsupported",
-    description: "Wero is not supported",
   },
   {
     icon: CircleQuestionMark,
     iconColor: "text-status-unknown",
     value: "unknown",
     label: "Unknown",
-    description: "Support status is unknown",
   },
 ];
 
@@ -192,3 +188,50 @@ export const partnerSystemOptions: Record<
 };
 export type PartnerSystemOption =
   (typeof partnerSystemOptions)[keyof typeof partnerSystemOptions];
+
+/**
+ * Returns support status options filtered for a specific country.
+ * When a country is provided, inserts partner-system-specific options
+ * (e.g. "Supported via Bizum") after their base status.
+ * When no country is given, returns only the 4 base options.
+ */
+export function getStatusOptionsForCountry(country?: string) {
+  if (!country) return baseSupportStatusOptions;
+
+  const partners = Object.values(partnerSystemOptions).filter((p) =>
+    p.countries.includes(country),
+  );
+  if (partners.length === 0) return baseSupportStatusOptions;
+
+  type StatusOptions = (Omit<
+    (typeof baseSupportStatusOptions)[number],
+    "value"
+  > & {
+    value: SupportStatus;
+  })[];
+
+  const result: StatusOptions = [];
+  for (const opt of baseSupportStatusOptions) {
+    result.push(opt);
+    if (opt.value === "supported") {
+      for (const p of partners) {
+        result.push({
+          icon: CircleCheck,
+          iconColor: "text-status-supported",
+          value: `supported-via-${p.value}` as SupportStatus,
+          label: `Supported via ${p.label}`,
+        });
+      }
+    } else if (opt.value === "announced") {
+      for (const p of partners) {
+        result.push({
+          icon: Clock,
+          iconColor: "text-status-announced",
+          value: `announced-via-${p.value}` as SupportStatus,
+          label: `Announced via ${p.label}`,
+        });
+      }
+    }
+  }
+  return result;
+}

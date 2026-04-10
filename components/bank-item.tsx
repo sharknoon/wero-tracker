@@ -80,7 +80,7 @@ export function Bankitem({ bank: unresolvedBank, countryCode }: BankItemProps) {
           </div>
 
           <div className="flex shrink-0 items-center gap-2">
-            <StatusBadge status={bank.weroSupport} showLabel />
+            <StatusBadge status={bank.weroSupport} />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
@@ -184,7 +184,7 @@ function FeatureItem({
   return (
     <div className="flex flex-col justify-between items-center gap-1.5 rounded-lg bg-secondary/50 p-2">
       <span className="text-xs text-muted-foreground">{label}</span>
-      <StatusBadge status={status} size="sm" />
+      <StatusBadge status={status} compact />
     </div>
   );
 }
