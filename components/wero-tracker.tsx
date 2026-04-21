@@ -33,6 +33,7 @@ import { BankDialog } from "./bank-dialog";
 import { Merchant } from "@/db/schema/merchants";
 import { baseStatus, BaseSupportStatus } from "@/lib/status-helper";
 import { WeroData } from "@/app/page";
+import { authClient } from "@/lib/auth-client";
 
 type ViewType = "banks" | "merchants";
 
@@ -61,6 +62,7 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
 
   const { openEditorDialog } = useEditor();
   const searchParams = useSearchParams();
+  const { data: session } = authClient.useSession();
 
   const [activeView, setActiveViewState] = useState<ViewType>(
     searchParams.get("view") === "merchants" ? "merchants" : "banks",
@@ -295,6 +297,10 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
                         openEditorDialog({
                           type: "bank",
                           action: "add",
+                          submit:
+                            session?.user.role === "admin"
+                              ? "admin"
+                              : "contribution",
                         })
                       }
                     >
@@ -344,6 +350,10 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
                         openEditorDialog({
                           type: "merchant",
                           action: "add",
+                          submit:
+                            session?.user.role === "admin"
+                              ? "admin"
+                              : "contribution",
                         })
                       }
                     >

@@ -59,7 +59,11 @@ function AddButton() {
       redirect(`/sign-in?redirect=${encodeURIComponent(target)}`);
     }
 
-    openEditorDialog({ type, action: "add" });
+    openEditorDialog({
+      type,
+      action: "add",
+      submit: session.user.role === "admin" ? "admin" : "contribution",
+    });
   }
 
   return (
