@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/dialog";
 import {
   ArrowLeft,
+  AlertTriangle,
   Check,
   Clock,
   Edit3,
@@ -57,6 +58,17 @@ import {
   rejectOrApproveContribution,
 } from "@/actions/contribution-actions";
 import stableStringify from "json-stable-stringify";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item";
+import { findDuplicateBanks } from "@/actions/bank-actions";
+import { findDuplicateMerchants } from "@/actions/merchant-actions";
 
 // ============================================================================
 // Types
@@ -270,6 +282,89 @@ function DataPreview({
 }
 
 // ============================================================================
+// Duplicate Warning
+// ============================================================================
+
+async function findContributionDuplicates(
+  contribution: ContributionWithRelations,
+): Promise<{ id: string; name: string; logoUrl: string; website: string }[]> {
+  if (contribution.action !== "add") return [];
+  if (contribution.type === "bank") {
+    const data = contribution.data as BankContributionData;
+    const duplicates = await findDuplicateBanks({ website: data.website });
+    return duplicates.map((b) => ({
+      id: b.id,
+      name: b.name,
+      logoUrl: b.logoUrl,
+      website: b.website.default,
+    }));
+  } else {
+    const data = contribution.data as MerchantContributionData;
+    const duplicates = await findDuplicateMerchants({ website: data.website });
+    return duplicates.map((m) => ({
+      id: m.id,
+      name: m.name,
+      logoUrl: m.logoUrl,
+      website: m.website,
+    }));
+  }
+}
+
+function DuplicateWarning({
+  contribution,
+}: {
+  contribution: ContributionWithRelations;
+  compact?: boolean;
+}) {
+  const [duplicates, setDuplicates] = useState<
+    { id: string; name: string; logoUrl: string; website: string }[]
+  >([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    findContributionDuplicates(contribution).then((result) => {
+      if (!cancelled) setDuplicates(result);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [contribution]);
+
+  if (duplicates.length === 0) return null;
+  return (
+    <Alert className="border-yellow-500/30 bg-yellow-500/10 text-yellow-700 dark:text-yellow-400">
+      <AlertTriangle />
+      <AlertTitle className="font-bold">Possible duplicate</AlertTitle>
+      <AlertDescription className="text-yellow-700/90 dark:text-yellow-400/90">
+        <p className="mb-1!">
+          {duplicates.length === 1
+            ? "An entry with the same domain already exists:"
+            : `${duplicates.length} entries with the same domain already exist:`}
+        </p>
+        <ItemGroup>
+          {duplicates.map((d) => (
+            <Item key={d.id} variant="outline" size="sm">
+              <ItemMedia variant="image" className="mb-1">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={d.logoUrl}
+                  alt=""
+                  className="bg-white p-1 object-contain!"
+                />
+              </ItemMedia>
+              <ItemContent className="flex-row items-end gap-2!">
+                <ItemTitle>{d.name}</ItemTitle>
+                <ItemDescription>{d.website}</ItemDescription>
+              </ItemContent>
+            </Item>
+          ))}
+        </ItemGroup>
+      </AlertDescription>
+    </Alert>
+  );
+}
+
+// ============================================================================
 // Logo Preview
 // ============================================================================
 
@@ -343,6 +438,7 @@ function ReviewDialog({
 
         <div className="min-h-0 overflow-x-auto">
           <div className="space-y-4 py-2">
+            <DuplicateWarning contribution={contribution} />
             <DataPreview contribution={contribution} />
             <LogoPreview contribution={contribution} />
 

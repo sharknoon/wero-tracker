@@ -10,9 +10,10 @@ import {
 } from "@/db/schema/banks";
 import { del, mirrorUrl } from "@/lib/s3";
 import { requireAdmin } from "@/actions/session-actions";
-import { eq, asc, sql } from "drizzle-orm";
+import { and, asc, eq, ne, sql } from "drizzle-orm";
 import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 import { downloadFile } from "@/lib/download";
+import { getDomain } from "tldts";
 
 export async function getAllBanks() {
   "use cache";
@@ -148,4 +149,42 @@ export async function deleteBank(id: string): Promise<void> {
   }
 
   revalidateTag("wero-data", "max");
+}
+
+/**
+ * Find banks whose registrable domain matches any of the websites used by
+ * `candidate`. `excludeId` skips a specific bank (useful when editing).
+ */
+export async function findDuplicateBanks(
+  candidate: Pick<Bank, "website">,
+  excludeId?: string,
+): Promise<Bank[]> {
+  const targetDomains = new Set(
+    Object.values(candidate.website)
+      .map((url) => getDomain(url)?.toLowerCase())
+      .filter((d): d is string => !!d),
+  );
+  if (targetDomains.size === 0) return [];
+
+  const patterns = Array.from(targetDomains, (d) => `%${d}%`);
+
+  const duplicateBanks = await db
+    .select()
+    .from(banksTable)
+    .where(
+      and(
+        sql`${banksTable.website}::text ILIKE ANY (ARRAY[${sql.join(patterns, sql`, `)}])`,
+        excludeId ? ne(banksTable.id, excludeId) : undefined,
+      ),
+    )
+    .then((banks) =>
+      banks.filter((b) =>
+        Object.values(b.website).some((url) => {
+          const domain = getDomain(url)?.toLowerCase();
+          return domain ? targetDomains.has(domain) : false;
+        }),
+      ),
+    );
+
+  return duplicateBanks;
 }

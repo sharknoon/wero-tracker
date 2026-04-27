@@ -23,6 +23,16 @@ import {
 import { useEditor } from "@/lib/editor-context";
 import { AlertTriangle, ExternalLink, Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Separator } from "@/components/ui/separator";
 import {
   merchantCategoryOptions,
@@ -30,6 +40,15 @@ import {
 } from "@/lib/constants";
 import { AliasInput } from "./dialog-shared";
 import { isValidUrl } from "@/lib/myutils";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item";
 import { Merchant, NewMerchant } from "@/db/schema/merchants";
 import { SupportStatus } from "@/db/schema/support";
 import { createMerchantContribution } from "@/actions/contribution-actions";
@@ -38,6 +57,7 @@ import { toast } from "sonner";
 import {
   createMerchant,
   deleteMerchant,
+  findDuplicateMerchants,
   updateMerchant,
 } from "@/actions/merchant-actions";
 
@@ -321,7 +341,8 @@ export function MerchantDialog() {
   );
   const [submitError, setSubmitError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { onOpenEditorDialog } = useEditor();
+  const [duplicateMatches, setDuplicateMatches] = useState<Merchant[]>([]);
+  const { onOpenEditorDialog, openEditorDialog } = useEditor();
 
   // Form state
   const [name, setName] = useState("");
@@ -416,8 +437,15 @@ export function MerchantDialog() {
 
   const validation = getSubmitValidation();
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (overrideDuplicateCheck = false) => {
     if (!validation.valid) return;
+    if (action === "add" && !overrideDuplicateCheck) {
+      const duplicates = await findDuplicateMerchants({ website });
+      if (duplicates.length > 0) {
+        setDuplicateMatches(duplicates);
+        return;
+      }
+    }
     setIsSubmitting(true);
     try {
       if (action === "add") {
@@ -594,7 +622,7 @@ export function MerchantDialog() {
               Cancel
             </Button>
             <Button
-              onClick={handleSubmit}
+              onClick={() => handleSubmit(false)}
               disabled={!validation.valid || isSubmitting}
               variant={action === "delete" ? "destructive" : "default"}
             >
@@ -610,6 +638,69 @@ export function MerchantDialog() {
           </div>
         </DialogFooter>
       </DialogContent>
+
+      <AlertDialog
+        open={duplicateMatches.length > 0}
+        onOpenChange={(o) => {
+          if (!o) setDuplicateMatches([]);
+        }}
+      >
+        <AlertDialogContent className="sm:max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="text-yellow-500" size={18} />
+              Possible duplicate
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              A merchant with the same domain already exists. Please consider
+              editing the existing entry instead of creating a duplicate.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <ItemGroup>
+            {duplicateMatches.map((m) => (
+              <Item key={m.id} variant="outline" size="sm">
+                <ItemMedia variant="image">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={m.logoUrl} alt="" className="bg-white" />
+                </ItemMedia>
+                <ItemContent>
+                  <ItemTitle>{m.name}</ItemTitle>
+                  <ItemDescription>{m.website}</ItemDescription>
+                </ItemContent>
+                <ItemActions>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setDuplicateMatches([]);
+                      setOpen(false);
+                      openEditorDialog({
+                        type: "merchant",
+                        action: "edit",
+                        entity: m,
+                        submit: submitType,
+                      });
+                    }}
+                  >
+                    Edit
+                  </Button>
+                </ItemActions>
+              </Item>
+            ))}
+          </ItemGroup>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setDuplicateMatches([]);
+                handleSubmit(true);
+              }}
+            >
+              Submit anyway
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }

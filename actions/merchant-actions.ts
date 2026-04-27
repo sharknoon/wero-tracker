@@ -9,9 +9,10 @@ import {
 } from "@/db/schema/merchants";
 import { del, mirrorUrl } from "@/lib/s3";
 import { requireAdmin } from "@/actions/session-actions";
-import { eq, asc, sql } from "drizzle-orm";
+import { eq, asc, sql, ilike, and, ne } from "drizzle-orm";
 import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 import { downloadFile } from "@/lib/download";
+import { getDomain } from "tldts";
 
 export async function getAllMerchants() {
   "use cache";
@@ -121,4 +122,33 @@ export async function deleteMerchant(id: string): Promise<void> {
   }
 
   revalidateTag("wero-data", "max");
+}
+
+/**
+ * Find merchants whose registrable domain matches the candidate's website.
+ * `excludeId` skips a specific merchant (useful when editing).
+ */
+export async function findDuplicateMerchants(
+  candidate: Pick<Merchant, "website">,
+  excludeId?: string,
+): Promise<Merchant[]> {
+  const targetDomain = getDomain(candidate.website)?.toLowerCase();
+  if (!targetDomain) return [];
+
+  const duplicateMerchants = await db
+    .select()
+    .from(merchantsTable)
+    .where(
+      and(
+        ilike(merchantsTable.website, `%${targetDomain}%`),
+        excludeId ? ne(merchantsTable.id, excludeId) : undefined,
+      ),
+    )
+    .then((merchants) =>
+      merchants.filter((m) => {
+        return getDomain(m.website)?.toLowerCase() === targetDomain;
+      }),
+    );
+
+  return duplicateMerchants;
 }

@@ -16,6 +16,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { useEditor } from "@/lib/editor-context";
 import { AlertTriangle, Copy, Loader2, Plus, Trash2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Separator } from "@/components/ui/separator";
 import {
   AliasInput,
@@ -25,6 +35,15 @@ import {
   WebsiteInput,
 } from "./dialog-shared";
 import { isValidUrl } from "@/lib/myutils";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item";
 import { createBankContribution } from "@/actions/contribution-actions";
 import { ContributionAction } from "@/db/schema/contributions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,7 +55,12 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { createBank, deleteBank, updateBank } from "@/actions/bank-actions";
+import {
+  createBank,
+  deleteBank,
+  findDuplicateBanks,
+  updateBank,
+} from "@/actions/bank-actions";
 import { CountryFlag } from "./country-flag";
 
 function createEmptyApp(supportedCountries: string[]): BankingApp {
@@ -589,7 +613,8 @@ export function BankDialog() {
   const [existingBank, setExistingBank] = useState<Bank | null>(null);
   const [submitError, setSubmitError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { onOpenEditorDialog } = useEditor();
+  const [duplicateMatches, setDuplicateMatches] = useState<Bank[]>([]);
+  const { onOpenEditorDialog, openEditorDialog } = useEditor();
 
   // Form state
   const [name, setName] = useState<Bank["name"]>("");
@@ -769,8 +794,15 @@ export function BankDialog() {
 
   const validation = getSubmitValidation();
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (overrideDuplicateCheck = false) => {
     if (!validation.valid) return;
+    if (action === "add" && !overrideDuplicateCheck) {
+      const duplicates = await findDuplicateBanks({ website });
+      if (duplicates.length > 0) {
+        setDuplicateMatches(duplicates);
+        return;
+      }
+    }
     setIsSubmitting(true);
     try {
       if (action === "add") {
@@ -971,7 +1003,7 @@ export function BankDialog() {
               Cancel
             </Button>
             <Button
-              onClick={handleSubmit}
+              onClick={() => handleSubmit(false)}
               disabled={!validation.valid || isSubmitting}
               variant={action === "delete" ? "destructive" : "default"}
             >
@@ -987,6 +1019,73 @@ export function BankDialog() {
           </div>
         </DialogFooter>
       </DialogContent>
+
+      <AlertDialog
+        open={duplicateMatches.length > 0}
+        onOpenChange={(o) => {
+          if (!o) setDuplicateMatches([]);
+        }}
+      >
+        <AlertDialogContent className="sm:max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="text-yellow-500" size={18} />
+              Possible duplicate
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              A bank with the same domain already exists. Please consider
+              editing the existing entry instead of creating a duplicate.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <ItemGroup>
+            {duplicateMatches.map((b) => (
+              <Item key={b.id} variant="outline" size="sm">
+                <ItemMedia variant="image">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={b.logoUrl}
+                    alt=""
+                    className="bg-white p-1 object-contain!"
+                  />
+                </ItemMedia>
+                <ItemContent>
+                  <ItemTitle>{b.name}</ItemTitle>
+                  <ItemDescription>{b.website.default}</ItemDescription>
+                </ItemContent>
+                <ItemActions>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setDuplicateMatches([]);
+                      setOpen(false);
+                      openEditorDialog({
+                        type: "bank",
+                        action: "edit",
+                        entity: b,
+                        submit: submitType,
+                      });
+                    }}
+                  >
+                    Edit
+                  </Button>
+                </ItemActions>
+              </Item>
+            ))}
+          </ItemGroup>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setDuplicateMatches([]);
+                handleSubmit(true);
+              }}
+            >
+              Submit anyway
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }
