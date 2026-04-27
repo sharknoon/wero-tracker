@@ -846,7 +846,10 @@ export function BankDialog() {
           aliases,
           website,
           logoUrl,
-          logoChecksum: existingBank!.logoChecksum,
+          logoChecksum:
+            existingBank!.logoUrl === logoUrl
+              ? existingBank!.logoChecksum
+              : "WILL BE CALCULATED ON REVIEW",
           countries,
           p2pPaymentsSupport,
           eCommercePaymentsSupport,

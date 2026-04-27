@@ -481,8 +481,11 @@ export function MerchantDialog() {
           name,
           aliases,
           website,
-          logoUrl: existingMerchant!.logoUrl,
-          logoChecksum: existingMerchant!.logoChecksum,
+          logoUrl: logoUrl,
+          logoChecksum:
+            existingMerchant!.logoUrl === logoUrl
+              ? existingMerchant!.logoChecksum
+              : "WILL BE CALCULATED ON REVIEW",
           category,
           weroSupport,
           notes,
