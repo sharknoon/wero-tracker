@@ -32,6 +32,7 @@ import {
   ArrowLeft,
   AlertTriangle,
   Check,
+  CheckCircle2,
   Clock,
   Edit3,
   Filter,
@@ -319,18 +320,40 @@ function DuplicateWarning({
   const [duplicates, setDuplicates] = useState<
     { id: string; name: string; logoUrl: string; website: string }[]
   >([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
     findContributionDuplicates(contribution).then((result) => {
-      if (!cancelled) setDuplicates(result);
+      if (!cancelled) {
+        setDuplicates(result);
+        setLoading(false);
+      }
     });
     return () => {
       cancelled = true;
     };
   }, [contribution]);
 
-  if (duplicates.length === 0) return null;
+  if (contribution.action !== "add") return null;
+
+  if (loading) {
+    return (
+      <Alert>
+        <Loader2 className="animate-spin" />
+        <AlertTitle>Checking for duplicates…</AlertTitle>
+      </Alert>
+    );
+  }
+
+  if (duplicates.length === 0) {
+    return (
+      <Alert className="border-green-500/30 bg-green-500/10 text-green-700 dark:text-green-400">
+        <CheckCircle2 />
+        <AlertTitle>No duplicates found</AlertTitle>
+      </Alert>
+    );
+  }
   return (
     <Alert className="border-yellow-500/30 bg-yellow-500/10 text-yellow-700 dark:text-yellow-400">
       <AlertTriangle />
