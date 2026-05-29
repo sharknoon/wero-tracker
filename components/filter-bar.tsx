@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Search, Filter, X, Flag, Info } from "lucide-react";
 import {
@@ -43,6 +44,8 @@ export function FilterBar({
   onCountryChange,
   activeView,
 }: FilterBarProps) {
+  const [filterOpen, setFilterOpen] = useState(false);
+
   const toggleSupportStatus = (status: BaseSupportStatus) => {
     if (selectedStatuses.includes(status)) {
       onStatusChange(selectedStatuses.filter((s) => s !== status));
@@ -89,9 +92,13 @@ export function FilterBar({
         )}
       </InputGroup>
 
-      <DropdownMenu>
+      <DropdownMenu open={filterOpen} onOpenChange={setFilterOpen}>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline">
+          <Button
+            variant="outline"
+            onPointerDown={(event) => event.preventDefault()}
+            onClick={() => setFilterOpen((open) => !open)}
+          >
             <Filter size={16} />
             Filter
             {selectedStatuses.length + selectedCountries.length > 0 && (
@@ -101,7 +108,10 @@ export function FilterBar({
             )}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-48" align="end">
+        <DropdownMenuContent
+          className="w-48"
+          align="end"
+        >
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
               <Info />
