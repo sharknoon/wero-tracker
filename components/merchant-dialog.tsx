@@ -208,6 +208,9 @@ function MerchantFormContent({
           onChange={(e) => onNameChange(e.target.value)}
           required
         />
+        <p className="text-xs text-muted-foreground">
+          Use the brand name, not the company name.
+        </p>
       </div>
 
       <AliasInput
