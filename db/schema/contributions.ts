@@ -43,8 +43,7 @@ export type EditOrDeleteMerchantContributionData = Omit<
   "createdAt" | "updatedAt"
 >;
 export type MerchantContributionData =
-  | AddMerchantContributionData
-  | EditOrDeleteMerchantContributionData;
+  AddMerchantContributionData | EditOrDeleteMerchantContributionData;
 
 export type AddBankContributionData = Omit<
   NewBank,
@@ -55,8 +54,7 @@ export type EditOrDeleteBankContributionData = Omit<
   "createdAt" | "updatedAt"
 >;
 export type BankContributionData =
-  | AddBankContributionData
-  | EditOrDeleteBankContributionData;
+  AddBankContributionData | EditOrDeleteBankContributionData;
 
 export const contributions = pgTable(
   "contributions",

@@ -154,19 +154,6 @@ export function Bankitem({ bank: unresolvedBank, countryCode }: BankItemProps) {
                 link={bankingApp.universalLink}
               />
             ))}
-            {bank.bankingApps.length === 0 && (
-              <div
-                className={cn(
-                  "flex items-center gap-2 rounded-lg px-3 py-2 text-sm flex-1 bg-secondary/50 text-muted-foreground",
-                )}
-              >
-                <div className="bg-white size-8 rounded-lg grid place-items-center">
-                  <Landmark size={20} />
-                </div>
-                <span className="text-xs">Banking App</span>
-                <StatusDot status={"unsupported"} />
-              </div>
-            )}
           </div>
         </div>
       </CardContent>

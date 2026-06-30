@@ -127,13 +127,7 @@ export const merchantCategoryOptions: {
 
 // All available partner systems (EuroPA alliance)
 export type PartnerSystem =
-  | "bizum"
-  | "bancomat"
-  | "mb-way"
-  | "vipps"
-  | "mobilepay"
-  | "blik"
-  | "iris";
+  "bizum" | "bancomat" | "mb-way" | "vipps" | "mobilepay" | "blik" | "iris";
 export const partnerSystemOptions: Record<
   PartnerSystem,
   {
