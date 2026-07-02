@@ -569,7 +569,10 @@ export function MerchantDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-hidden grid-rows-[auto_1fr_auto]">
+      <DialogContent
+        className="max-h-[calc(100dvh-2rem)] overflow-hidden grid-rows-[auto_1fr_auto]"
+        onPointerDownOutside={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle>{getTitle(submitType)}</DialogTitle>
           <DialogDescription>{getDescription(submitType)}</DialogDescription>
