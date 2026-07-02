@@ -104,6 +104,18 @@ function CountryRowLabel({ country }: { country: string }) {
   );
 }
 
+function summarizeCountryOverride<T>(
+  value: CountryOverride<T>,
+  converter: (v: T) => string,
+): string {
+  const uniqueValues = new Set(
+    Object.values(value)
+      .map(converter)
+      .filter((v) => v.trim() !== ""),
+  );
+  return Array.from(uniqueValues).join(", ");
+}
+
 // ============================================================================
 // Per-Country Dialog
 // ============================================================================
@@ -265,8 +277,10 @@ export function WebsiteInput({
           label={label}
           trigger={
             <TriggerSurface>
-              <span className="truncate font-normal">
-                {website.default || <span className="italic">Not set</span>}
+              <span className="truncate font-normal min-w-0">
+                {summarizeCountryOverride(website, (v) => v) || (
+                  <span className="italic">Not set</span>
+                )}
               </span>
             </TriggerSurface>
           }
@@ -454,10 +468,16 @@ export function SupportStatusSelect({
     );
   };
 
-  const defaultBase = baseStatus(supportStatus.default);
-  const defaultOption = baseSupportStatusOptions.find(
-    (o) => o.value === defaultBase,
-  );
+  const statusCounts = baseSupportStatusOptions
+    .map((option) => ({
+      option,
+      count: countries.filter(
+        (c) =>
+          baseStatus(supportStatus[c] ?? supportStatus.default) ===
+          option.value,
+      ).length,
+    }))
+    .filter(({ count }) => count > 0);
 
   const list = (
     <div className="space-y-2">
@@ -498,14 +518,16 @@ export function SupportStatusSelect({
           label={label}
           trigger={
             <TriggerSurface>
-              {defaultOption && (
-                <defaultOption.icon
-                  className={defaultOption.iconColor}
-                  size={16}
-                />
-              )}
-              <span className="truncate font-normal">
-                {defaultOption?.label ?? supportStatus.default}
+              <span className="flex items-center gap-3 font-normal min-w-0">
+                {statusCounts.map(({ option, count }) => (
+                  <span
+                    key={option.value}
+                    className="flex items-center gap-1 shrink-0"
+                  >
+                    <option.icon className={option.iconColor} size={16} />
+                    {count}
+                  </span>
+                ))}
               </span>
             </TriggerSurface>
           }
@@ -540,7 +562,7 @@ export function NotesInput({
     onNotesChange(collapseOverride(expanded, countries, notes.default, eq));
   };
 
-  const defaultPreview = (notes.default ?? "").trim();
+  const defaultPreview = summarizeCountryOverride(notes, (v) => v ?? "").trim();
 
   const list = (
     <div className="space-y-2">
@@ -585,8 +607,8 @@ export function NotesInput({
         <PerCountryDialog
           label="Notes"
           trigger={
-            <TriggerSurface className="min-h-16 h-fit whitespace-normal text-start">
-              <span className="mt-2 mb-auto pb-2 font-normal">
+            <TriggerSurface className="min-h-16 h-fit whitespace-normal text-start wrap-break-word">
+              <span className="mt-2 mb-auto pb-2 font-normal min-w-0">
                 {defaultPreview ? (
                   defaultPreview
                 ) : (
