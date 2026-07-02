@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -10,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { InputGroup, InputGroupTextarea } from "@/components/ui/input-group";
 import {
   Dialog,
   DialogContent,
@@ -30,6 +30,7 @@ import {
 import { Bank, CountryOverride } from "@/db/schema/banks";
 import { baseStatus } from "@/lib/status-helper";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
 
@@ -103,19 +104,6 @@ function CountryRowLabel({ country }: { country: string }) {
   );
 }
 
-/** Count how many of `countries` have a value that differs from the default. */
-function countOverrides<T>(
-  value: CountryOverride<T>,
-  countries: string[],
-  equals: (a: T, b: T) => boolean = (a, b) => a === b,
-): number {
-  let n = 0;
-  for (const c of countries) {
-    if (c in value && !equals(value[c] as T, value.default)) n++;
-  }
-  return n;
-}
-
 // ============================================================================
 // Per-Country Dialog
 // ============================================================================
@@ -148,10 +136,7 @@ function PerCountryDialog({
         <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-hidden grid-rows-[auto_1fr_auto] sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>{label}</DialogTitle>
-            <DialogDescription>
-              Set a value for each country. The most common value is used as the
-              default; others are stored as overrides automatically.
-            </DialogDescription>
+            <DialogDescription>Set a value for each country.</DialogDescription>
           </DialogHeader>
           <div className="min-h-0 overflow-y-auto">
             <div className="space-y-2 py-2">{children}</div>
@@ -165,24 +150,24 @@ function PerCountryDialog({
   );
 }
 
-function OverrideBadge({ count }: { count: number }) {
-  if (count === 0) return null;
+function TriggerSurface({
+  className,
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) {
   return (
-    <span className="shrink-0 rounded-sm bg-primary/10 px-1.5 py-0.5 text-xs font-medium text-primary">
-      +{count} customized
-    </span>
-  );
-}
-
-function TriggerSurface({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex items-center gap-2 w-full rounded-md border bg-background px-3 py-2 text-sm shadow-xs hover:bg-accent transition-colors">
+    <Button
+      className={cn(`w-full border-input! bg-clip-border`, className)}
+      variant="outline"
+    >
       {children}
       <ChevronRight
         size={14}
         className="ml-auto shrink-0 text-muted-foreground"
       />
-    </div>
+    </Button>
   );
 }
 
@@ -247,8 +232,6 @@ export function WebsiteInput({
     </div>
   );
 
-  const overrideCount = countOverrides(website, countries);
-
   const list = (
     <div className="space-y-2">
       {sortCountries(countries).map((c) => (
@@ -282,10 +265,9 @@ export function WebsiteInput({
           label={label}
           trigger={
             <TriggerSurface>
-              <span className="truncate text-muted-foreground">
+              <span className="truncate font-normal">
                 {website.default || <span className="italic">Not set</span>}
               </span>
-              <OverrideBadge count={overrideCount} />
             </TriggerSurface>
           }
         >
@@ -457,7 +439,7 @@ export function SupportStatusSelect({
         onValueChange={(v) => onChange(v as SupportStatus)}
         disabled={disabled}
       >
-        <SelectTrigger>
+        <SelectTrigger className="w-full">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -472,7 +454,6 @@ export function SupportStatusSelect({
     );
   };
 
-  const overrideCount = countOverrides(supportStatus, countries);
   const defaultBase = baseStatus(supportStatus.default);
   const defaultOption = baseSupportStatusOptions.find(
     (o) => o.value === defaultBase,
@@ -523,10 +504,9 @@ export function SupportStatusSelect({
                   size={16}
                 />
               )}
-              <span className="truncate">
+              <span className="truncate font-normal">
                 {defaultOption?.label ?? supportStatus.default}
               </span>
-              <OverrideBadge count={overrideCount} />
             </TriggerSurface>
           }
         >
@@ -560,7 +540,6 @@ export function NotesInput({
     onNotesChange(collapseOverride(expanded, countries, notes.default, eq));
   };
 
-  const overrideCount = countOverrides(notes, countries, eq);
   const defaultPreview = (notes.default ?? "").trim();
 
   const list = (
@@ -571,14 +550,12 @@ export function NotesInput({
             <CountryRowLabel country={c} />
           </div>
           <div className="flex-1 min-w-0">
-            <InputGroup>
-              <InputGroupTextarea
-                id={`notes-${c}`}
-                placeholder="Any additional information..."
-                value={notes[c] ?? notes.default ?? ""}
-                onChange={(e) => setForCountry(c, e.target.value)}
-              />
-            </InputGroup>
+            <Textarea
+              id={`notes-${c}`}
+              placeholder="Any additional information..."
+              value={notes[c] ?? notes.default ?? ""}
+              onChange={(e) => setForCountry(c, e.target.value)}
+            />
           </div>
         </div>
       ))}
@@ -589,40 +566,33 @@ export function NotesInput({
     <div className="space-y-2">
       <Label htmlFor="notes">Notes</Label>
       {countries.length === 0 && (
-        <InputGroup>
-          <InputGroupTextarea
-            id="notes"
-            placeholder="Any additional information..."
-            value={notes.default ?? ""}
-            onChange={(e) =>
-              onNotesChange({ ...notes, default: e.target.value })
-            }
-          />
-        </InputGroup>
+        <Textarea
+          id="notes"
+          placeholder="Any additional information..."
+          value={notes.default ?? ""}
+          onChange={(e) => onNotesChange({ ...notes, default: e.target.value })}
+        />
       )}
       {countries.length === 1 && (
-        <InputGroup>
-          <InputGroupTextarea
-            id={`notes-${countries[0]}`}
-            placeholder="Any additional information..."
-            value={notes[countries[0]] ?? notes.default ?? ""}
-            onChange={(e) => setForCountry(countries[0], e.target.value)}
-          />
-        </InputGroup>
+        <Textarea
+          id={`notes-${countries[0]}`}
+          placeholder="Any additional information..."
+          value={notes[countries[0]] ?? notes.default ?? ""}
+          onChange={(e) => setForCountry(countries[0], e.target.value)}
+        />
       )}
       {countries.length >= 2 && (
         <PerCountryDialog
           label="Notes"
           trigger={
-            <TriggerSurface>
-              <span className="truncate text-muted-foreground">
+            <TriggerSurface className="min-h-16 h-fit whitespace-normal text-start">
+              <span className="mt-2 mb-auto pb-2 font-normal">
                 {defaultPreview ? (
                   defaultPreview
                 ) : (
                   <span className="italic">No notes</span>
                 )}
               </span>
-              <OverrideBadge count={overrideCount} />
             </TriggerSurface>
           }
         >
