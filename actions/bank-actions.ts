@@ -11,7 +11,7 @@ import {
 import { del, mirrorUrl } from "@/lib/s3";
 import { requireAdmin } from "@/actions/session-actions";
 import { and, asc, eq, ne, sql } from "drizzle-orm";
-import { cacheLife, cacheTag, revalidateTag } from "next/cache";
+import { cacheLife, cacheTag, updateTag } from "next/cache";
 import { downloadFile } from "@/lib/download";
 import { getDomain } from "tldts";
 
@@ -60,7 +60,7 @@ export async function createBank(
     .returning()
     .then(([inserted]) => inserted);
 
-  revalidateTag("wero-data", "max");
+  updateTag("wero-data");
 
   return result;
 }
@@ -129,7 +129,7 @@ export async function updateBank(
     .returning()
     .then(([updated]) => updated);
 
-  revalidateTag("wero-data", "max");
+  updateTag("wero-data");
 
   return result;
 }
@@ -148,7 +148,7 @@ export async function deleteBank(id: string): Promise<void> {
     }
   }
 
-  revalidateTag("wero-data", "max");
+  updateTag("wero-data");
 }
 
 /**

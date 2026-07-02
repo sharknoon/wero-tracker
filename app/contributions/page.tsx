@@ -25,6 +25,9 @@ async function ContributionsRoute() {
     getCurrentUserRole(),
   ]);
 
+  // sleep for 5 seconds for debug
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+
   return (
     <ContributionsPage
       contributions={contributions}
@@ -35,7 +38,7 @@ async function ContributionsRoute() {
 
 export default function Page() {
   return (
-    <Suspense fallback={<div>Loading contributions...</div>}>
+    <Suspense fallback={<ContributionsPage loading />}>
       <ContributionsRoute />
     </Suspense>
   );

@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { InputGroup, InputGroupTextarea } from "@/components/ui/input-group";
 import {
   Dialog,
   DialogContent,
@@ -18,22 +19,172 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-  InputGroupTextarea,
-} from "@/components/ui/input-group";
 import { SupportStatus } from "@/db/schema/support";
-import { ExternalLink, Globe, Plus, Trash2, X } from "lucide-react";
+import { ChevronRight, ExternalLink, Plus, X } from "lucide-react";
 import { CountryFlag } from "./country-flag";
 import {
+  baseSupportStatusOptions,
   countries as allCountries,
   getStatusOptionsForCountry,
 } from "@/lib/constants";
 import { Bank, CountryOverride } from "@/db/schema/banks";
-import { cn } from "@/lib/utils";
+import { baseStatus } from "@/lib/status-helper";
 import { useState } from "react";
+
+const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
+
+// ============================================================================
+// Override <-> Per-country helpers
+// ============================================================================
+
+/** Resolve a CountryOverride into a per-country map (using the default for
+ *  countries that don't have an explicit override). */
+function expandOverride<T>(
+  value: CountryOverride<T>,
+  countries: string[],
+): Record<string, T> {
+  const result: Record<string, T> = {};
+  for (const c of countries) {
+    result[c] = c in value ? (value[c] as T) : value.default;
+  }
+  return result;
+}
+
+/** Collapse a per-country map back into a CountryOverride: the most common
+ *  value becomes `default`, and the remaining countries become overrides.
+ *  Ties are broken by preferring the previous default. */
+function collapseOverride<T>(
+  perCountry: Record<string, T>,
+  countries: string[],
+  previousDefault: T,
+  equals: (a: T, b: T) => boolean = (a, b) => a === b,
+): CountryOverride<T> {
+  if (countries.length === 0) {
+    return { default: previousDefault };
+  }
+
+  const groups: { value: T; count: number }[] = [];
+  for (const c of countries) {
+    const v = perCountry[c];
+    const g = groups.find((g) => equals(g.value, v));
+    if (g) g.count++;
+    else groups.push({ value: v, count: 1 });
+  }
+  groups.sort((a, b) => b.count - a.count);
+  const topCount = groups[0].count;
+  const tied = groups.filter((g) => g.count === topCount);
+  // Prefer the previous default if it is still among the most-common values,
+  // to avoid the default flipping unnecessarily as the user edits.
+  const newDefault =
+    tied.find((g) => equals(g.value, previousDefault))?.value ?? tied[0].value;
+
+  const result: CountryOverride<T> = { default: newDefault };
+  for (const c of countries) {
+    if (!equals(perCountry[c], newDefault)) {
+      result[c] = perCountry[c];
+    }
+  }
+  return result;
+}
+
+/** Sort a list of country codes by their localized display name. */
+function sortCountries(countries: string[]): string[] {
+  return [...countries].sort((a, b) =>
+    (regionNames.of(a) ?? a).localeCompare(regionNames.of(b) ?? b),
+  );
+}
+
+function CountryRowLabel({ country }: { country: string }) {
+  return (
+    <div className="flex items-center gap-1.5 w-24 shrink-0 text-sm text-muted-foreground">
+      <CountryFlag countryCode={country} size="sm" />
+      <span className="truncate">{regionNames.of(country) ?? country}</span>
+    </div>
+  );
+}
+
+/** Count how many of `countries` have a value that differs from the default. */
+function countOverrides<T>(
+  value: CountryOverride<T>,
+  countries: string[],
+  equals: (a: T, b: T) => boolean = (a, b) => a === b,
+): number {
+  let n = 0;
+  for (const c of countries) {
+    if (c in value && !equals(value[c] as T, value.default)) n++;
+  }
+  return n;
+}
+
+// ============================================================================
+// Per-Country Dialog
+// ============================================================================
+
+/** A dialog that hosts a per-country list of inputs. The trigger renders
+ *  whatever summary the caller provides. */
+function PerCountryDialog({
+  label,
+  trigger,
+  children,
+}: {
+  label: string;
+  trigger: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          setOpen(true);
+        }}
+        className="w-full text-left"
+      >
+        {trigger}
+      </button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-hidden grid-rows-[auto_1fr_auto] sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{label}</DialogTitle>
+            <DialogDescription>
+              Set a value for each country. The most common value is used as the
+              default; others are stored as overrides automatically.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="min-h-0 overflow-y-auto">
+            <div className="space-y-2 py-2">{children}</div>
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setOpen(false)}>Done</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
+function OverrideBadge({ count }: { count: number }) {
+  if (count === 0) return null;
+  return (
+    <span className="shrink-0 rounded-sm bg-primary/10 px-1.5 py-0.5 text-xs font-medium text-primary">
+      +{count} customized
+    </span>
+  );
+}
+
+function TriggerSurface({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-2 w-full rounded-md border bg-background px-3 py-2 text-sm shadow-xs hover:bg-accent transition-colors">
+      {children}
+      <ChevronRight
+        size={14}
+        className="ml-auto shrink-0 text-muted-foreground"
+      />
+    </div>
+  );
+}
 
 // ============================================================================
 // Website Input Component
@@ -58,47 +209,89 @@ export function WebsiteInput({
   placeholder = "https://example.com",
   required,
 }: WebsiteInputProps) {
+  const setForCountry = (country: string, value: string) => {
+    const expanded = expandOverride(website, countries);
+    expanded[country] = value;
+    onWebsiteChange(collapseOverride(expanded, countries, website.default));
+  };
+
+  const renderUrlInput = (
+    inputId: string,
+    value: string,
+    onChange: (v: string) => void,
+  ) => (
+    <div className="flex items-center gap-2 min-w-0 flex-1">
+      <Input
+        id={inputId}
+        type="url"
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+      <Button
+        variant="outline"
+        size="icon"
+        className="shrink-0"
+        asChild
+        disabled={!value}
+      >
+        <a
+          href={value || "#"}
+          target="_blank"
+          rel="noopener noreferrer"
+          tabIndex={value ? 0 : -1}
+        >
+          <ExternalLink size={14} />
+        </a>
+      </Button>
+    </div>
+  );
+
+  const overrideCount = countOverrides(website, countries);
+
+  const list = (
+    <div className="space-y-2">
+      {sortCountries(countries).map((c) => (
+        <div key={c} className="flex items-center gap-2">
+          <CountryRowLabel country={c} />
+          {renderUrlInput(`${id}-${c}`, website[c] ?? website.default, (v) =>
+            setForCountry(c, v),
+          )}
+        </div>
+      ))}
+    </div>
+  );
+
   return (
     <div className="space-y-2">
       <Label htmlFor={id}>
         {label} {required && <span className="text-destructive">*</span>}
       </Label>
-      <div className="flex items-center gap-2">
-        <InputGroup>
-          <InputGroupInput
-            id={id}
-            type="url"
-            placeholder={placeholder}
-            value={website.default}
-            onChange={(e) =>
-              onWebsiteChange({ ...website, default: e.target.value })
-            }
-          />
-          <InputGroupAddon align="inline-end">
-            <OverrideIndicator
-              value={website}
-              onChange={onWebsiteChange}
-              label={label}
-              allCountries={countries}
-              input={(c) => (
-                <Input
-                  type="url"
-                  placeholder={placeholder}
-                  value={website[c] ?? website.default}
-                  onChange={(e) =>
-                    onWebsiteChange({ ...website, [c]: e.target.value })
-                  }
-                />
-              )}
-            />
-          </InputGroupAddon>
-        </InputGroup>
-        <Button variant="outline" size="icon" className="shrink-0" asChild>
-          <a href={website.default} target="_blank" rel="noopener noreferrer">
-            <ExternalLink size={14} />
-          </a>
-        </Button>
-      </div>
+      {countries.length === 0 &&
+        renderUrlInput(id, website.default, (v) =>
+          onWebsiteChange({ ...website, default: v }),
+        )}
+      {countries.length === 1 &&
+        renderUrlInput(
+          `${id}-${countries[0]}`,
+          website[countries[0]] ?? website.default,
+          (v) => setForCountry(countries[0], v),
+        )}
+      {countries.length >= 2 && (
+        <PerCountryDialog
+          label={label}
+          trigger={
+            <TriggerSurface>
+              <span className="truncate text-muted-foreground">
+                {website.default || <span className="italic">Not set</span>}
+              </span>
+              <OverrideBadge count={overrideCount} />
+            </TriggerSurface>
+          }
+        >
+          {list}
+        </PerCountryDialog>
+      )}
     </div>
   );
 }
@@ -208,7 +401,7 @@ export function CountrySelector({
             } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             <CountryFlag countryCode={country} size="sm" />
-            {new Intl.DisplayNames(["en"], { type: "region" }).of(country)}
+            {regionNames.of(country)}
           </button>
         ))}
       </div>
@@ -242,8 +435,64 @@ export function SupportStatusSelect({
   disabled,
   required,
 }: SupportStatusSelectProps) {
-  const defaultOptions = getStatusOptionsForCountry(
-    countries.length === 1 && includePartnerSystems ? countries[0] : undefined,
+  const setForCountry = (country: string, value: SupportStatus) => {
+    const expanded = expandOverride(supportStatus, countries);
+    expanded[country] = value;
+    onSupportStatusChange(
+      collapseOverride(expanded, countries, supportStatus.default),
+    );
+  };
+
+  const renderSelect = (
+    value: SupportStatus,
+    onChange: (v: SupportStatus) => void,
+    country: string | undefined,
+  ) => {
+    const options = getStatusOptionsForCountry(
+      includePartnerSystems ? country : undefined,
+    );
+    return (
+      <Select
+        value={value}
+        onValueChange={(v) => onChange(v as SupportStatus)}
+        disabled={disabled}
+      >
+        <SelectTrigger>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              <option.icon className={option.iconColor} size={16} />
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    );
+  };
+
+  const overrideCount = countOverrides(supportStatus, countries);
+  const defaultBase = baseStatus(supportStatus.default);
+  const defaultOption = baseSupportStatusOptions.find(
+    (o) => o.value === defaultBase,
+  );
+
+  const list = (
+    <div className="space-y-2">
+      {sortCountries(countries).map((c) => (
+        <div key={c} className="flex items-center gap-2">
+          <CountryRowLabel country={c} />
+          <div className="flex-1 min-w-0">
+            {renderSelect(
+              supportStatus[c] ?? supportStatus.default,
+              (v) => setForCountry(c, v),
+              c,
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
   );
 
   return (
@@ -251,64 +500,39 @@ export function SupportStatusSelect({
       <Label>
         {label} {required && <span className="text-destructive">*</span>}
       </Label>
-      <div className="flex items-center gap-1">
-        <Select
-          value={supportStatus.default}
-          onValueChange={(v) =>
-            onSupportStatusChange({
-              ...supportStatus,
-              default: v as SupportStatus,
-            })
-          }
-          disabled={disabled}
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {defaultOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                <option.icon className={option.iconColor} size={16} />
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <OverrideIndicator
-          value={supportStatus}
-          onChange={onSupportStatusChange}
+      {countries.length === 0 &&
+        renderSelect(
+          supportStatus.default,
+          (v) => onSupportStatusChange({ ...supportStatus, default: v }),
+          undefined,
+        )}
+      {countries.length === 1 &&
+        renderSelect(
+          supportStatus[countries[0]] ?? supportStatus.default,
+          (v) => setForCountry(countries[0], v),
+          countries[0],
+        )}
+      {countries.length >= 2 && (
+        <PerCountryDialog
           label={label}
-          allCountries={countries}
-          input={(c) => {
-            const overrideOptions = getStatusOptionsForCountry(
-              includePartnerSystems ? c : undefined,
-            );
-            return (
-              <Select
-                value={supportStatus[c] ?? supportStatus.default}
-                onValueChange={(v) =>
-                  onSupportStatusChange({
-                    ...supportStatus,
-                    [c]: v as SupportStatus,
-                  })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {overrideOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      <option.icon className={option.iconColor} size={16} />
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            );
-          }}
-        />
-      </div>
+          trigger={
+            <TriggerSurface>
+              {defaultOption && (
+                <defaultOption.icon
+                  className={defaultOption.iconColor}
+                  size={16}
+                />
+              )}
+              <span className="truncate">
+                {defaultOption?.label ?? supportStatus.default}
+              </span>
+              <OverrideBadge count={overrideCount} />
+            </TriggerSurface>
+          }
+        >
+          {list}
+        </PerCountryDialog>
+      )}
     </div>
   );
 }
@@ -326,172 +550,88 @@ export function NotesInput({
   onNotesChange: (value: CountryOverride<string | null>) => void;
   countries: string[];
 }) {
+  // Treat null and "" as equivalent so an empty textarea doesn't create
+  // a spurious override against a null default.
+  const eq = (a: string | null, b: string | null) => (a ?? "") === (b ?? "");
+
+  const setForCountry = (country: string, value: string) => {
+    const expanded = expandOverride(notes, countries);
+    expanded[country] = value;
+    onNotesChange(collapseOverride(expanded, countries, notes.default, eq));
+  };
+
+  const overrideCount = countOverrides(notes, countries, eq);
+  const defaultPreview = (notes.default ?? "").trim();
+
+  const list = (
+    <div className="space-y-2">
+      {sortCountries(countries).map((c) => (
+        <div key={c} className="flex items-start gap-2">
+          <div className="pt-2">
+            <CountryRowLabel country={c} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <InputGroup>
+              <InputGroupTextarea
+                id={`notes-${c}`}
+                placeholder="Any additional information..."
+                value={notes[c] ?? notes.default ?? ""}
+                onChange={(e) => setForCountry(c, e.target.value)}
+              />
+            </InputGroup>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
   return (
     <div className="space-y-2">
       <Label htmlFor="notes">Notes</Label>
-      <InputGroup>
-        <InputGroupTextarea
-          id="notes"
-          placeholder="Any additional information..."
-          value={notes.default || ""}
-          onChange={(e) => onNotesChange({ ...notes, default: e.target.value })}
-        />
-        <InputGroupAddon align="inline-end">
-          <OverrideIndicator
-            value={notes}
-            onChange={onNotesChange}
-            label="Notes"
-            allCountries={countries}
-            input={(c) => (
-              <InputGroupTextarea
-                placeholder="Any additional information..."
-                value={notes[c] || notes.default || ""}
-                onChange={(e) =>
-                  onNotesChange({ ...notes, [c]: e.target.value })
-                }
-              />
-            )}
+      {countries.length === 0 && (
+        <InputGroup>
+          <InputGroupTextarea
+            id="notes"
+            placeholder="Any additional information..."
+            value={notes.default ?? ""}
+            onChange={(e) =>
+              onNotesChange({ ...notes, default: e.target.value })
+            }
           />
-        </InputGroupAddon>
-      </InputGroup>
+        </InputGroup>
+      )}
+      {countries.length === 1 && (
+        <InputGroup>
+          <InputGroupTextarea
+            id={`notes-${countries[0]}`}
+            placeholder="Any additional information..."
+            value={notes[countries[0]] ?? notes.default ?? ""}
+            onChange={(e) => setForCountry(countries[0], e.target.value)}
+          />
+        </InputGroup>
+      )}
+      {countries.length >= 2 && (
+        <PerCountryDialog
+          label="Notes"
+          trigger={
+            <TriggerSurface>
+              <span className="truncate text-muted-foreground">
+                {defaultPreview ? (
+                  defaultPreview
+                ) : (
+                  <span className="italic">No notes</span>
+                )}
+              </span>
+              <OverrideBadge count={overrideCount} />
+            </TriggerSurface>
+          }
+        >
+          {list}
+        </PerCountryDialog>
+      )}
       <p className="text-xs text-muted-foreground">
         Notes are being displayed in a popover on the bank card
       </p>
     </div>
-  );
-}
-
-// ============================================================================
-// Field Override System
-// ============================================================================
-
-const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
-
-function OverrideIndicator<T>({
-  value,
-  onChange,
-  label,
-  allCountries,
-  input,
-}: {
-  value: CountryOverride<T>;
-  onChange: (value: CountryOverride<T>) => void;
-  label: string;
-  allCountries: string[];
-  input: (countryCode: string) => React.ReactNode;
-}) {
-  const [open, setOpen] = useState(false);
-
-  const overriddenCountries = Object.entries(value)
-    .filter(([key]) => key !== "default")
-    .map(([key]) => key);
-
-  const availableCountries = allCountries.filter(
-    (c) => !overriddenCountries.includes(c),
-  );
-
-  const count = overriddenCountries.length;
-
-  if (allCountries.length <= 1) return null;
-
-  return (
-    <>
-      <button
-        type="button"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          setOpen(true);
-        }}
-        className={cn(
-          "inline-flex items-center gap-0.5 shrink-0 rounded-sm p-1 transition-colors hover:bg-accent",
-          count > 0 ? "text-primary" : "text-muted-foreground",
-        )}
-        title={
-          count > 0
-            ? `${count} country override${count !== 1 ? "s" : ""}`
-            : "Add country override"
-        }
-      >
-        {count > 0 ? (
-          <>
-            {overriddenCountries.slice(0, 3).map((c) => (
-              <CountryFlag key={c} countryCode={c} size="sm" />
-            ))}
-            {count > 3 && (
-              <span className="text-xs font-medium">+{count - 3}</span>
-            )}
-          </>
-        ) : (
-          <Globe size={14} />
-        )}
-      </button>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-hidden grid-rows-[auto_1fr_auto] sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>{label} Overrides</DialogTitle>
-            <DialogDescription>
-              Set different values for specific countries. Countries without
-              overrides inherit the base value.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-3 min-h-0 overflow-y-auto">
-            {overriddenCountries.length === 0 && (
-              <p className="text-sm text-muted-foreground text-center py-4">
-                No country overrides yet. Select a country below to add one.
-              </p>
-            )}
-
-            {overriddenCountries.map((c) => (
-              <div key={c} className="space-y-2 rounded-lg border p-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <CountryFlag countryCode={c} size="sm" />
-                    <span className="text-sm font-medium">
-                      {regionNames.of(c)}
-                    </span>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="size-7 text-muted-foreground hover:text-destructive"
-                    onClick={() => {
-                      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                      const { [c]: _, ...rest } = value;
-                      onChange(rest as CountryOverride<T>);
-                    }}
-                  >
-                    <Trash2 className="size-3.5" />
-                  </Button>
-                </div>
-                {input(c)}
-              </div>
-            ))}
-
-            <div className="flex flex-wrap gap-1">
-              {availableCountries.map((c) => (
-                <Button
-                  key={c}
-                  variant="secondary"
-                  onClick={() => {
-                    onChange({ ...value, [c]: value.default });
-                  }}
-                >
-                  <Plus />
-                  <CountryFlag countryCode={c} size="sm" />
-                  {regionNames.of(c)}
-                </Button>
-              ))}
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button onClick={() => setOpen(false)}>Done</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
   );
 }

@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
   DialogContent,
@@ -76,8 +77,9 @@ import { findDuplicateMerchants } from "@/actions/merchant-actions";
 // ============================================================================
 
 interface ContributionsPageProps {
-  contributions: ContributionWithRelations[];
-  currentUser: { id: string; role: string } | null;
+  contributions?: ContributionWithRelations[];
+  currentUser?: { id: string; role: string } | null;
+  loading?: boolean;
 }
 
 // ============================================================================
@@ -617,10 +619,12 @@ function StatsCard({
   title,
   stat,
   className,
+  loading,
 }: {
   title: string;
   stat: number;
   className?: string;
+  loading?: boolean;
 }) {
   return (
     <Card className="py-4 gap-0">
@@ -628,7 +632,39 @@ function StatsCard({
         <CardDescription className="text-xs">{title}</CardDescription>
       </CardHeader>
       <CardContent className={cn("px-4", className)}>
-        <p className="text-2xl font-bold">{stat}</p>
+        {loading ? (
+          <Skeleton className="h-7 w-10 mb-1" />
+        ) : (
+          <p className="text-2xl font-bold">{stat}</p>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+// ============================================================================
+// Loading Skeleton
+// ============================================================================
+
+function ContributionCardSkeleton() {
+  return (
+    <Card className="py-0">
+      <CardContent className="p-4">
+        <div className="flex justify-between gap-4">
+          <div className="flex-1 min-w-0 space-y-3">
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-4 w-40" />
+              <Skeleton className="h-4 w-16 rounded-full" />
+              <Skeleton className="h-4 w-16 rounded-full" />
+            </div>
+            <div className="flex items-center gap-3">
+              <Skeleton className="size-6 rounded-full" />
+              <Skeleton className="h-3 w-24" />
+              <Skeleton className="h-3 w-20" />
+            </div>
+          </div>
+          <Skeleton className="h-8 w-16 shrink-0" />
+        </div>
       </CardContent>
     </Card>
   );
@@ -639,15 +675,16 @@ function StatsCard({
 // ============================================================================
 
 export function ContributionsPage({
-  contributions,
-  currentUser,
+  contributions = [],
+  currentUser = null,
+  loading = false,
 }: ContributionsPageProps) {
   const router = useRouter();
   const [statusFilter, setStatusFilter] = useState<string>("pending");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [reviewTarget, setReviewTarget] =
     useState<ContributionWithRelations | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const canReview = currentUser?.role === "admin";
 
@@ -669,7 +706,7 @@ export function ContributionsPage({
     status: "approved" | "rejected",
     reviewNote: string,
   ) => {
-    setIsLoading(true);
+    setIsSaving(true);
     try {
       const { success, message } = await rejectOrApproveContribution(
         id,
@@ -686,7 +723,7 @@ export function ContributionsPage({
     } catch {
       alert("An error occurred");
     } finally {
-      setIsLoading(false);
+      setIsSaving(false);
     }
   };
 
@@ -714,21 +751,24 @@ export function ContributionsPage({
       <main className="container mx-auto px-4 py-8 space-y-6">
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <StatsCard title="Total" stat={counts.total} />
+          <StatsCard title="Total" stat={counts.total} loading={loading} />
           <StatsCard
             title="Pending"
             stat={counts.pending}
             className="text-yellow-500"
+            loading={loading}
           />
           <StatsCard
             title="Approved"
             stat={counts.approved}
             className="text-green-500"
+            loading={loading}
           />
           <StatsCard
             title="Rejected"
             stat={counts.rejected}
             className="text-red-500"
+            loading={loading}
           />
         </div>
 
@@ -768,13 +808,21 @@ export function ContributionsPage({
             </SelectContent>
           </Select>
           <span className="text-xs text-muted-foreground ml-auto">
-            {filtered.length} contribution{filtered.length !== 1 ? "s" : ""}
+            {loading ? (
+              <Skeleton className="h-4 w-24" />
+            ) : (
+              `${filtered.length} contribution${filtered.length !== 1 ? "s" : ""}`
+            )}
           </span>
         </div>
 
         {/* List */}
         <div className="space-y-3">
-          {filtered.length === 0 ? (
+          {loading ? (
+            Array.from({ length: 5 }).map((_, i) => (
+              <ContributionCardSkeleton key={i} />
+            ))
+          ) : filtered.length === 0 ? (
             <Card>
               <CardContent className="p-8 text-center text-muted-foreground">
                 <p className="text-sm">No contributions found.</p>
@@ -801,7 +849,7 @@ export function ContributionsPage({
             if (!open) setReviewTarget(null);
           }}
           onAction={handleReviewAction}
-          isLoading={isLoading}
+          isLoading={isSaving}
           canReview={canReview}
         />
       )}

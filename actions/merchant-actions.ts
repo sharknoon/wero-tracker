@@ -10,7 +10,7 @@ import {
 import { del, mirrorUrl } from "@/lib/s3";
 import { requireAdmin } from "@/actions/session-actions";
 import { eq, asc, sql, ilike, and, ne } from "drizzle-orm";
-import { cacheLife, cacheTag, revalidateTag } from "next/cache";
+import { cacheLife, cacheTag, updateTag } from "next/cache";
 import { downloadFile } from "@/lib/download";
 import { getDomain } from "tldts";
 
@@ -54,7 +54,7 @@ export async function createMerchant(
     .returning()
     .then(([inserted]) => inserted);
 
-  revalidateTag("wero-data", "max");
+  updateTag("wero-data");
 
   return result;
 }
@@ -102,7 +102,7 @@ export async function updateMerchant(
     .returning()
     .then(([updated]) => updated);
 
-  revalidateTag("wero-data", "max");
+  updateTag("wero-data");
 
   return result;
 }
@@ -121,7 +121,7 @@ export async function deleteMerchant(id: string): Promise<void> {
     }
   }
 
-  revalidateTag("wero-data", "max");
+  updateTag("wero-data");
 }
 
 /**
