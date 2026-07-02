@@ -14,7 +14,6 @@ import { FilterBar } from "./filter-bar";
 import { Legend } from "./legend";
 import { BankCountrySection } from "./bank-country-section";
 import { MerchantCategorySection } from "./merchant-category-section";
-import { MerchantItem } from "./merchant-item";
 import {
   Empty,
   EmptyContent,
@@ -34,6 +33,7 @@ import { Merchant } from "@/db/schema/merchants";
 import { baseStatus, BaseSupportStatus } from "@/lib/status-helper";
 import { WeroData } from "@/app/page";
 import { authClient } from "@/lib/auth-client";
+import { calculateWeroSupport } from "@/lib/bank-helper";
 
 type ViewType = "banks" | "merchants";
 
@@ -84,83 +84,6 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
     "https://github.com/sharknoon/wero-tracker/blob/main/README.md#contribution";
   const officialWeroWebsite = "https://wero-wallet.eu";
 
-  const filteredData: WeroData = useMemo(() => {
-    if (activeView === "banks") {
-      return {
-        banks: data.banks.filter((bank) => {
-          // Search filter
-          if (searchQuery) {
-            const query = searchQuery.toLowerCase();
-            const bankNames = [
-              bank.name.toLowerCase(),
-              ...bank.aliases.map((a) => a.toLowerCase()),
-            ];
-            const matchesName = bankNames.some((name) => name.includes(query));
-            if (!matchesName) {
-              return false;
-            }
-          }
-          // Status filter
-          if (
-            selectedStatuses.length > 0 &&
-            !selectedStatuses.includes(baseStatus(bank.weroSupport))
-          ) {
-            return false;
-          }
-          // Country filter
-          if (selectedCountries.length > 0) {
-            const hasCountry = bank.countries.some((country) =>
-              selectedCountries.includes(country),
-            );
-            if (!hasCountry) {
-              return false;
-            }
-          }
-          return true;
-        }),
-        merchants: [],
-        lastUpdated: data.lastUpdated,
-      };
-    } else {
-      return {
-        banks: [],
-        merchants: data.merchants.filter((merchant) => {
-          // Search filter
-          if (searchQuery) {
-            const query = searchQuery.toLowerCase();
-            const merchantNames = [
-              merchant.name.toLowerCase(),
-              ...merchant.aliases.map((a) => a.toLowerCase()),
-            ];
-            const matchesName = merchantNames.some((name) =>
-              name.includes(query),
-            );
-            if (!matchesName) {
-              return false;
-            }
-          }
-          // Status filter
-          if (
-            selectedStatuses.length > 0 &&
-            !selectedStatuses.includes(baseStatus(merchant.weroSupport))
-          ) {
-            return false;
-          }
-          return true;
-        }),
-        lastUpdated: data.lastUpdated,
-      };
-    }
-  }, [
-    activeView,
-    data.banks,
-    data.lastUpdated,
-    data.merchants,
-    searchQuery,
-    selectedStatuses,
-    selectedCountries,
-  ]);
-
   // Get user's country from browser locale (using useSyncExternalStore to avoid hydration mismatch)
   const userCountry = useSyncExternalStore(
     () => () => {}, // No subscription needed for static value
@@ -180,42 +103,90 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
     () => null, // Server: return null to avoid hydration mismatch
   );
 
-  // Group banks by country (with per-country overrides resolved)
-  const filteredBankCountries = useMemo(() => {
+  // Group banks by country
+  const filteredBanksByCountry = useMemo(() => {
     const countryMap = new Map<string, WeroData["banks"]>();
 
-    filteredData.banks.forEach((bank) => {
-      bank.countries
-        .filter(
-          (code) =>
-            (selectedCountries.length === 0 ||
-              selectedCountries.includes(code)) &&
-            countries.includes(code),
-        )
-        .forEach((countryCode) => {
-          if (!countryMap.has(countryCode)) {
-            countryMap.set(countryCode, []);
+    data.banks
+      // name filter
+      .filter((bank) => {
+        if (searchQuery) {
+          const query = searchQuery.toLowerCase();
+          const bankNames = [
+            bank.name.toLowerCase(),
+            ...bank.aliases.map((a) => a.toLowerCase()),
+          ];
+          const matchesName = bankNames.some((name) => name.includes(query));
+          if (!matchesName) {
+            return false;
           }
-          countryMap.get(countryCode)!.push(bank);
-        });
-    });
+        }
+        return true;
+      })
+      .forEach((bank) => {
+        bank.countries
+          // country filter
+          .filter(
+            (code) =>
+              (selectedCountries.length === 0 ||
+                selectedCountries.includes(code)) &&
+              countries.includes(code),
+          )
+          // status filter
+          .filter(
+            (code) =>
+              selectedStatuses.length === 0 ||
+              selectedStatuses.includes(
+                baseStatus(calculateWeroSupport(bank, code)),
+              ),
+          )
+          .forEach((countryCode) => {
+            if (!countryMap.has(countryCode)) {
+              countryMap.set(countryCode, []);
+            }
+            countryMap.get(countryCode)!.push(bank);
+          });
+      });
 
     return countryMap;
-  }, [filteredData.banks, selectedCountries]);
+  }, [data.banks, searchQuery, selectedCountries, selectedStatuses]);
 
   // Group merchants by category
-  const filteredMerchantCategories = useMemo(() => {
+  const filteredMerchantsByCategory = useMemo(() => {
     const categoryMap = new Map<Merchant["category"], Merchant[]>();
 
-    filteredData.merchants.forEach((merchant) => {
-      if (!categoryMap.has(merchant.category)) {
-        categoryMap.set(merchant.category, []);
-      }
-      categoryMap.get(merchant.category)!.push(merchant);
-    });
+    data.merchants
+      // name filter
+      .filter((merchant) => {
+        if (searchQuery) {
+          const query = searchQuery.toLowerCase();
+          const merchantNames = [
+            merchant.name.toLowerCase(),
+            ...merchant.aliases.map((a) => a.toLowerCase()),
+          ];
+          const matchesName = merchantNames.some((name) =>
+            name.includes(query),
+          );
+          if (!matchesName) {
+            return false;
+          }
+        }
+        return true;
+      })
+      .filter(
+        (merchant) =>
+          selectedStatuses.length === 0 ||
+          selectedStatuses.includes(baseStatus(merchant.weroSupport)),
+      )
+      .forEach((merchant) => {
+        if (!categoryMap.has(merchant.category)) {
+          categoryMap.set(merchant.category, []);
+        }
+        categoryMap.get(merchant.category)!.push(merchant);
+      });
 
     return categoryMap;
-  }, [filteredData.merchants]);
+  }, [data.merchants, searchQuery, selectedStatuses]);
 
   // Category order for display
   const categoryOrder: Merchant["category"][] = [
@@ -278,7 +249,7 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
           </div>
 
           <TabsContent value="banks" className="space-y-6">
-            {filteredData.banks.length === 0 ? (
+            {filteredBanksByCountry.size === 0 ? (
               <Empty className="border">
                 <EmptyHeader>
                   <EmptyMedia variant="icon">
@@ -311,7 +282,7 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
                 </EmptyContent>
               </Empty>
             ) : (
-              [...filteredBankCountries]
+              [...filteredBanksByCountry]
                 .sort(([a], [b]) => {
                   if (userCountry) {
                     if (a === userCountry) return -1;
@@ -331,7 +302,7 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
           </TabsContent>
 
           <TabsContent value="merchants" className="space-y-6">
-            {filteredData.merchants.length === 0 ? (
+            {filteredMerchantsByCategory.size === 0 ? (
               <Empty className="border">
                 <EmptyHeader>
                   <EmptyMedia variant="icon">
@@ -363,20 +334,14 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
                   </div>
                 </EmptyContent>
               </Empty>
-            ) : searchQuery ? (
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {filteredData.merchants.map((merchant) => (
-                  <MerchantItem key={merchant.id} merchant={merchant} />
-                ))}
-              </div>
             ) : (
               categoryOrder
-                .filter((category) => filteredMerchantCategories.has(category))
+                .filter((category) => filteredMerchantsByCategory.has(category))
                 .map((category) => (
                   <MerchantCategorySection
                     key={category}
                     category={category}
-                    merchants={filteredMerchantCategories.get(category)!}
+                    merchants={filteredMerchantsByCategory.get(category)!}
                   />
                 ))
             )}

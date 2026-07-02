@@ -108,10 +108,7 @@ export function FilterBar({
             )}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent
-          className="w-48"
-          align="end"
-        >
+        <DropdownMenuContent className="w-48" align="end">
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
               <Info />
