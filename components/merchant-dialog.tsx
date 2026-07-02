@@ -371,34 +371,32 @@ export function MerchantDialog() {
     setReason("");
   };
 
+  const populateFormFromMerchant = (merchant: Merchant) => {
+    setName(merchant.name);
+    setAliases(merchant.aliases);
+    setLogoUrl(merchant.logoUrl);
+    setWebsite(merchant.website);
+    setCategory(merchant.category);
+    setWeroSupport(merchant.weroSupport);
+    setNotes(merchant.notes || "");
+  };
+
   useEffect(() => {
     onOpenEditorDialog((options) => {
       if (options.type === "merchant") {
         resetForm();
-        setOpen(true);
         setAction(options.action);
         setSubmitType(options.submit);
         if (options.action === "edit" || options.action === "delete") {
           setExistingMerchant(options.entity);
+          populateFormFromMerchant(options.entity);
         } else {
           setExistingMerchant(null);
         }
+        setOpen(true);
       }
     });
   }, [onOpenEditorDialog]);
-
-  // Populate form with existing data for edit/delete
-  useEffect(() => {
-    if (open && existingMerchant) {
-      setName(existingMerchant.name);
-      setAliases(existingMerchant.aliases);
-      setLogoUrl(existingMerchant.logoUrl);
-      setWebsite(existingMerchant.website);
-      setCategory(existingMerchant.category);
-      setWeroSupport(existingMerchant.weroSupport);
-      setNotes(existingMerchant.notes || "");
-    }
-  }, [open, existingMerchant, action]);
 
   const handleAddAlias = () => {
     if (aliasInput.trim() && !aliases.includes(aliasInput.trim())) {

@@ -5,13 +5,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { StatusBadge, StatusDot } from "./status-badge";
 import { NotesText } from "./notes-text";
-import {
-  ExternalLink,
-  Landmark,
-  MoreVertical,
-  Pencil,
-  Trash2,
-} from "lucide-react";
+import { ExternalLink, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,

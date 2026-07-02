@@ -658,38 +658,36 @@ export function BankDialog() {
     setApps([]);
   };
 
+  const populateFormFromBank = (bank: Bank) => {
+    setName(bank.name);
+    setAliases(bank.aliases);
+    setLogoUrl(bank.logoUrl);
+    setWebsite(bank.website);
+    setCountries(bank.countries);
+    setP2pPaymentsSupport(bank.p2pPaymentsSupport);
+    setECommercePaymentsSupport(bank.eCommercePaymentsSupport);
+    setPosPaymentsSupport(bank.posPaymentsSupport);
+    setStandaloneAppSupport(bank.standaloneAppSupport);
+    setNotes(bank.notes);
+    setApps(bank.bankingApps);
+  };
+
   useEffect(() => {
     onOpenEditorDialog((options) => {
       if (options.type === "bank") {
         resetForm();
-        setOpen(true);
         setAction(options.action);
         setSubmitType(options.submit);
         if (options.action === "edit" || options.action === "delete") {
           setExistingBank(options.entity);
+          populateFormFromBank(options.entity);
         } else {
           setExistingBank(null);
         }
+        setOpen(true);
       }
     });
   }, [onOpenEditorDialog]);
-
-  // Populate form with existing data for edit/delete
-  useEffect(() => {
-    if (open && existingBank) {
-      setName(existingBank.name);
-      setAliases(existingBank.aliases);
-      setLogoUrl(existingBank.logoUrl);
-      setWebsite(existingBank.website);
-      setCountries(existingBank.countries);
-      setP2pPaymentsSupport(existingBank.p2pPaymentsSupport);
-      setECommercePaymentsSupport(existingBank.eCommercePaymentsSupport);
-      setPosPaymentsSupport(existingBank.posPaymentsSupport);
-      setStandaloneAppSupport(existingBank.standaloneAppSupport);
-      setNotes(existingBank.notes);
-      setApps(existingBank.bankingApps);
-    }
-  }, [open, existingBank, action]);
 
   const handleAddAlias = () => {
     if (aliasInput.trim() && !aliases.includes(aliasInput.trim())) {
