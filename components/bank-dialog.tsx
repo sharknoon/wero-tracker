@@ -483,17 +483,17 @@ function BankFormContent({
         </div>
       )}
 
+      <CountrySelector
+        countries={countries}
+        onToggleCountry={onToggleCountry}
+        required
+      />
+
       <WebsiteInput
         website={website}
         onWebsiteChange={onWebsiteChange}
         countries={countries}
         placeholder="https://bank.com"
-        required
-      />
-
-      <CountrySelector
-        countries={countries}
-        onToggleCountry={onToggleCountry}
         required
       />
 
