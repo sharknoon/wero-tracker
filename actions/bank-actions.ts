@@ -27,13 +27,13 @@ export async function getAllBanks() {
 }
 
 export async function createBank(
-  bank: Omit<NewBank, "id" | "createdAt" | "updatedAt">,
+  bank: Omit<NewBank, "id" | "createdAt" | "updatedAt"> & { id?: string },
 ): Promise<Bank> {
   await requireAdmin();
 
   newBankSchema.strict().parse(bank);
 
-  const newBank: NewBank = { id: crypto.randomUUID(), ...bank };
+  const newBank: NewBank = { ...bank, id: bank.id ?? crypto.randomUUID() };
 
   // Mirror bank logo to S3
   const mirroredLogo = await mirrorUrl(bank.logoUrl, newBank.id);

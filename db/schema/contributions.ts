@@ -48,7 +48,7 @@ export type MerchantContributionData =
 export type AddBankContributionData = Omit<
   NewBank,
   "id" | "createdAt" | "updatedAt"
->;
+> & { id?: string };
 export type EditOrDeleteBankContributionData = Omit<
   Bank,
   "createdAt" | "updatedAt"

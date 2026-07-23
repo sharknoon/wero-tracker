@@ -161,7 +161,8 @@ const bankRefinement = z.superRefine<
   }
 });
 export const newBankSchema = baseBankSchema
-  .omit({ id: true, createdAt: true, updatedAt: true })
+  .omit({ createdAt: true, updatedAt: true })
+  .extend({ id: z.uuid().optional() })
   .check(bankRefinement);
 export const updateBankSchema = baseBankSchema
   .omit({ createdAt: true, updatedAt: true })

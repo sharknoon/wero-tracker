@@ -372,12 +372,10 @@ export async function GET() {
         );
       }
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { id: _, ...bankWithoutId } = bank;
       const { success, message } = await createBankContribution(
         {
           action: "add",
-          data: bankWithoutId,
+          data: bank,
           reason: "Automated addition from Wero API",
         },
         "system",

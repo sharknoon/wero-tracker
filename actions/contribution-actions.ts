@@ -101,11 +101,13 @@ export async function createMerchantContribution(
 const bankContributionSchema = z.discriminatedUnion("action", [
   z.strictObject({
     action: z.literal("add"),
-    data: createInsertSchema(banks).strict().omit({
-      id: true,
-      createdAt: true,
-      updatedAt: true,
-    }),
+    data: createInsertSchema(banks)
+      .strict()
+      .omit({
+        createdAt: true,
+        updatedAt: true,
+      })
+      .extend({ id: z.uuid().optional() }),
     reason: z.string().max(2000).optional(),
   }),
   z.strictObject({
