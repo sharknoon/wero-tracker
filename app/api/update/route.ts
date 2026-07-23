@@ -34,18 +34,18 @@ export function buildConflictUpdateColumnsExcept<
   );
 }
 
-const p2pSchema = z.strictObject({
-  data: z.strictObject({
+const p2pSchema = z.object({
+  data: z.object({
     type: z.literal("p2p"),
     brands: z.array(
-      z.strictObject({
+      z.object({
         id: z.uuid(),
         name: z.string(),
         aliases: z.array(z.string()),
         countries: z.array(z.string().length(2)),
         logoUrl: z.url(),
         banks: z.array(
-          z.strictObject({
+          z.object({
             id: z.uuid(),
             name: z.string(),
             bankContext: z.string().optional(),
@@ -57,7 +57,7 @@ const p2pSchema = z.strictObject({
           }),
         ),
         apps: z.array(
-          z.strictObject({
+          z.object({
             id: z.uuid(),
             name: z.string(),
             iconUrl: z.url(),
@@ -70,7 +70,7 @@ const p2pSchema = z.strictObject({
         ),
       }),
     ),
-    standaloneAppResource: z.strictObject({
+    standaloneAppResource: z.object({
       name: z.literal("Wero"),
       iconUrl: z.url(),
       universalLink: z.literal("https://app.weropay.eu"),
@@ -79,14 +79,14 @@ const p2pSchema = z.strictObject({
 });
 
 const ecommerceSchema = z.array(
-  z.strictObject({
+  z.object({
     id: z.uuid(),
     name: z.string(),
     aliases: z.array(z.string()),
     countries: z.array(z.string().length(2)),
     logoUrl: z.url(),
     banks: z.array(
-      z.strictObject({
+      z.object({
         id: z.uuid(),
         name: z.string(),
         bankContext: z.string().optional(),
@@ -105,7 +105,7 @@ const ecommerceSchema = z.array(
         ),
         progressiveEcommerceRollout: z.boolean(),
         apps: z.array(
-          z.strictObject({
+          z.object({
             id: z.union([z.uuid(), z.literal("STANDALONE_APP_ID")]),
             name: z.string(),
             iconUrl: z.url(),
@@ -121,7 +121,7 @@ const ecommerceSchema = z.array(
     ),
     // Yes, I know, somehow Wero decided to have two duplicate app lists
     apps: z.array(
-      z.strictObject({
+      z.object({
         id: z.union([z.uuid(), z.literal("STANDALONE_APP_ID")]),
         name: z.string(),
         iconUrl: z.url(),
