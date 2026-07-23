@@ -43,6 +43,7 @@ import {
   Check,
   CheckCircle2,
   Clock,
+  Download,
   Edit3,
   Filter,
   Landmark,
@@ -82,6 +83,8 @@ import {
 import { findDuplicateBanks } from "@/actions/bank-actions";
 import { findDuplicateMerchants } from "@/actions/merchant-actions";
 import { CONTRIBUTIONS_PAGE_SIZE } from "@/lib/constants";
+import { triggerWeroImport } from "@/actions/import-actions";
+import type { WeroImportResult } from "@/lib/wero-import";
 
 // ============================================================================
 // Types
@@ -543,6 +546,104 @@ function ReviewDialog({
 }
 
 // ============================================================================
+// Import Result Dialog
+// ============================================================================
+
+function ImportResultDialog({
+  result,
+  open,
+  onOpenChange,
+}: {
+  result: WeroImportResult | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  if (!result) return null;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-hidden grid-rows-[auto_1fr_auto] sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>
+            {result.success ? "Import completed" : "Import failed"}
+          </DialogTitle>
+          <DialogDescription>
+            {result.message ??
+              (result.success
+                ? "The Wero import ran successfully."
+                : "The Wero import could not be completed.")}
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="min-h-0 overflow-y-auto">
+          <div className="space-y-4 py-2">
+            {result.errors && result.errors.length > 0 && (
+              <Alert variant="destructive">
+                <AlertTriangle />
+                <AlertTitle>
+                  {result.errors.length === 1
+                    ? "1 error"
+                    : `${result.errors.length} errors`}
+                </AlertTitle>
+                <AlertDescription>
+                  <ul className="list-disc pl-4 space-y-0.5">
+                    {result.errors.map((error, i) => (
+                      <li key={i}>{error}</li>
+                    ))}
+                  </ul>
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {result.additions && result.additions.length > 0 && (
+              <div className="space-y-1.5">
+                <Label className="text-muted-foreground text-xs">
+                  {result.additions.length === 1
+                    ? "1 addition"
+                    : `${result.additions.length} additions`}
+                </Label>
+                <ul className="text-sm list-disc pl-4 space-y-0.5">
+                  {result.additions.map((addition, i) => (
+                    <li key={i}>{addition}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {result.updates && result.updates.length > 0 && (
+              <div className="space-y-1.5">
+                <Label className="text-muted-foreground text-xs">
+                  {result.updates.length === 1
+                    ? "1 update"
+                    : `${result.updates.length} updates`}
+                </Label>
+                <ul className="text-sm list-disc pl-4 space-y-0.5">
+                  {result.updates.map((update, i) => (
+                    <li key={i}>{update}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {result.success &&
+              (result.additions?.length ?? 0) === 0 &&
+              (result.updates?.length ?? 0) === 0 && (
+                <p className="text-sm text-muted-foreground">
+                  No changes were found. Everything is already up to date.
+                </p>
+              )}
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button onClick={() => onOpenChange(false)}>Close</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// ============================================================================
 // Contribution Card
 // ============================================================================
 
@@ -738,8 +839,12 @@ export function ContributionsPage({
     useState<ContributionWithRelations | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
+  const [importResult, setImportResult] = useState<WeroImportResult | null>(
+    null,
+  );
 
-  const canReview = currentUser?.role === "admin";
+  const isAdmin = currentUser?.role === "admin";
   const totalPages = Math.max(
     1,
     Math.ceil(totalCount / CONTRIBUTIONS_PAGE_SIZE),
@@ -806,6 +911,27 @@ export function ContributionsPage({
       alert("An error occurred");
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleManualImport = async () => {
+    setIsImporting(true);
+    try {
+      const result = await triggerWeroImport();
+      setImportResult(result);
+      if (result.success) {
+        await Promise.all([
+          fetchContributions(),
+          getContributionCounts().then(setCounts),
+        ]);
+      }
+    } catch {
+      setImportResult({
+        success: false,
+        message: "An error occurred while running the import",
+      });
+    } finally {
+      setIsImporting(false);
     }
   };
 
@@ -896,6 +1022,21 @@ export function ContributionsPage({
               `${totalCount} contribution${totalCount !== 1 ? "s" : ""}`
             )}
           </span>
+          {isAdmin && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleManualImport}
+              disabled={isImporting}
+            >
+              {isImporting ? (
+                <Loader2 className="animate-spin" size={16} />
+              ) : (
+                <Download size={16} />
+              )}
+              Import from Wero API
+            </Button>
+          )}
         </div>
 
         {/* List */}
@@ -990,9 +1131,18 @@ export function ContributionsPage({
           }}
           onAction={handleReviewAction}
           isLoading={isSaving}
-          canReview={canReview}
+          canReview={isAdmin}
         />
       )}
+
+      {/* Import Result Dialog */}
+      <ImportResultDialog
+        result={importResult}
+        open={!!importResult}
+        onOpenChange={(open) => {
+          if (!open) setImportResult(null);
+        }}
+      />
     </div>
   );
 }
