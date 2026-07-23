@@ -1,4 +1,7 @@
-import { getAllContributions } from "@/actions/contribution-actions";
+import {
+  getContributions,
+  getContributionCounts,
+} from "@/actions/contribution-actions";
 import { ContributionsPage } from "./contributions-page";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
@@ -20,17 +23,18 @@ async function getCurrentUserRole() {
 }
 
 async function ContributionsRoute() {
-  const [contributions, currentUser] = await Promise.all([
-    getAllContributions(),
-    getCurrentUserRole(),
-  ]);
-
-  // sleep for 5 seconds for debug
-  await new Promise((resolve) => setTimeout(resolve, 5000));
+  const [{ contributions, totalCount }, counts, currentUser] =
+    await Promise.all([
+      getContributions("pending"),
+      getContributionCounts(),
+      getCurrentUserRole(),
+    ]);
 
   return (
     <ContributionsPage
-      contributions={contributions}
+      initialContributions={contributions}
+      initialTotalCount={totalCount}
+      initialCounts={counts}
       currentUser={currentUser}
     />
   );

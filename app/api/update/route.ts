@@ -103,6 +103,7 @@ const ecommerceSchema = z.array(
             z.literal("EventDependentPayments"),
           ]),
         ),
+        progressiveEcommerceRollout: z.boolean(),
         apps: z.array(
           z.strictObject({
             id: z.union([z.uuid(), z.literal("STANDALONE_APP_ID")]),

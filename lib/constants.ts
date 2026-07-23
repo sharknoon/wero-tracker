@@ -3,6 +3,9 @@ import type { SupportStatus } from "@/db/schema/support";
 import { CircleCheck, CircleQuestionMark, CircleX, Clock } from "lucide-react";
 import { BaseSupportStatus } from "@/lib/status-helper";
 
+// The default size of a contributions page
+export const CONTRIBUTIONS_PAGE_SIZE = 20;
+
 // List of all eu countries + EuroPA countries (+ NO)
 export const countries: string[] = [
   "AT",

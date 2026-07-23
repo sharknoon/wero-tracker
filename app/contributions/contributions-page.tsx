@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Card,
   CardContent,
@@ -21,6 +20,15 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import {
   Dialog,
   DialogContent,
@@ -57,6 +65,8 @@ import type {
 } from "@/db/schema/contributions";
 import {
   ContributionWithRelations,
+  getContributions,
+  getContributionCounts,
   rejectOrApproveContribution,
 } from "@/actions/contribution-actions";
 import stableStringify from "json-stable-stringify";
@@ -71,13 +81,23 @@ import {
 } from "@/components/ui/item";
 import { findDuplicateBanks } from "@/actions/bank-actions";
 import { findDuplicateMerchants } from "@/actions/merchant-actions";
+import { CONTRIBUTIONS_PAGE_SIZE } from "@/lib/constants";
 
 // ============================================================================
 // Types
 // ============================================================================
 
+type ContributionCounts = {
+  total: number;
+  pending: number;
+  approved: number;
+  rejected: number;
+};
+
 interface ContributionsPageProps {
-  contributions?: ContributionWithRelations[];
+  initialContributions?: ContributionWithRelations[];
+  initialTotalCount?: number;
+  initialCounts?: ContributionCounts;
   currentUser?: { id: string; role: string } | null;
   loading?: boolean;
 }
@@ -671,34 +691,93 @@ function ContributionCardSkeleton() {
 }
 
 // ============================================================================
+// Pagination helper
+// ============================================================================
+
+function getPageNumbers(
+  current: number,
+  total: number,
+): (number | "ellipsis")[] {
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+  const pages: (number | "ellipsis")[] = [1];
+  if (current > 3) pages.push("ellipsis");
+  for (
+    let p = Math.max(2, current - 1);
+    p <= Math.min(total - 1, current + 1);
+    p++
+  ) {
+    pages.push(p);
+  }
+  if (current < total - 2) pages.push("ellipsis");
+  pages.push(total);
+  return pages;
+}
+
+// ============================================================================
 // Main Page
 // ============================================================================
 
 export function ContributionsPage({
-  contributions = [],
+  initialContributions = [],
+  initialTotalCount = 0,
+  initialCounts = { total: 0, pending: 0, approved: 0, rejected: 0 },
   currentUser = null,
   loading = false,
 }: ContributionsPageProps) {
-  const router = useRouter();
-  const [statusFilter, setStatusFilter] = useState<string>("pending");
-  const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [items, setItems] = useState(initialContributions);
+  const [totalCount, setTotalCount] = useState(initialTotalCount);
+  const [counts, setCounts] = useState(initialCounts);
+  const [statusFilter, setStatusFilter] = useState<ContributionStatus | "all">(
+    "pending",
+  );
+  const [typeFilter, setTypeFilter] = useState<ContributionType | "all">("all");
+  const [page, setPage] = useState(1);
   const [reviewTarget, setReviewTarget] =
     useState<ContributionWithRelations | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
 
   const canReview = currentUser?.role === "admin";
+  const totalPages = Math.max(
+    1,
+    Math.ceil(totalCount / CONTRIBUTIONS_PAGE_SIZE),
+  );
 
-  const filtered = contributions.filter((c) => {
-    if (statusFilter !== "all" && c.status !== statusFilter) return false;
-    if (typeFilter !== "all" && c.type !== typeFilter) return false;
-    return true;
-  });
+  const fetchContributions = useCallback(async () => {
+    setIsFetching(true);
+    try {
+      const result = await getContributions(
+        statusFilter === "all" ? undefined : statusFilter,
+        typeFilter === "all" ? undefined : typeFilter,
+        page,
+      );
+      setItems(result.contributions);
+      setTotalCount(result.totalCount);
+    } finally {
+      setIsFetching(false);
+    }
+  }, [statusFilter, typeFilter, page]);
 
-  const counts = {
-    total: contributions.length,
-    pending: contributions.filter((c) => c.status === "pending").length,
-    approved: contributions.filter((c) => c.status === "approved").length,
-    rejected: contributions.filter((c) => c.status === "rejected").length,
+  // Skip the fetch on mount since the server already provided the initial page.
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    fetchContributions();
+  }, [fetchContributions]);
+
+  const handleStatusFilterChange = (value: string) => {
+    setStatusFilter(value as ContributionStatus | "all");
+    setPage(1);
+  };
+
+  const handleTypeFilterChange = (value: string) => {
+    setTypeFilter(value as ContributionType | "all");
+    setPage(1);
   };
 
   const handleReviewAction = async (
@@ -719,7 +798,10 @@ export function ContributionsPage({
       }
 
       setReviewTarget(null);
-      router.refresh();
+      await Promise.all([
+        fetchContributions(),
+        getContributionCounts().then(setCounts),
+      ]);
     } catch {
       alert("An error occurred");
     } finally {
@@ -775,7 +857,7 @@ export function ContributionsPage({
         {/* Filters */}
         <div className="flex items-center gap-3 flex-wrap">
           <Filter size={16} className="text-muted-foreground" />
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <Select value={statusFilter} onValueChange={handleStatusFilterChange}>
             <SelectTrigger className="w-36">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
@@ -791,7 +873,7 @@ export function ContributionsPage({
               )}
             </SelectContent>
           </Select>
-          <Select value={typeFilter} onValueChange={setTypeFilter}>
+          <Select value={typeFilter} onValueChange={handleTypeFilterChange}>
             <SelectTrigger className="w-36">
               <SelectValue placeholder="Type" />
             </SelectTrigger>
@@ -811,25 +893,25 @@ export function ContributionsPage({
             {loading ? (
               <Skeleton className="h-4 w-24" />
             ) : (
-              `${filtered.length} contribution${filtered.length !== 1 ? "s" : ""}`
+              `${totalCount} contribution${totalCount !== 1 ? "s" : ""}`
             )}
           </span>
         </div>
 
         {/* List */}
         <div className="space-y-3">
-          {loading ? (
+          {loading || isFetching ? (
             Array.from({ length: 5 }).map((_, i) => (
               <ContributionCardSkeleton key={i} />
             ))
-          ) : filtered.length === 0 ? (
+          ) : items.length === 0 ? (
             <Card>
               <CardContent className="p-8 text-center text-muted-foreground">
                 <p className="text-sm">No contributions found.</p>
               </CardContent>
             </Card>
           ) : (
-            filtered.map((contribution) => (
+            items.map((contribution) => (
               <ContributionCard
                 key={contribution.id}
                 contribution={contribution}
@@ -838,6 +920,64 @@ export function ContributionsPage({
             ))
           )}
         </div>
+
+        {/* Pagination */}
+        {!loading && totalPages > 1 && (
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  aria-disabled={page <= 1 || isFetching}
+                  className={cn(
+                    (page <= 1 || isFetching) &&
+                      "pointer-events-none opacity-50",
+                  )}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (page > 1) setPage((p) => p - 1);
+                  }}
+                />
+              </PaginationItem>
+              {getPageNumbers(page, totalPages).map((p, i) =>
+                p === "ellipsis" ? (
+                  <PaginationItem key={`ellipsis-${i}`}>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                ) : (
+                  <PaginationItem key={p}>
+                    <PaginationLink
+                      href="#"
+                      isActive={p === page}
+                      aria-disabled={isFetching}
+                      className={cn(isFetching && "pointer-events-none")}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setPage(p);
+                      }}
+                    >
+                      {p}
+                    </PaginationLink>
+                  </PaginationItem>
+                ),
+              )}
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  aria-disabled={page >= totalPages || isFetching}
+                  className={cn(
+                    (page >= totalPages || isFetching) &&
+                      "pointer-events-none opacity-50",
+                  )}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (page < totalPages) setPage((p) => p + 1);
+                  }}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
       </main>
 
       {/* Review Dialog */}

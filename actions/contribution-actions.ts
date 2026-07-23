@@ -15,7 +15,7 @@ import {
 } from "@/db/schema/contributions";
 import { merchants } from "@/db/schema/merchants";
 import { auth } from "@/lib/auth";
-import { eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { headers } from "next/headers";
 import z from "zod";
@@ -28,6 +28,7 @@ import {
 } from "./merchant-actions";
 import { requireAdmin, requireSession } from "./session-actions";
 import { downloadFile } from "@/lib/download";
+import { CONTRIBUTIONS_PAGE_SIZE } from "@/lib/constants";
 
 const merchantContributionSchema = z.discriminatedUnion("action", [
   z.strictObject({
@@ -173,44 +174,65 @@ export async function createBankContribution(
 }
 
 export type ContributionWithRelations = Awaited<
-  ReturnType<typeof getAllContributions>
->[number];
-export async function getAllContributions(
+  ReturnType<typeof getContributions>
+>["contributions"][number];
+export async function getContributions(
   status?: ContributionStatus,
   type?: ContributionType,
+  page: number = 1,
 ) {
   "use cache";
   cacheTag("contributions");
 
-  return await db.query.contributions.findMany({
-    where: (c, { and, eq }) => {
-      const conditions = [];
-      if (status) {
-        conditions.push(eq(c.status, status));
-      }
-      if (type) {
-        conditions.push(eq(c.type, type));
-      }
-      return conditions.length > 0 ? and(...conditions) : undefined;
-    },
-    with: {
-      user: {
-        columns: {
-          id: true,
-          name: true,
-          image: true,
+  const conditions = [];
+  if (status) conditions.push(eq(contributions.status, status));
+  if (type) conditions.push(eq(contributions.type, type));
+  const where = conditions.length > 0 ? and(...conditions) : undefined;
+
+  const [rows, [{ total }]] = await Promise.all([
+    db.query.contributions.findMany({
+      where,
+      with: {
+        user: {
+          columns: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+        reviewer: {
+          columns: {
+            id: true,
+            name: true,
+            image: true,
+          },
         },
       },
-      reviewer: {
-        columns: {
-          id: true,
-          name: true,
-          image: true,
-        },
-      },
-    },
-    orderBy: (c, { desc }) => [desc(c.createdAt)],
-  });
+      orderBy: (c, { desc }) => [desc(c.createdAt)],
+      limit: CONTRIBUTIONS_PAGE_SIZE,
+      offset: (page - 1) * CONTRIBUTIONS_PAGE_SIZE,
+    }),
+    db.select({ total: count() }).from(contributions).where(where),
+  ]);
+
+  return { contributions: rows, totalCount: total };
+}
+
+export async function getContributionCounts() {
+  "use cache";
+  cacheTag("contributions");
+
+  const rows = await db
+    .select({ status: contributions.status, count: count() })
+    .from(contributions)
+    .groupBy(contributions.status);
+
+  const counts = { total: 0, pending: 0, approved: 0, rejected: 0 };
+  for (const row of rows) {
+    counts[row.status] = row.count;
+    counts.total += row.count;
+  }
+  return counts;
 }
 
 export async function rejectOrApproveContribution(
