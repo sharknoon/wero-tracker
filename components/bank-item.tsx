@@ -19,6 +19,7 @@ import { SupportStatus } from "@/db/schema/support";
 import { redirect, usePathname, useSearchParams } from "next/navigation";
 import { ContributionAction } from "@/db/schema/contributions";
 import { resolveBank } from "@/lib/bank-helper";
+import { RecencyBadge } from "./recency-badge";
 
 interface BankItemProps {
   bank: Bank;
@@ -50,7 +51,11 @@ export function Bankitem({ bank: unresolvedBank, countryCode }: BankItemProps) {
   }
 
   return (
-    <Card className="bg-transparent py-4">
+    <Card className="relative bg-transparent py-4 overflow-visible">
+      <RecencyBadge
+        createdAt={unresolvedBank.createdAt}
+        updatedAt={unresolvedBank.updatedAt}
+      />
       <CardHeader className="px-4">
         <div className="flex items-start gap-3 overflow-hidden">
           <Avatar className="size-10 after:rounded-lg">

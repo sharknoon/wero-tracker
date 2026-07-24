@@ -24,6 +24,7 @@ import { merchantCategoryOptions } from "@/lib/constants";
 import { Merchant } from "@/db/schema/merchants";
 import { ContributionAction } from "@/db/schema/contributions";
 import { redirect, usePathname, useSearchParams } from "next/navigation";
+import { RecencyBadge } from "./recency-badge";
 
 interface MerchantItemProps {
   merchant: Merchant;
@@ -56,7 +57,11 @@ export function MerchantItem({ merchant }: MerchantItemProps) {
 
   return (
     <>
-      <Item variant="outline">
+      <Item variant="outline" className="relative">
+        <RecencyBadge
+          createdAt={merchant.createdAt}
+          updatedAt={merchant.updatedAt}
+        />
         <ItemMedia>
           <Avatar className="size-10 after:rounded-lg">
             <AvatarImage

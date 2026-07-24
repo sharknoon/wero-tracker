@@ -65,7 +65,7 @@ export function BankCountrySection({
           )}
         />
       </CollapsibleTrigger>
-      <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
+      <CollapsibleContent className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
         <div className="p-px">
           <div className="grid gap-4 mt-4 md:grid-cols-2 lg:grid-cols-3">
             {banks.map((bank) => (
