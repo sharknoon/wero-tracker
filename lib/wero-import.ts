@@ -36,7 +36,11 @@ const p2pSchema = z.strictObject({
             iconUrl: z.url(),
             universalLink: z.url(),
             useCases: z.array(
-              z.union([z.literal("share"), z.literal("market")]),
+              z.union([
+                z.literal("share"),
+                z.literal("market"),
+                z.literal("wupLinkConsumer"),
+              ]),
             ),
             supportsDesktop: z.boolean(),
           }),
