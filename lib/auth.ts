@@ -35,6 +35,12 @@ export const auth = betterAuth({
       trustedProviders: ["google", "github"],
     },
   },
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60,
+    },
+  },
   experimental: {
     joins: true,
   },

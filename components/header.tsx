@@ -12,7 +12,12 @@ import { SiGithub } from "@icons-pack/react-simple-icons";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect, usePathname, useSearchParams } from "next/navigation";
+import {
+  redirect,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,6 +29,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useEditor } from "@/lib/editor-context";
 import { authClient } from "@/lib/auth-client";
+import { useSession } from "@/lib/session-context";
 import { ContributionType } from "@/db/schema/contributions";
 import {
   Popover,
@@ -47,7 +53,7 @@ function getInitials(name: string): string {
 
 function AddButton() {
   const { openEditorDialog } = useEditor();
-  const { data: session } = authClient.useSession();
+  const session = useSession();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -89,13 +95,10 @@ function AddButton() {
 }
 
 function UserMenu() {
-  const { data: session, isPending } = authClient.useSession();
+  const session = useSession();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
-  if (isPending) {
-    return <div className="size-8 animate-pulse rounded-full bg-muted" />;
-  }
+  const router = useRouter();
 
   if (!session) {
     const target = searchParams?.size
@@ -103,7 +106,10 @@ function UserMenu() {
       : pathname;
     return (
       <Button variant="outline" size="sm" asChild>
-        <Link href={`/sign-in?redirect=${encodeURIComponent(target)}`}>
+        <Link
+          href={`/sign-in?redirect=${encodeURIComponent(target)}`}
+          prefetch={false}
+        >
           <LogIn size={16} />
           <span className="hidden sm:inline">Sign in</span>
         </Link>
@@ -137,7 +143,7 @@ function UserMenu() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/contributions">
+          <Link href="/contributions" prefetch={false}>
             <GitPullRequestArrow size={14} />
             Contributions
           </Link>
@@ -145,7 +151,11 @@ function UserMenu() {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           variant="destructive"
-          onClick={() => authClient.signOut()}
+          onClick={() =>
+            authClient.signOut({
+              fetchOptions: { onSuccess: () => router.refresh() },
+            })
+          }
         >
           <LogOut size={14} />
           Sign out

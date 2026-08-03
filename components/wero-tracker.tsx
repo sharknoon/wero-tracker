@@ -32,7 +32,7 @@ import { BankDialog } from "./bank-dialog";
 import { Merchant } from "@/db/schema/merchants";
 import { baseStatus, BaseSupportStatus } from "@/lib/status-helper";
 import { WeroData } from "@/app/page";
-import { authClient } from "@/lib/auth-client";
+import { useSession } from "@/lib/session-context";
 import { calculateWeroSupport } from "@/lib/bank-helper";
 
 type ViewType = "banks" | "merchants";
@@ -62,7 +62,7 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
 
   const { openEditorDialog } = useEditor();
   const searchParams = useSearchParams();
-  const { data: session } = authClient.useSession();
+  const session = useSession();
 
   const [activeView, setActiveViewState] = useState<ViewType>(
     searchParams.get("view") === "merchants" ? "merchants" : "banks",

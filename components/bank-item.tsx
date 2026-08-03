@@ -1,6 +1,6 @@
 "use client";
 
-import { authClient } from "@/lib/auth-client";
+import { useSession } from "@/lib/session-context";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { StatusBadge, StatusDot } from "./status-badge";
@@ -28,7 +28,7 @@ interface BankItemProps {
 
 export function Bankitem({ bank: unresolvedBank, countryCode }: BankItemProps) {
   const { openEditorDialog } = useEditor();
-  const { data: session } = authClient.useSession();
+  const session = useSession();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 

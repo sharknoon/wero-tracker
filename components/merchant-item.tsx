@@ -1,6 +1,6 @@
 "use client";
 
-import { authClient } from "@/lib/auth-client";
+import { useSession } from "@/lib/session-context";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { StatusBadge } from "./status-badge";
 import { NotesText } from "./notes-text";
@@ -32,7 +32,7 @@ interface MerchantItemProps {
 
 export function MerchantItem({ merchant }: MerchantItemProps) {
   const { openEditorDialog } = useEditor();
-  const { data: session } = authClient.useSession();
+  const session = useSession();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const category = merchantCategoryOptions.find(
