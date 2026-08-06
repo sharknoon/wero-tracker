@@ -192,14 +192,43 @@ export async function runWeroImport(): Promise<WeroImportResult> {
     return override ? (override[country] ?? override.default) : undefined;
   }
 
+  // Bank ids are not stable between the P2P and eCommerce APIs, so fall back to
+  // the brand the bank belongs to when no id matches.
+  function findEcommerceBank(
+    brandId: string,
+    bank: { id: string; bankContext?: string; name: string },
+  ) {
+    const byId = ecommerceData
+      .flatMap((b) => b.banks)
+      .find((b) => b.id === bank.id);
+    if (byId) return byId;
+
+    const ecommerceBrand = ecommerceData.find((b) => b.id === brandId);
+    if (!ecommerceBrand) return undefined;
+
+    if (bank.bankContext) {
+      const byContext = ecommerceBrand.banks.find(
+        (b) => b.bankContext === bank.bankContext,
+      );
+      if (byContext) return byContext;
+    }
+
+    const byName = ecommerceBrand.banks.find(
+      (b) => b.name.trim().toLowerCase() === bank.name.trim().toLowerCase(),
+    );
+    if (byName) return byName;
+
+    return ecommerceBrand.banks.length === 1
+      ? ecommerceBrand.banks[0]
+      : undefined;
+  }
+
   for (const brand of p2pData.brands) {
     if (brand.banks.length > 0) {
       const firstBank = brand.banks[0];
 
       // Find matching ecommerce bank data
-      const ecommerceBankData = ecommerceData
-        .flatMap((b) => b.banks)
-        .find((b) => b.id === firstBank.id);
+      const ecommerceBankData = findEcommerceBank(brand.id, firstBank);
 
       // Get existing bank data for preserving manual fields
       const existingBank = await db.query.banks.findFirst({
