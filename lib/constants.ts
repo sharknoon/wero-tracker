@@ -121,6 +121,12 @@ export const merchantCategoryOptions: {
     label: "Services",
   },
   {
+    emoji: "🏛️",
+    color: "bg-indigo-500/10 text-indigo-500",
+    value: "public-sector",
+    label: "Public Sector",
+  },
+  {
     emoji: "📦",
     color: "bg-gray-500/10 text-gray-500",
     value: "other",

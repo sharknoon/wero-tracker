@@ -18,6 +18,7 @@ export const categories = pgEnum("categories", [
   "travel",
   "entertainment",
   "services",
+  "public-sector",
   "other",
 ]);
 export type MerchantCategory = (typeof categories.enumValues)[number];

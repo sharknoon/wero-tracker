@@ -197,6 +197,7 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
     "travel",
     "entertainment",
     "services",
+    "public-sector",
     "other",
   ];
 
