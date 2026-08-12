@@ -193,25 +193,6 @@ export async function runWeroImport(): Promise<WeroImportResult> {
     return override ? (override[country] ?? override.default) : undefined;
   }
 
-  // Reimplementation of the app resolution Wero's own bank picker performs on
-  // this exact payload: apps that do not match the requested use case are never
-  // offered to users, so a bank left without any app is not usable yet.
-  function resolveAppsForUseCase<T extends { useCases: string[] }>(
-    apps: T[],
-    useCase: string,
-  ): T[] {
-    const offeredUseCases = new Set(
-      apps.flatMap((app) => app.useCases).filter((uc) => uc !== "fallback"),
-    );
-    if (offeredUseCases.size === 0) return apps;
-    return apps.filter(
-      (app) =>
-        app.useCases.length === 0 ||
-        app.useCases.includes(useCase) ||
-        (!offeredUseCases.has(useCase) && app.useCases.includes("fallback")),
-    );
-  }
-
   // Bank ids are not stable between the P2P and eCommerce APIs, so fall back to
   // the brand the bank belongs to when no id matches.
   function findEcommerceBank(
@@ -259,33 +240,6 @@ export async function runWeroImport(): Promise<WeroImportResult> {
         },
       });
 
-      // Use case Wero's bank picker requests by default; a brand only listed
-      // for other use cases is registered but not launched yet.
-      const launchUseCase = "market";
-      const launchableApps = new Map(
-        brand.banks.map((bank) => [
-          bank,
-          resolveAppsForUseCase(
-            brand.apps.filter((app) => bank.appIds.includes(app.id)),
-            launchUseCase,
-          ),
-        ]),
-      );
-      const launchableAppIds = new Set(
-        Array.from(launchableApps.values()).flatMap((apps) =>
-          apps.map((app) => app.id),
-        ),
-      );
-      const launchedCountries = new Set(
-        brand.banks
-          .filter(
-            (bank) =>
-              bank.supportsStandaloneApp ||
-              (launchableApps.get(bank)?.length ?? 0) > 0,
-          )
-          .flatMap((bank) => bank.countries ?? brand.countries),
-      );
-
       // Merge apps
       const existingApps = existingBank?.bankingApps || [];
       const newApps = await Promise.all(
@@ -321,11 +275,7 @@ export async function runWeroImport(): Promise<WeroImportResult> {
             weroSupport: createCountryOverride<SupportStatus>(
               existingApp?.weroSupport || { default: "unsupported" },
               countriesOfThisApp,
-              (c) =>
-                launchableAppIds.has(app.id)
-                  ? "supported"
-                  : resolveCountryOverride(existingApp?.weroSupport, c) ||
-                    "announced",
+              () => "supported",
             ),
             supportedCountries: Array.from(
               new Set([
@@ -373,11 +323,7 @@ export async function runWeroImport(): Promise<WeroImportResult> {
         p2pPaymentsSupport: createCountryOverride<SupportStatus>(
           existingBank?.p2pPaymentsSupport || { default: "unsupported" },
           brand.countries,
-          (c) =>
-            launchedCountries.has(c)
-              ? "supported"
-              : resolveCountryOverride(existingBank?.p2pPaymentsSupport, c) ||
-                "announced",
+          () => "supported",
         ),
         eCommercePaymentsSupport: createCountryOverride<SupportStatus>(
           existingBank?.eCommercePaymentsSupport || { default: "unsupported" },
