@@ -11,6 +11,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { WeroData } from "@/app/page";
+import { calculateWeroSupport } from "@/lib/bank-helper";
 
 const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
 
@@ -35,12 +36,13 @@ export function BankCountrySection({
     setIsOpen(defaultExpanded);
   }
 
-  const supportedCount = banks.filter(
-    (b) => b.weroSupport === "supported",
-  ).length;
-  const announcedCount = banks.filter(
-    (b) => b.weroSupport === "announced",
-  ).length;
+  let supportedCount = 0;
+  let announcedCount = 0;
+  for (const bank of banks) {
+    const support = calculateWeroSupport(bank, countryCode);
+    if (support === "supported") supportedCount++;
+    if (support === "announced") announcedCount++;
+  }
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>

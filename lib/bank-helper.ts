@@ -7,15 +7,13 @@ export function calculateWeroSupport(
     Bank,
     "p2pPaymentsSupport" | "eCommercePaymentsSupport" | "posPaymentsSupport"
   >,
-  countryCode?: string,
+  countryCode: string,
 ): SupportStatus {
   const statuses = [
-    (countryCode && bank.p2pPaymentsSupport[countryCode]) ||
-      bank.p2pPaymentsSupport.default,
-    (countryCode && bank.eCommercePaymentsSupport[countryCode]) ||
+    bank.p2pPaymentsSupport[countryCode] || bank.p2pPaymentsSupport.default,
+    bank.eCommercePaymentsSupport[countryCode] ||
       bank.eCommercePaymentsSupport.default,
-    (countryCode && bank.posPaymentsSupport[countryCode]) ||
-      bank.posPaymentsSupport.default,
+    bank.posPaymentsSupport[countryCode] || bank.posPaymentsSupport.default,
   ].map((s) => [baseStatus(s), s] as const);
   for (const status of ["supported", "announced", "unsupported"] as const) {
     for (const [base, original] of statuses) {

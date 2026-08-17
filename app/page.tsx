@@ -29,10 +29,7 @@ async function getWeroData() {
   ]);
 
   return {
-    banks: banksData.map((bank) => ({
-      ...bank,
-      weroSupport: calculateWeroSupport(bank),
-    })),
+    banks: banksData,
     merchants: merchantsData,
     lastUpdated,
   };
