@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/collapsible";
 import { WeroData } from "@/app/page";
 import { calculateWeroSupport } from "@/lib/bank-helper";
+import { baseStatus } from "@/lib/status-helper";
 
 const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
 
@@ -39,7 +40,7 @@ export function BankCountrySection({
   let supportedCount = 0;
   let announcedCount = 0;
   for (const bank of banks) {
-    const support = calculateWeroSupport(bank, countryCode);
+    const support = baseStatus(calculateWeroSupport(bank, countryCode));
     if (support === "supported") supportedCount++;
     if (support === "announced") announcedCount++;
   }

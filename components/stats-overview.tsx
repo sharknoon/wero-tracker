@@ -3,6 +3,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CircleCheck, CircleX, Clock, Flag, Store } from "lucide-react";
 import { countries } from "@/lib/constants";
 import { WeroData } from "@/app/page";
+import { Bank } from "@/db/schema/banks";
+import { calculateWeroSupport } from "@/lib/bank-helper";
+import { baseStatus } from "@/lib/status-helper";
 
 interface StatsOverviewProps {
   data: WeroData;
@@ -11,26 +14,31 @@ interface StatsOverviewProps {
 
 export function StatsOverview({ data, activeView }: StatsOverviewProps) {
   const bankStats = useMemo(() => {
-    const supportedBanks = data.banks.filter(
-      (b) => b.weroSupport === "supported",
-    );
-    const announcedBanks = data.banks.filter(
-      (b) => b.weroSupport === "announced",
-    );
+    const supportedBanks: Bank[] = [];
+    const announcedBanks: Bank[] = [];
+    const supportedBankCountries = new Set<string>();
+    const announcedBankCountries = new Set<string>();
 
-    const supportedBankCountries = supportedBanks.reduce((acc, bank) => {
-      bank.countries.forEach((country) => acc.add(country));
-      return acc;
-    }, new Set<string>());
+    for (const bank of data.banks) {
+      const statuses = bank.countries.map((country) => ({
+        country,
+        status: baseStatus(calculateWeroSupport(bank, country)),
+      }));
 
-    const announcedBankCountries = announcedBanks.reduce((acc, bank) => {
-      bank.countries.forEach((country) => acc.add(country));
-      return acc;
-    }, new Set<string>());
+      for (const { country, status } of statuses) {
+        if (status === "supported") supportedBankCountries.add(country);
+        else if (status === "announced") announcedBankCountries.add(country);
+      }
 
-    const additionallyAnnouncedBankCountries = Array.from(
-      announcedBankCountries,
-    ).filter((country) => !supportedBankCountries.has(country));
+      if (statuses.some((s) => s.status === "supported"))
+        supportedBanks.push(bank);
+      else if (statuses.some((s) => s.status === "announced"))
+        announcedBanks.push(bank);
+    }
+
+    const additionallyAnnouncedBankCountries = [
+      ...announcedBankCountries,
+    ].filter((country) => !supportedBankCountries.has(country));
 
     return [
       {
@@ -67,10 +75,10 @@ export function StatsOverview({ data, activeView }: StatsOverviewProps) {
 
   const merchantStats = useMemo(() => {
     const supportedMerchants = data.merchants.filter(
-      (m) => m.weroSupport === "supported",
+      (m) => baseStatus(m.weroSupport) === "supported",
     );
     const announcedMerchants = data.merchants.filter(
-      (m) => m.weroSupport === "announced",
+      (m) => baseStatus(m.weroSupport) === "announced",
     );
 
     return [
