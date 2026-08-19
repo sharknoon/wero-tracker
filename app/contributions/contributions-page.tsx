@@ -320,7 +320,7 @@ async function findContributionDuplicates(
     const duplicates = await findDuplicateBanks({ website: data.website });
     return duplicates.map((b) => ({
       id: b.id,
-      name: b.name,
+      name: b.name.default,
       logoUrl: b.logoUrl,
       website: b.website.default,
     }));
@@ -470,7 +470,7 @@ function ReviewDialog({
   const [reviewNote, setReviewNote] = useState("");
   const entityName =
     contribution.type === "bank"
-      ? (contribution.data as BankContributionData).name
+      ? (contribution.data as BankContributionData).name.default
       : (contribution.data as MerchantContributionData).name;
 
   return (
@@ -656,7 +656,7 @@ function ContributionCard({
 }) {
   const entityName =
     contribution.type === "bank"
-      ? (contribution.data as BankContributionData).name
+      ? (contribution.data as BankContributionData).name.default
       : (contribution.data as MerchantContributionData).name;
 
   return (

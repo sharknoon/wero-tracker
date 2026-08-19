@@ -30,6 +30,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   AliasInput,
   CountrySelector,
+  NameInput,
   NotesInput,
   SupportStatusSelect,
   WebsiteInput,
@@ -344,8 +345,8 @@ function BankingAppForm({
 // ============================================================================
 
 interface BankFormContentProps {
-  name: string;
-  onNameChange: (value: string) => void;
+  name: Bank["name"];
+  onNameChange: (value: Bank["name"]) => void;
   aliases: string[];
   aliasInput: string;
   onAliasInputChange: (value: string) => void;
@@ -432,21 +433,15 @@ function BankFormContent({
 
   return (
     <>
-      <div className="space-y-2">
-        <Label htmlFor="name">
-          Bank Name <span className="text-destructive">*</span>
-        </Label>
-        <Input
-          id="name"
-          placeholder="e.g., Deutsche Bank"
-          value={name}
-          onChange={(e) => onNameChange(e.target.value)}
-          required
-        />
-        <p className="text-xs text-muted-foreground">
-          Use the brand name, not the company name.
-        </p>
-      </div>
+      <NameInput
+        name={name}
+        onNameChange={onNameChange}
+        countries={countries}
+        label="Bank Name"
+        placeholder="e.g., Deutsche Bank"
+        description="Use the brand name, not the company name. Some brands are named differently per country (e.g. UniCredit is called HypoVereinsbank in Germany)."
+        required
+      />
 
       <AliasInput
         aliases={aliases}
@@ -617,7 +612,7 @@ export function BankDialog() {
   const { onOpenEditorDialog, openEditorDialog } = useEditor();
 
   // Form state
-  const [name, setName] = useState<Bank["name"]>("");
+  const [name, setName] = useState<Bank["name"]>({ default: "" });
   const [aliases, setAliases] = useState<Bank["aliases"]>([]);
   const [aliasInput, setAliasInput] = useState<Bank["aliases"][number]>("");
   const [logoUrl, setLogoUrl] = useState<Bank["logoUrl"]>("");
@@ -643,7 +638,7 @@ export function BankDialog() {
 
   const resetForm = () => {
     setSubmitError("");
-    setName("");
+    setName({ default: "" });
     setAliases([]);
     setAliasInput("");
     setLogoUrl("");
@@ -705,6 +700,7 @@ export function BankDialog() {
       const isRemoving = prev.includes(country);
       if (isRemoving) {
         // Clean up country-specific overrides from all CountryOverride fields
+        setName((v) => stripCountryFromOverride(v, country));
         setWebsite((v) => stripCountryFromOverride(v, country));
         setP2pPaymentsSupport((v) => stripCountryFromOverride(v, country));
         setECommercePaymentsSupport((v) =>
@@ -754,7 +750,7 @@ export function BankDialog() {
     }
 
     const errors: string[] = [];
-    if (!name.trim()) errors.push("Bank name");
+    if (!Object.values(name).every((n) => n.trim())) errors.push("Bank name");
     if (
       !Object.values(website).every(
         (url) => url.trim() && isValidUrl(url.trim()),
@@ -918,15 +914,15 @@ export function BankDialog() {
   const getDescription = (submitType: "contribution" | "admin") => {
     if (action === "delete") {
       if (submitType === "contribution") {
-        return `Request to remove "${existingBank?.name}" from the tracker.`;
+        return `Request to remove "${existingBank?.name.default}" from the tracker.`;
       } else {
-        return `Remove "${existingBank?.name}" from the tracker.`;
+        return `Remove "${existingBank?.name.default}" from the tracker.`;
       }
     } else if (action === "edit") {
       if (submitType === "contribution") {
-        return `Suggest changes to "${existingBank?.name}".`;
+        return `Suggest changes to "${existingBank?.name.default}".`;
       } else {
-        return `Edit "${existingBank?.name}".`;
+        return `Edit "${existingBank?.name.default}".`;
       }
     } else {
       if (submitType === "admin") {
@@ -952,7 +948,7 @@ export function BankDialog() {
           <div className="space-y-4 py-2">
             {action === "delete" ? (
               <DeleteModeContent
-                bankName={existingBank?.name || ""}
+                bankName={existingBank?.name.default || ""}
                 submitType={submitType}
                 reason={reason}
                 onReasonChange={setReason}
@@ -1053,7 +1049,7 @@ export function BankDialog() {
                   />
                 </ItemMedia>
                 <ItemContent>
-                  <ItemTitle>{b.name}</ItemTitle>
+                  <ItemTitle>{b.name.default}</ItemTitle>
                   <ItemDescription>{b.website.default}</ItemDescription>
                 </ItemContent>
                 <ItemActions>

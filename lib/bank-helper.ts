@@ -26,6 +26,7 @@ export function calculateWeroSupport(
 /** A bank with overrides resolved for a specific country. */
 export type ResolvedBank = Omit<
   Bank,
+  | "name"
   | "website"
   | "p2pPaymentsSupport"
   | "eCommercePaymentsSupport"
@@ -34,6 +35,7 @@ export type ResolvedBank = Omit<
   | "bankingApps"
   | "notes"
 > & {
+  name: string;
   website: string;
   p2pPaymentsSupport: SupportStatus;
   eCommercePaymentsSupport: SupportStatus;
@@ -57,6 +59,7 @@ export type ResolvedBank = Omit<
 export function resolveBank(bank: Bank, countryCode: string): ResolvedBank {
   return {
     ...bank,
+    name: bank.name[countryCode] ?? bank.name.default,
     website: bank.website[countryCode] ?? bank.website.default,
     p2pPaymentsSupport:
       bank.p2pPaymentsSupport[countryCode] ?? bank.p2pPaymentsSupport.default,

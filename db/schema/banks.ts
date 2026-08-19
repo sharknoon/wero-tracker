@@ -20,7 +20,7 @@ export const banks = pgTable(
   "banks",
   {
     id: uuid("id").primaryKey(),
-    name: text("name").notNull(),
+    name: json("name").$type<CountryOverride<string>>().notNull(),
     aliases: json("aliases").$type<string[]>().default([]).notNull(),
     website: json("website").$type<CountryOverride<string>>().notNull(),
     countries: json("countries").$type<string[]>().default([]).notNull(),
@@ -77,6 +77,7 @@ function countryOverrideSchema<T>(valueSchema: z.ZodType<T>) {
     );
 }
 const baseBankSchema = createInsertSchema(banks).extend({
+  name: countryOverrideSchema(z.string().min(1)),
   website: countryOverrideSchema(z.url()),
   p2pPaymentsSupport: countryOverrideSchema(supportStatusesSchema),
   eCommercePaymentsSupport: countryOverrideSchema(supportStatusesSchema),
@@ -102,6 +103,7 @@ const bankRefinement = z.superRefine<
 
   // Check that all country-specific overrides only contain countries in the bank's countries list
   const overrideFields = {
+    name: "names",
     website: "websites",
     p2pPaymentsSupport: "P2P payment support entries",
     eCommercePaymentsSupport: "eCommerce payment support entries",

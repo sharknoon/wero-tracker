@@ -299,7 +299,8 @@ export async function runWeroImport(): Promise<WeroImportResult> {
 
       const possibleBankToUpsert: Omit<Bank, "createdAt" | "updatedAt"> = {
         id: brand.id,
-        name: brand.name.trim(),
+        // Country-specific names are curated manually, only the default follows the API
+        name: { ...existingBank?.name, default: brand.name.trim() },
         website: existingBank?.website || { default: "https://example.com" },
         aliases: brand.aliases,
         countries: Array.from(
@@ -372,10 +373,10 @@ export async function runWeroImport(): Promise<WeroImportResult> {
         "system",
       );
       if (success) {
-        updates.push(`${bank.name} (${bank.id})`);
+        updates.push(`${bank.name.default} (${bank.id})`);
       } else {
         errors.push(
-          `Failed to create contribution for bank ${bank.name}: ${message}`,
+          `Failed to create contribution for bank ${bank.name.default}: ${message}`,
         );
       }
     } else {
@@ -388,10 +389,10 @@ export async function runWeroImport(): Promise<WeroImportResult> {
         "system",
       );
       if (success) {
-        additions.push(`${bank.name} (${bank.id})`);
+        additions.push(`${bank.name.default} (${bank.id})`);
       } else {
         errors.push(
-          `Failed to create contribution for bank ${bank.name}: ${message}`,
+          `Failed to create contribution for bank ${bank.name.default}: ${message}`,
         );
       }
     }

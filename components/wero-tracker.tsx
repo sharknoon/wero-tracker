@@ -113,7 +113,7 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
         if (searchQuery) {
           const query = searchQuery.toLowerCase();
           const bankNames = [
-            bank.name.toLowerCase(),
+            ...Object.values(bank.name).map((n) => n.toLowerCase()),
             ...bank.aliases.map((a) => a.toLowerCase()),
           ];
           const matchesName = bankNames.some((name) => name.includes(query));

@@ -184,6 +184,101 @@ function TriggerSurface({
 }
 
 // ============================================================================
+// Name Input Component
+// ============================================================================
+
+export interface NameInputProps {
+  name: CountryOverride<string>;
+  onNameChange: (value: CountryOverride<string>) => void;
+  countries: string[];
+  label?: string;
+  id?: string;
+  placeholder?: string;
+  description?: string;
+  required?: boolean;
+}
+
+export function NameInput({
+  name,
+  onNameChange,
+  countries,
+  label = "Name",
+  id = "name",
+  placeholder,
+  description,
+  required,
+}: NameInputProps) {
+  const setForCountry = (country: string, value: string) => {
+    const expanded = expandOverride(name, countries);
+    expanded[country] = value;
+    onNameChange(collapseOverride(expanded, countries, name.default));
+  };
+
+  const renderNameInput = (
+    inputId: string,
+    value: string,
+    onChange: (v: string) => void,
+  ) => (
+    <Input
+      id={inputId}
+      placeholder={placeholder}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    />
+  );
+
+  const list = (
+    <div className="space-y-2">
+      {sortCountries(countries).map((c) => (
+        <div key={c} className="flex items-center gap-2">
+          <CountryRowLabel country={c} />
+          {renderNameInput(`${id}-${c}`, name[c] ?? name.default, (v) =>
+            setForCountry(c, v),
+          )}
+        </div>
+      ))}
+    </div>
+  );
+
+  return (
+    <div className="space-y-2">
+      <Label htmlFor={id}>
+        {label} {required && <span className="text-destructive">*</span>}
+      </Label>
+      {countries.length === 0 &&
+        renderNameInput(id, name.default, (v) =>
+          onNameChange({ ...name, default: v }),
+        )}
+      {countries.length === 1 &&
+        renderNameInput(
+          `${id}-${countries[0]}`,
+          name[countries[0]] ?? name.default,
+          (v) => setForCountry(countries[0], v),
+        )}
+      {countries.length >= 2 && (
+        <PerCountryDialog
+          label={label}
+          trigger={
+            <TriggerSurface>
+              <span className="truncate font-normal min-w-0">
+                {summarizeCountryOverride(name, (v) => v) || (
+                  <span className="italic">Not set</span>
+                )}
+              </span>
+            </TriggerSurface>
+          }
+        >
+          {list}
+        </PerCountryDialog>
+      )}
+      {description && (
+        <p className="text-xs text-muted-foreground">{description}</p>
+      )}
+    </div>
+  );
+}
+
+// ============================================================================
 // Website Input Component
 // ============================================================================
 

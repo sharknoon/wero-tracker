@@ -23,7 +23,7 @@ export async function getAllBanks() {
   return db
     .select()
     .from(banksTable)
-    .orderBy(asc(sql`lower(${banksTable.name})`));
+    .orderBy(asc(sql`lower(${banksTable.name} ->> 'default')`));
 }
 
 export async function createBank(

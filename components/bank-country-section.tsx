@@ -45,6 +45,13 @@ export function BankCountrySection({
     if (support === "announced") announcedCount++;
   }
 
+  // The server sorts by the default name, which can differ from the country-specific one
+  const sortedBanks = [...banks].sort((a, b) =>
+    (a.name[countryCode] ?? a.name.default).localeCompare(
+      b.name[countryCode] ?? b.name.default,
+    ),
+  );
+
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <CollapsibleTrigger className="flex w-full cursor-pointer items-center justify-between rounded-lg bg-secondary/50 px-4 py-3 hover:bg-secondary transition-colors">
@@ -71,7 +78,7 @@ export function BankCountrySection({
       <CollapsibleContent className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
         <div className="p-px">
           <div className="grid gap-4 mt-4 md:grid-cols-2 lg:grid-cols-3">
-            {banks.map((bank) => (
+            {sortedBanks.map((bank) => (
               <Bankitem key={bank.id} bank={bank} countryCode={countryCode} />
             ))}
           </div>
