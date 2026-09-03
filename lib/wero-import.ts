@@ -228,6 +228,33 @@ export async function runWeroImport(): Promise<WeroImportResult> {
     if (brand.banks.length > 0) {
       const firstBank = brand.banks[0];
 
+      // Merge apps from a bank if they have the same name
+      const appsByName = new Map<string, (typeof brand.apps)[number]>();
+      const duplicateAppIds = new Map<string, string>();
+      for (const app of brand.apps) {
+        const name = app.name.trim().toLowerCase();
+        const existingApp = appsByName.get(name);
+        if (!existingApp) {
+          appsByName.set(name, app);
+          continue;
+        }
+
+        duplicateAppIds.set(app.id, existingApp.id);
+        if (app.useCases.includes("market")) {
+          existingApp.universalLink = app.universalLink;
+        }
+        existingApp.useCases = Array.from(
+          new Set([...existingApp.useCases, ...app.useCases]),
+        );
+        existingApp.supportsDesktop ||= app.supportsDesktop;
+      }
+      for (const bank of brand.banks) {
+        bank.appIds = Array.from(
+          new Set(bank.appIds.map((id) => duplicateAppIds.get(id) ?? id)),
+        );
+      }
+      brand.apps = Array.from(appsByName.values());
+
       // Find matching ecommerce bank data
       const ecommerceBankData = findEcommerceBank(brand.id, firstBank);
 
@@ -290,7 +317,9 @@ export async function runWeroImport(): Promise<WeroImportResult> {
       const newAppIds = new Set(newApps.map((app) => app.id));
       const mergedApps = [
         ...newApps,
-        ...existingApps.filter((app) => !newAppIds.has(app.id)),
+        ...existingApps.filter(
+          (app) => !newAppIds.has(app.id) && !duplicateAppIds.has(app.id),
+        ),
       ];
 
       const newLogoChecksum = (await downloadFile(brand.logoUrl)).checksum;
