@@ -197,6 +197,12 @@ function WeroTrackerContent({ data }: WeroTrackerProps) {
     "travel",
     "entertainment",
     "services",
+    "home-diy",
+    "sports-outdoor",
+    "health-beauty",
+    "books-media",
+    "marketplace",
+    "charity-crowdfunding",
     "public-sector",
     "other",
   ];

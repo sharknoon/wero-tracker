@@ -36,6 +36,13 @@
       "when": 1787138364899,
       "tag": "0004_country_overridable_bank_name",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1789399721543,
+      "tag": "0005_merchant_categories",
+      "breakpoints": true
     }
   ]
 }

@@ -121,6 +121,42 @@ export const merchantCategoryOptions: {
     label: "Services",
   },
   {
+    emoji: "🏠",
+    color: "bg-amber-500/10 text-amber-500",
+    value: "home-diy",
+    label: "Home & DIY",
+  },
+  {
+    emoji: "🚴",
+    color: "bg-lime-500/10 text-lime-500",
+    value: "sports-outdoor",
+    label: "Sports & Outdoor",
+  },
+  {
+    emoji: "🧴",
+    color: "bg-rose-500/10 text-rose-500",
+    value: "health-beauty",
+    label: "Health & Beauty",
+  },
+  {
+    emoji: "📚",
+    color: "bg-teal-500/10 text-teal-500",
+    value: "books-media",
+    label: "Books & Media",
+  },
+  {
+    emoji: "🏬",
+    color: "bg-violet-500/10 text-violet-500",
+    value: "marketplace",
+    label: "Marketplaces",
+  },
+  {
+    emoji: "❤️",
+    color: "bg-red-500/10 text-red-500",
+    value: "charity-crowdfunding",
+    label: "Charity & Crowdfunding",
+  },
+  {
     emoji: "🏛️",
     color: "bg-indigo-500/10 text-indigo-500",
     value: "public-sector",
