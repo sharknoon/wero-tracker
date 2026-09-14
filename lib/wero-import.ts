@@ -332,7 +332,9 @@ export async function runWeroImport(): Promise<WeroImportResult> {
         // Country-specific names are curated manually, only the default follows the API
         name: { ...existingBank?.name, default: brand.name.trim() },
         website: existingBank?.website || { default: "https://example.com" },
-        aliases: brand.aliases,
+        aliases: Array.from(
+          new Set([...(existingBank?.aliases || []), ...brand.aliases]),
+        ),
         countries: Array.from(
           new Set([...(existingBank?.countries || []), ...brand.countries]),
         ),
