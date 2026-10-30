@@ -172,9 +172,6 @@ export async function runWeroImport(): Promise<WeroImportResult> {
     countries: string[],
     newValue: (c: string) => T,
   ): CountryOverride<T> {
-    if (countries.length === 1) {
-      return { ...existingOverride, default: newValue(countries[0]) };
-    }
     const newStatus: CountryOverride<T> = { ...existingOverride };
     for (const country of countries) {
       const newValueForCountry = newValue(country);
